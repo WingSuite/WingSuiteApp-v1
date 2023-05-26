@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
 
 // Image
-import logo from "../../public/logobw.png";
+import logo from "../../public/logo.png";
 
 // Login Page definitions
 const Sidebar = ({ }) => {
@@ -55,7 +55,7 @@ const Sidebar = ({ }) => {
 
 	// Component return
 	return (
-		<div className="h-full bg-black w-2/12 drop-shadow-xl">
+		<div className="bg-gradient-to-tr from-blue1 to-sky h-full w-2/12 drop-shadow-xl">
 			<div className="h-full flex flex-col justify-between">
 				<div className="grid justify-items-center">
 					<div className="flex flex-row items-center text-white text-sm mx-4 mt-5 mb-10 gap-2">

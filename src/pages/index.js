@@ -1,16 +1,16 @@
-// Next.js libraries
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+// Import
+import Login from './login';
+import React from 'react';
 
-// Home definition
+// Page function
 export default function Home() {
-  // Variable declaration and initialization
-  const router = useRouter();
 
-  // Push user to the view page
-  useEffect(() => {router.push("/dashboard/homepage")}, [])
+  // Render login page
+  return (
+    <div className="h-full">
+      <Login/>
+    </div>
+  )
 
-  // Return nothing
-  return (<div></div>)
 }
 

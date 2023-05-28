@@ -30,7 +30,7 @@ const Login = () => {
     try {
       // Send API request
       const res = await fetch(
-        '<API LOGIN URL NEEDED>',
+        'http://127.0.0.1:5000/user/login/',
         {
           method: 'POST',
           headers: {

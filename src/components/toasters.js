@@ -1,8 +1,8 @@
 // Import
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 // Fucntion for success toaster
-export const successToaster = (message, position="bottom-right") => {
+export const successToaster = (message, position="top-center") => {
     // Toast exeuction
     toast.success(message, {
         position: position,
@@ -17,7 +17,7 @@ export const successToaster = (message, position="bottom-right") => {
 }
 
 // Fucntion for info toaster
-export const infoToaster = (message, position="bottom-right") => {
+export const infoToaster = (message, position="top-center") => {
     // Toast exeuction
     toast.info(message, {
         position: position,
@@ -32,7 +32,7 @@ export const infoToaster = (message, position="bottom-right") => {
 }
 
 // Fucntion for error toaster
-export const errorToaster = (message, position="bottom-right") => {
+export const errorToaster = (message, position="top-center") => {
     // Toast exeuction
     toast.error(message, {
         position: position,

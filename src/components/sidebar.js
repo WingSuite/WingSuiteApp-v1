@@ -7,9 +7,11 @@ import { IconContext } from "react-icons";
 // React.js & Next.js libraries
 import React from "react";
 import Image from 'next/image'
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
+
+// JS Cookies import
+import Cookies from 'js-cookie';
 
 // Image
 import logo from "../../public/logo.png";
@@ -85,7 +87,7 @@ const Sidebar = ({ }) => {
 							
 						</div>
 						<div className="text-black text-sm">
-							Last Name, First Name
+							{`${Cookies.get('lastName')}, ${Cookies.get('firstName')}`}
 						</div>
 					</div>
 				</div>

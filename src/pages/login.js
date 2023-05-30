@@ -6,6 +6,7 @@ import React from "react";
 // Toaster related imports
 import { errorToaster } from '@/components/toasters';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // JS Cookies import
 import Cookies from 'js-cookie';
@@ -47,38 +48,25 @@ const Login = () => {
       );
 
       // Turn API request result into JSON
-      const data = await res.json();
+      const response = await res.json();
 
-      // Check if the response is not OK
+      // If the response is not OK, send error message
       if (!res.ok) {
-        // Check if the email has any issues
-        if (Array.isArray(data['email'])) {
-          // Print email's issue
-          errorToaster("Email: " + data['email'][0]);
-        }
-
-        // Check if the password has any issues
-        if (Array.isArray(data['password'])) {
-          // Print password's issue
-          errorToaster("Password: " + data['password'][0]);
-        }
-
-        // Check if details appear in the response
-        if ('detail' in data) {
-          // Check if the 
-          errorToaster(data['detail']);
-        }
+        errorToaster(response['message']);
       }
 
       // If the login was a sucess, move to the dashboard and 
       // store information into a cookie
       else {
+        // Extract data
+        const data = JSON.parse(response['content']);
+
         // Store basic information into a cookie
-        Cookies.set('firstName', data['firstname']);
-        Cookies.set('lastName', data['lastname']);
-        Cookies.set('profileImage', data['profile_image']);
-        Cookies.set('refresh', data['tokens']['refresh']);
-        Cookies.set('access', data['tokens']['access']);
+        Cookies.set('firstName', data['first_name']);
+        Cookies.set('lastName', data['last_name']);
+        Cookies.set('email', data['email']);
+        // Cookies.set('refresh', data['tokens']['refresh']);
+        // Cookies.set('access', data['tokens']['access']);
         Cookies.set('success', "");
 
         // Move to the dashboard

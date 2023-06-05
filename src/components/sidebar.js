@@ -50,10 +50,10 @@ const Sidebar = () => {
 			key={`${item.title.toLowerCase()}`} 
 			className={
 				`${(currentPath == `${item.link}`) ? 
-				"bg-white hover:-translate-y-[0.1rem] hover:shadow-md hover:shadow-white" 
+				"bg-white hover:-translate-y-[0.2rem] hover:shadow-md hover:shadow-white" 
 				: 
-				"hover:bg-silver hover:-translate-y-[0.1rem] hover:shadow-md hover:shadow-silver"} 
-				px-3 py-2 my-1 mx-2 w-10/12 flex justify-start items-center rounded-lg`
+				"hover:bg-silver hover:-translate-y-[0.2rem] hover:shadow-md hover:shadow-silver"} 
+				flex justify-start items-center rounded-lg transition ease-in duration-200 px-3 py-2 my-1 mx-2 w-10/12`
 			} 
 			onClick={() => router.push(`${item.link}`)}
 		>
@@ -94,9 +94,9 @@ const Sidebar = () => {
 				</div>
 				<div className='flex flex-col'>
 					<div className="flex flex-row items-center rounded-xl bg-white mb-4 mx-4 px-3 py-2 gap-2">
-						<div className='w-10 h-10 bg-silver rounded-full'>
+						<div className='w-[2.3rem] h-[2.3rem] bg-silver rounded-full'>
 						</div>
-						<div className="flex-1 text-md truncate">
+						<div className="flex-1 text-sm truncate">
 							{fullName}
 						</div>
 					</div>

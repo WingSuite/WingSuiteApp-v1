@@ -8,6 +8,7 @@ import { IconContext } from "react-icons";
 import React from "react";
 import Image from 'next/image'
 import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 // JS Cookies import
@@ -17,10 +18,22 @@ import Cookies from 'js-cookie';
 import logo from "../../public/logo.png";
 
 // Login Page definitions
-const Sidebar = ({ }) => {
+const Sidebar = () => {
+	// Create useState for the full name of the user
+	const [fullName, setFullName] = useState();
+
 	// Get current path and router
 	const router = useRouter();
 	const currentPath = usePathname();
+
+	// On mount of the Next.js page
+	useEffect(() => {
+		// Fetch the first and last name of the user from local storage
+		const localData = JSON.parse(localStorage.getItem("whoami"));
+
+		// Set the full name of the user
+		setFullName(localData["full_name"]);
+	}, []);
 
 	// List of items for the sidebar
 	const menuItems = [
@@ -30,8 +43,6 @@ const Sidebar = ({ }) => {
 			icon: <VscHome/>
 		}
 	];
-
-	console.log(currentPath)
 
 	// Render the items list
 	const menuList = menuItems.map(item => (
@@ -57,7 +68,7 @@ const Sidebar = ({ }) => {
 
 	// Component return
 	return (
-		<div className="bg-gradient-to-tr from-blue1 to-sky h-full w-2/12 drop-shadow-xl">
+		<div className="bg-gradient-to-tr from-blue1 to-sky h-full w-[18rem] drop-shadow-xl">
 			<div className="h-full flex flex-col justify-between">
 				<div className="grid justify-items-center">
 					<div className="flex flex-row items-center text-white text-sm mx-4 mt-5 mb-10 gap-2">
@@ -83,11 +94,10 @@ const Sidebar = ({ }) => {
 				</div>
 				<div className='flex flex-col'>
 					<div className="flex flex-row items-center rounded-xl bg-white mb-4 mx-4 px-3 py-2 gap-2">
-						<div className='w-9 h-9 bg-silver rounded-full'>
-							
+						<div className='w-10 h-10 bg-silver rounded-full'>
 						</div>
-						<div className="text-black text-sm">
-							{`${Cookies.get('lastName')}, ${Cookies.get('firstName')}`}
+						<div className="flex-1 text-md truncate">
+							{fullName}
 						</div>
 					</div>
 				</div>

@@ -1,15 +1,15 @@
 // React and Next.js imports
 import { useEffect } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import React from "react";
 
 // Toaster related imports
-import { errorToaster } from '@/components/toasters';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { errorToaster } from "@/components/toasters";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // JS Cookies import
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 // Login Page definitions
 const Login = () => {
@@ -18,66 +18,67 @@ const Login = () => {
 
   // Pop toaster message if noTokens cookie is present
   useEffect(() => {
-    const refresh = Cookies.get('noTokens');
-    if (refresh === 'true') {
-      Cookies.set('noTokens', false);
-      errorToaster('Login to access your dashboard', 'top-center');
+    const refresh = Cookies.get("noTokens");
+    if (refresh === "true") {
+      Cookies.set("noTokens", false);
+      errorToaster("Login to access your dashboard", "top-center");
     }
   }, []);
 
   // Function call when the login button is pressed
   const loginPress = async () => {
-    // Try to login
-    try {
-      // Send API request
-      const res = await fetch(
-        'http://127.0.0.1:5000/user/login/',
-        {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(
-            {
-              "email": document.getElementById('email').value,
-              "password": document.getElementById('password').value,
-            }
-          ),
-        }
-      );
-
-      // Turn API request result into JSON
-      const response = await res.json();
-
-      // If the response is not OK, send error message
-      if (!res.ok) {
-        errorToaster(response['message']);
+    // Send API request and get its json representation
+    var res = await fetch(
+      "http://127.0.0.1:5000/auth/login/",
+      {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+          {
+            "email": document.getElementById("email").value,
+            "password": document.getElementById("password").value,
+          }
+        ),
       }
+    );
+    res = await res.json();
 
-      // If the login was a sucess, move to the dashboard and 
-      // store information into a cookie
-      else {
-        // Extract data
-        const data = JSON.parse(response['content']);
-
-        // Store basic information into a cookie
-        Cookies.set('firstName', data['first_name']);
-        Cookies.set('lastName', data['last_name']);
-        Cookies.set('email', data['email']);
-        // Cookies.set('refresh', data['tokens']['refresh']);
-        // Cookies.set('access', data['tokens']['access']);
-        Cookies.set('success', "");
-
-        // Move to the dashboard
-        router.push('/dashboard/homepage');
-      }
-
-      // Catch any errors
-    } catch (err) {
-      // Print errors
-      console.log(err);
+    // If the response is not OK, send error message
+    if (res.hasOwnProperty("status")) {
+      errorToaster(res["message"]);
+      return;
     }
+
+    console.log(res)
+
+    // Store basic information into a cookie
+    Cookies.set("refresh", res["refresh_token"]);
+    Cookies.set("access", res["access_token"]);
+
+    // Using the given access token, store the information
+    // from the response of the /user/who_am_i/ endpoint
+    res = await fetch(
+      "http://127.0.0.1:5000/user/who_am_i/", 
+      {
+        method: "GET",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${res["access_token"]}`
+        }
+      }
+    );
+    res = await res.json();
+
+    // Store the content of the result to local storage
+    localStorage.setItem("whoami", JSON.stringify(res["content"]));
+
+    // Move to the dashboard
+    router.push("/dashboard/homepage");
+
   };
 
   // Component return

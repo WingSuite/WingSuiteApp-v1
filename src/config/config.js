@@ -3,6 +3,7 @@ import { VscHome, VscComment, VscBell } from "react-icons/vsc";
 
 // Export config
 export const config = {
+  apiBase: "http://127.0.0.1:5000/",
   daysOfTheWeek: [
     "Monday",
     "Tuesday",
@@ -15,8 +16,8 @@ export const config = {
   quickLinks: [
     { name: "CIP", link: "https://sites.google.com/view/detachment025/" },
     { name: "Wings", link: "https://wings.holmcenter.com/" },
-    { name: "ASU Canvas", link: "https://canvas.asu.edu/"},
-    { name: "DoDMERB", link: "https://dodmerb.tricare.osd.mil/"},
+    { name: "ASU Canvas", link: "https://canvas.asu.edu/" },
+    { name: "DoDMERB", link: "https://dodmerb.tricare.osd.mil/" },
   ],
   eventColorMap: {
     "Physical Training": "bg-sky",

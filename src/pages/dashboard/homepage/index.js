@@ -8,9 +8,14 @@ import { useState, useEffect } from "react";
 // JS Cookies import
 import Cookies from "js-cookie";
 
-// Custom Imports
-import { ButtonCard, StatCard } from "@/components/cards";
+// Config imports
 import { config, testData } from "@/config/config";
+
+// Util imports
+import { get, post } from "@/utils/call";
+
+// Custom imports
+import { ButtonCard, StatCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pagetitle";
 import Sidebar from "@/components/sidebar";
@@ -29,30 +34,32 @@ export default function Home() {
     // Set the last name of the user
     setLastName(localData["last_name"]);
 
-    // Get the user's feedback information
-    fetch("http://127.0.0.1:5000/user/get_feedback/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("access")}`,
-      },
-      body: JSON.stringify({
-        page_size: 3,
-        page_index: 0,
-      }),
-    })
-      .then((results) => results.json())
-      .then((data) => {
-        // Iterate through each item of the response and store just the quotes
-        let quotes = [];
-        for (let item of data.message) {
-          quotes.push([item.feedback, item.from_user]);
-        }
+    // Process information in async mode
+    (async () => {
+      // Get the user's feedback information
+      var res = await post(
+        "/user/get_feedback/",
+        {
+          page_size: 3,
+          page_index: 0,
+        },
+        Cookies.get("access")
+      );
 
-        // Store the quotes to the useState
-        setFeedback(quotes);
-      });
+      // Iterate through each item of the response and store just the quotes
+      let quotes = [];
+      for (let item of res.message) {
+        var from_user = await post(
+          "/user/get_user/",
+          { id: item.from_user },
+          Cookies.get("access")
+        );
+        quotes.push([item.feedback, from_user.message.full_name]);
+      }
+
+      // Store the quotes to the useState
+      setFeedback(quotes);
+    })();
   }, []);
 
   // Get the greeting information
@@ -72,16 +79,16 @@ export default function Home() {
     <div className="flex flex-col gap-4">
       <div className="text-4xl">This Week's View</div>
       <div className="flex flex-row justify-between">
-        {config.daysOfTheWeek.map((item) => (
+        {config.daysOfTheWeek.map((item, index) => (
           <div
-            key={`weekView-${item}`}
+            key={`weekView-${item}-${index}`}
             className="flex h-64 w-52 flex-col gap-2 rounded-lg border
             border-silver p-2 shadow-lg"
           >
             <div className="text-lg">{item}</div>
-            {testData.weekView[item].map((event) => (
+            {testData.weekView[item].map((event, index) => (
               <ButtonCard
-                key={`weekViewEvent-${event.name}`}
+                key={`weekViewEvent-${event.name}-${index}`}
                 size="lg"
                 text={event.name}
                 subtext={event.datetime}
@@ -102,9 +109,9 @@ export default function Home() {
     <div className="flex flex-col gap-4">
       <div className="text-4xl">Quick Links</div>
       <div className="flex h-full flex-col justify-between">
-        {config.quickLinks.map((item) => (
+        {config.quickLinks.map((item, index) => (
           <ButtonCard
-            key={`quickLink-${item.name}`}
+            key={`quickLink-${item.name}-${index}`}
             size="xl"
             text={item.name}
             buttonInfo="transition duration-200 ease-in border border-silver
@@ -142,8 +149,9 @@ export default function Home() {
             subText="You Kept Up Standards"
           />
         ) : (
-          feedback.map((info) => (
+          feedback.map((info, index) => (
             <div
+              key={`feedbackView-${index}`}
               className="flex flex-col gap-1 rounded-lg bg-gradient-to-tr
               from-blue1 to-sky px-2 py-1"
             >

@@ -8,6 +8,9 @@ import { errorToaster } from "@/components/toasters";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Util imports
+import { post, get } from "@/utils/call";
+
 // JS Cookies import
 import Cookies from "js-cookie";
 
@@ -28,18 +31,10 @@ const Login = () => {
   // Function call when the login button is pressed
   const loginPress = async () => {
     // Send API request and get its json representation
-    var res = await fetch("http://127.0.0.1:5000/auth/login/", {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: document.getElementById("email").value,
-        password: document.getElementById("password").value,
-      }),
+    var res = await post("/auth/login/", {
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value,
     });
-    res = await res.json();
 
     // If the response is not OK, send error message
     if (res.hasOwnProperty("status")) {
@@ -53,15 +48,7 @@ const Login = () => {
 
     // Using the given access token, store the information
     // from the response of the /user/who_am_i/ endpoint
-    res = await fetch("http://127.0.0.1:5000/user/who_am_i/", {
-      method: "GET",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${res["access_token"]}`,
-      },
-    });
-    res = await res.json();
+    res = await get("/user/who_am_i/", res["access_token"]);
 
     // Store the content of the result to local storage
     localStorage.setItem("whoami", JSON.stringify(res));

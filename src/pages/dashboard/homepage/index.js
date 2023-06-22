@@ -40,7 +40,7 @@ export default function Home() {
   // TODO: Get the Events System to work dynamically
   // TODO: Solve system design for cascading events (Wing -> Flights)
   const weekView = (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       <div className="text-4xl">This Week's View</div>
       <div className="flex flex-row justify-between">
         {config.daysOfTheWeek.map((item) => (
@@ -69,7 +69,7 @@ export default function Home() {
 
   // Quick Links view definition
   const quickLinksView = (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       <div className="text-4xl">Quick Links</div>
       <div className="flex h-full flex-col justify-between">
         {config.quickLinks.map((item) => (
@@ -87,7 +87,7 @@ export default function Home() {
   // Stats view definition
   // TODO: Connect Gebauer's API implementations to this system
   const statsView = (
-    <div className="flex h-full w-fit flex-1 flex-col gap-6">
+    <div className="flex h-full w-fit flex-1 flex-col gap-4">
       <div className="text-4xl">Stats</div>
       <div className="flex h-full flex-col justify-around">
         <StatCard keyContent="Last PFA Score" valueContent="N/A" />
@@ -99,7 +99,7 @@ export default function Home() {
   // Feedback view definition
   // TODO: Dynamically call for the past few feedback's information
   const feedbackView = (
-    <div className="flex w-1/4 flex-col gap-6">
+    <div className="flex w-1/4 flex-col gap-4">
       <div className="text-4xl">Feedback</div>
       <div
         className="flex h-full flex-col gap-4 rounded-lg border
@@ -117,7 +117,7 @@ export default function Home() {
   // Notifications view definition
   // TODO: Work on the notifications section for each unit a person is in
   const notificationsView = (
-    <div className="flex w-1/3 flex-col gap-6">
+    <div className="flex w-1/3 flex-col gap-4">
       <div className="text-4xl">Notifications</div>
       <div
         className="flex h-full flex-col gap-4 rounded-lg border

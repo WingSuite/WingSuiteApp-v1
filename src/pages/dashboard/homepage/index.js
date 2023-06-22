@@ -5,6 +5,9 @@ import { VscBellSlash, VscCloseAll } from "react-icons/vsc";
 import React from "react";
 import { useState, useEffect } from "react";
 
+// JS Cookies import
+import Cookies from "js-cookie";
+
 // Custom Imports
 import { ButtonCard, StatCard } from "@/components/cards";
 import { config, testData } from "@/config/config";
@@ -16,6 +19,7 @@ import Sidebar from "@/components/sidebar";
 export default function Home() {
   // Create useState for the last name of the user
   const [lastName, setLastName] = useState();
+  const [feedback, setFeedback] = useState([]);
 
   // On mount of the Next.js page
   useEffect(() => {
@@ -24,6 +28,31 @@ export default function Home() {
 
     // Set the last name of the user
     setLastName(localData["last_name"]);
+
+    // Get the user's feedback information
+    fetch("http://127.0.0.1:5000/user/get_feedback/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("access")}`,
+      },
+      body: JSON.stringify({
+        page_size: 3,
+        page_index: 0,
+      }),
+    })
+      .then((results) => results.json())
+      .then((data) => {
+        // Iterate through each item of the response and store just the quotes
+        let quotes = [];
+        for (let item of data.message) {
+          quotes.push([item.feedback, item.from_user]);
+        }
+
+        // Store the quotes to the useState
+        setFeedback(quotes);
+      });
   }, []);
 
   // Get the greeting information
@@ -45,19 +74,21 @@ export default function Home() {
       <div className="flex flex-row justify-between">
         {config.daysOfTheWeek.map((item) => (
           <div
+            key={`weekView-${item}`}
             className="flex h-64 w-52 flex-col gap-2 rounded-lg border border-silver p-2
             shadow-lg"
           >
             <div className="text-lg">{item}</div>
-            {testData.weekView[item].map((item) => (
+            {testData.weekView[item].map((event) => (
               <ButtonCard
+                key={`weekViewEvent-${event.name}`}
                 size="lg"
-                text={item.name}
-                subtext={item.datetime}
+                text={event.name}
+                subtext={event.datetime}
                 buttonInfo={`transition duration-200 ease-in border
                 border-transparent hover:border hover:border-black
                 hover:-translate-y-[0.1rem] hover:shadow-xl ${
-                  config.eventColorMap[item.name]
+                  config.eventColorMap[event.name]
                 }`}
               />
             ))}
@@ -74,6 +105,7 @@ export default function Home() {
       <div className="flex h-full flex-col justify-between">
         {config.quickLinks.map((item) => (
           <ButtonCard
+            key={`quickLink-${item.name}`}
             size="xl"
             text={item.name}
             buttonInfo="transition duration-200 ease-in border border-silver
@@ -97,19 +129,30 @@ export default function Home() {
   );
 
   // Feedback view definition
-  // TODO: Dynamically call for the past few feedback's information
   const feedbackView = (
-    <div className="flex w-1/4 flex-col gap-4">
+    <div className="flex w-1/4 flex-col gap-4 overflow-auto">
       <div className="text-4xl">Feedback</div>
       <div
-        className="flex h-full flex-col gap-4 rounded-lg border
-      border-silver p-1 shadow-inner"
+        className="flex max-h-full flex-col gap-4 overflow-auto rounded-lg
+        pr-1"
       >
-        <Nothing
-          icon={<VscCloseAll/>}
-          mainText="No Feedback Provided"
-          subText="You Kept Up Standards"
-        />
+        {feedback.length === 0 ? (
+          <Nothing
+            icon={<VscCloseAll />}
+            mainText="No Feedback Provided"
+            subText="You Kept Up Standards"
+          />
+        ) : (
+          feedback.map((info) => (
+            <div
+              className="flex flex-col gap-1 rounded-lg bg-silver px-2
+              py-1"
+            >
+              <div className="text-lg">{info[0]}</div>
+              <div className="font-bold">- C/{info[1]}</div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
@@ -124,7 +167,7 @@ export default function Home() {
       border-silver p-1 shadow-inner"
       >
         <Nothing
-          icon={<VscBellSlash/>}
+          icon={<VscBellSlash />}
           mainText="No Notifications So Far"
           subText="Get Some Rest"
         />
@@ -138,10 +181,10 @@ export default function Home() {
       <Sidebar />
       <div className="m-10 flex max-h-full w-full flex-col">
         <PageTitle className="flex-none" />
-        <div className="flex h-full flex-col gap-14">
+        <div className="flex h-full flex-col gap-14 overflow-auto">
           <div className="text-8xl">{greeting}</div>
           {weekView}
-          <div className="flex h-full flex-row gap-14">
+          <div className="flex h-full flex-row gap-14 overflow-auto">
             {statsView}
             {feedbackView}
             {notificationsView}

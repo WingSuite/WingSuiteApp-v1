@@ -31,7 +31,7 @@ const Login = () => {
     var res = await fetch("http://127.0.0.1:5000/auth/login/", {
       method: "POST",
       headers: {
-        Accept: "application/json",
+        "Accept": "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -56,7 +56,7 @@ const Login = () => {
     res = await fetch("http://127.0.0.1:5000/user/who_am_i/", {
       method: "GET",
       headers: {
-        Accept: "application/json",
+        "Accept": "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${res["access_token"]}`,
       },

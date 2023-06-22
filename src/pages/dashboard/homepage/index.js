@@ -2,18 +2,19 @@
 import { VscBellSlash, VscCloseAll } from "react-icons/vsc";
 
 // React.js & Next.js libraries
-import React from "react";
 import { useState, useEffect } from "react";
+import React from "react";
+import { useRouter } from 'next/router';
 
 // JS Cookies import
 import Cookies from "js-cookie";
 
 // Config imports
-import { config, testData } from "@/config/config";
+import { config } from "@/config/config";
 
 // Util imports
 import { getTimeBounds, formatMilitary } from "@/utils/time";
-import { get, post } from "@/utils/call";
+import { post } from "@/utils/call";
 
 // Custom components imports
 import { ButtonCard, StatCard } from "@/components/cards";
@@ -32,6 +33,9 @@ export default function Home() {
       return obj;
     }, {})
   );
+
+  // Get router
+  const router = useRouter();
 
   // On mount of the Next.js page
   useEffect(() => {
@@ -163,6 +167,7 @@ export default function Home() {
             key={`quickLink-${item.name}-${index}`}
             size="xl"
             text={item.name}
+            action={() => {router.push(item.link)}}
             buttonInfo="transition duration-200 ease-in border border-silver
             hover:-translate-y-[0.1rem] hover:shadow-lg hover:border-black p-2"
           />
@@ -189,7 +194,7 @@ export default function Home() {
       <div className="text-4xl">Feedback</div>
       <div
         className="flex max-h-full flex-col gap-4 overflow-auto rounded-lg
-        pr-1"
+        px-1 pr-2"
       >
         {feedbackData.length === 0 ? (
           <Nothing
@@ -202,7 +207,7 @@ export default function Home() {
             <div
               key={`feedbackView-${index}`}
               className="flex flex-col gap-1 rounded-lg bg-gradient-to-tr
-              from-blue1 to-sky px-2 py-1"
+              from-blue1 to-sky px-2 py-1 shadow-lg"
             >
               <div className="text-lg italic text-white ">"{info[0]}"</div>
               <div className="font-bold text-white">- C/{info[1]}</div>

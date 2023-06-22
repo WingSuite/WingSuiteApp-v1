@@ -27,7 +27,12 @@ export function StatCard({ keyContent, valueContent }) {
       key={keyContent}
     >
       <div className="text-2xl">{keyContent}</div>
-      <div className="mt-1 text-3xl text-darkbermuda">{valueContent}</div>
+      <div
+        className="mt-1 bg-gradient-to-r from-blue1 to-sky bg-clip-text
+        text-3xl font-bold text-transparent"
+      >
+        {valueContent}
+      </div>
     </div>
   );
 }

@@ -75,8 +75,8 @@ export default function Home() {
         {config.daysOfTheWeek.map((item) => (
           <div
             key={`weekView-${item}`}
-            className="flex h-64 w-52 flex-col gap-2 rounded-lg border border-silver p-2
-            shadow-lg"
+            className="flex h-64 w-52 flex-col gap-2 rounded-lg border
+            border-silver p-2 shadow-lg"
           >
             <div className="text-lg">{item}</div>
             {testData.weekView[item].map((event) => (
@@ -87,9 +87,8 @@ export default function Home() {
                 subtext={event.datetime}
                 buttonInfo={`transition duration-200 ease-in border
                 border-transparent hover:border hover:border-black
-                hover:-translate-y-[0.1rem] hover:shadow-xl ${
-                  config.eventColorMap[event.name]
-                }`}
+                hover:-translate-y-[0.1rem] hover:shadow-xl bg-gradient-to-tr
+                from-blue1 to-sky text-white`}
               />
             ))}
           </div>
@@ -145,11 +144,11 @@ export default function Home() {
         ) : (
           feedback.map((info) => (
             <div
-              className="flex flex-col gap-1 rounded-lg bg-silver px-2
-              py-1"
+              className="flex flex-col gap-1 rounded-lg bg-gradient-to-tr
+              from-blue1 to-sky px-2 py-1"
             >
-              <div className="text-lg">"{info[0]}"</div>
-              <div className="font-bold">- C/{info[1]}</div>
+              <div className="text-lg italic text-white ">"{info[0]}"</div>
+              <div className="font-bold text-white">- C/{info[1]}</div>
             </div>
           ))
         )}
@@ -162,10 +161,7 @@ export default function Home() {
   const notificationsView = (
     <div className="flex w-1/3 flex-col gap-4">
       <div className="text-4xl">Notifications</div>
-      <div
-        className="flex h-full flex-col gap-4 rounded-lg border
-      border-silver p-1 shadow-inner"
-      >
+      <div className="flex h-full flex-col gap-4 rounded-lg p-1">
         <Nothing
           icon={<VscBellSlash />}
           mainText="No Notifications So Far"
@@ -182,7 +178,7 @@ export default function Home() {
       <div className="m-10 flex max-h-full w-full flex-col">
         <PageTitle className="flex-none" />
         <div className="flex h-full flex-col gap-14 overflow-auto">
-          <div className="text-8xl pt-2">{greeting}</div>
+          <div className="pt-2 text-8xl">{greeting}</div>
           {weekView}
           <div className="flex h-full flex-row gap-14 overflow-auto">
             {statsView}

@@ -22,7 +22,7 @@ export function BottomDropDown({
     <div className={`relative w-${widthType}`}>
       <button
         className={`flex flex-row justify-between bg-${bgColor} text-${headSize}
-        rounded-lg shadow-inner border-2 gap-10 py-0.5 px-1.5 w-full`}
+        w-full gap-10 rounded-lg border-2 px-1.5 py-0.5 shadow-inner`}
         onClick={() => {
           setExpanded(!expanded);
         }}
@@ -33,8 +33,8 @@ export function BottomDropDown({
       </button>
       {expanded && (
         <div
-          className={`absolute bg-${bgColor} rounded-lg shadow-inner border-2
-          w-full z-[999]`}
+          className={`absolute bg-${bgColor} z-[999] w-full rounded-lg
+          border-2 shadow-inner`}
         >
           {listOfItems.map((item) => (
             <button
@@ -44,8 +44,8 @@ export function BottomDropDown({
                 setInnerElem(item);
                 setExpanded(!expanded);
               }}
-              className={`flex justify-start text-sm text-black rounded-lg
-              px-1.5 w-full hover:bg-gray-100`}
+              className={`hover:bg-gray-100 flex w-full justify-start rounded-lg
+              px-1.5 text-sm text-black`}
             >
               {item}
             </button>
@@ -71,11 +71,11 @@ export function TopDropDown({
 
   // Return definition of the dropdown subcomponent
   return (
-    <div className={`flex flex-col relative w-${widthType}`}>
+    <div className={`relative flex flex-col w-${widthType}`}>
       {expanded && (
         <div
-          className={`absolute bg-${bgColor} rounded-lg shadow-inner border-2
-          w-full bottom-0 left-0 mb-10 z-[999]`}
+          className={`absolute bg-${bgColor} bottom-0 left-0 z-[999]
+          mb-10 w-full rounded-lg border-2 shadow-inner`}
         >
           {listOfItems.map((item) => (
             <button
@@ -85,8 +85,8 @@ export function TopDropDown({
                 setInnerElem(item);
                 setExpanded(!expanded);
               }}
-              className={`flex justify-start text-sm text-black rounded-lg px-4
-              w-full hover:bg-gray-100`}
+              className={`hover:bg-gray-100 flex w-full justify-start rounded-lg px-4
+              text-sm text-black`}
             >
               {item}
             </button>
@@ -95,7 +95,7 @@ export function TopDropDown({
       )}
       <button
         className={`flex flex-row justify-between bg-${bgColor} text-${headSize}
-        rounded-lg shadow-inner border-2 gap-10 py-0.5 px-1.5 w-full`}
+        w-full gap-10 rounded-lg border-2 px-1.5 py-0.5 shadow-inner`}
         onClick={() => {
           setExpanded(!expanded);
         }}

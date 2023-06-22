@@ -8,7 +8,7 @@ const PageTitle = ({ customName = "" }) => {
 
   // Return
   return (
-    <div className=" text-7xl mb-16">
+    <div className=" mb-16 text-7xl">
       {currentPath === "/"
         ? "Home"
         : customName === ""

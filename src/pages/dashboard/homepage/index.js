@@ -6,9 +6,9 @@ import Sidebar from "@/components/sidebar";
 export default function Home() {
   // Render components
   return (
-    <div className="relative flex flex-row h-screen">
+    <div className="relative flex h-screen flex-row">
       <Sidebar />
-      <div className="flex flex-col w-full m-10">
+      <div className="m-10 flex w-full flex-col">
         <PageTitle className="flex-none" />
       </div>
     </div>

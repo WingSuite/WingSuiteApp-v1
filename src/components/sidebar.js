@@ -113,7 +113,7 @@ const Sidebar = () => {
             {menuList}
           </div>
         </div>
-        <div className="flex flex-col mt-5">
+        <div className="mt-5 flex flex-col">
           <div
             className="mx-4 mb-4 flex flex-row items-center gap-2
             rounded-xl bg-white px-3 py-2"

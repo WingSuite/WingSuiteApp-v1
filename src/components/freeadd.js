@@ -140,7 +140,7 @@ export function FreeAdd({
                 value={item}
                 style={{ background: "transparent" }}
                 className={`text-${fontSize} text-poppins text-${textColor}
-                bg-transparent placeholder-silver px-1 w-full`}
+                w-full bg-transparent px-1 placeholder-silver`}
                 onChange={(e) => handleInputChange(idx, e.target.value)}
               />
             )
@@ -150,7 +150,7 @@ export function FreeAdd({
               value={item}
               inputStyle={{ background: "transparent" }}
               className={`text-${fontSize} text-poppins text-${textColor}
-              placeholder-silver px-1 w-full`}
+              w-full px-1 placeholder-silver`}
               onChange={(e) => handleInputChange(idx, e.target.value)}
             />
           )}
@@ -174,8 +174,8 @@ export function FreeAdd({
         </div>
       ))}
       <button
-        className={`flex flex-row justify-center border-2 border-dashed
-        border-bermuda items-center rounded-lg gap-1 px-1 w-${
+        className={`flex flex-row items-center justify-center gap-1
+        rounded-lg border-2 border-dashed border-bermuda px-1 w-${
           spanFullWidth ? "full" : "auto"
         }
          hover:-translate-y-[0.09rem] hover:drop-shadow-lg`}

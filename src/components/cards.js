@@ -23,26 +23,32 @@ export function StatCard({ keyContent, valueContent }) {
   // Render component
   return (
     <div
-      className="rounded-lg border-2 px-4 py-5 text-left shadow-md"
+      className="rounded-lg border border-silver px-2 py-2 text-left shadow-lg"
       key={keyContent}
     >
-      <div className="text-xl">{keyContent}</div>
-      <div className="mt-3 text-5xl text-darkbermuda">{valueContent}</div>
+      <div className="text-2xl">{keyContent}</div>
+      <div className="mt-1 text-3xl text-darkbermuda">{valueContent}</div>
     </div>
   );
 }
 
 // Button Card definition
-export function ButtonCard({ text, size, setSelected, subtext = null }) {
+export function ButtonCard({
+  text,
+  size,
+  action = () => { },
+  subtext = null,
+  buttonInfo = null,
+}) {
   // Render component
   return (
     <button
-      className="mb-3 rounded-lg border-2 p-1.5 text-left shadow-md"
+      className={`rounded-lg p-1.5 text-left shadow-md ${buttonInfo}`}
       key={text}
-      onClick={() => setSelected(text)}
+      onClick={action}
     >
       <div className={`text-${size}`}>{text}</div>
-      <div>{subtext}</div>
+      <div className="text-sm">{subtext}</div>
     </button>
   );
 }

@@ -89,7 +89,7 @@ const Sidebar = () => {
   // Component return
   return (
     <div
-      className="h-full w-[18rem] overflow-hidden bg-gradient-to-tr from-blue1
+      className="h-full w-[18rem] bg-gradient-to-tr from-blue1
       to-sky drop-shadow-xl"
     >
       <div className="flex h-full flex-col justify-between">

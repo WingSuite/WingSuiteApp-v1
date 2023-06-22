@@ -27,6 +27,7 @@ module.exports = {
     },
     fontFamily: {
       sans: ["poppins", "serif"],
+      couture: ["couture", "sans-serif"]
     },
   },
   plugins: []

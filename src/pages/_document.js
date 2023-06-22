@@ -1,5 +1,5 @@
-// Import 
-import { Html, Head, Main, NextScript } from 'next/document'
+// Import
+import { Html, Head, Main, NextScript } from "next/document";
 
 // Page rendering
 export default function Document() {
@@ -11,5 +11,5 @@ export default function Document() {
         <NextScript />
       </body>
     </Html>
-  )
+  );
 }

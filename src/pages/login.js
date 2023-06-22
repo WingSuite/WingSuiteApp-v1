@@ -28,22 +28,17 @@ const Login = () => {
   // Function call when the login button is pressed
   const loginPress = async () => {
     // Send API request and get its json representation
-    var res = await fetch(
-      "http://127.0.0.1:5000/auth/login/",
-      {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(
-          {
-            "email": document.getElementById("email").value,
-            "password": document.getElementById("password").value,
-          }
-        ),
-      }
-    );
+    var res = await fetch("http://127.0.0.1:5000/auth/login/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+      }),
+    });
     res = await res.json();
 
     // If the response is not OK, send error message
@@ -52,7 +47,7 @@ const Login = () => {
       return;
     }
 
-    console.log(res)
+    console.log(res);
 
     // Store basic information into a cookie
     Cookies.set("refresh", res["refresh_token"]);
@@ -60,17 +55,14 @@ const Login = () => {
 
     // Using the given access token, store the information
     // from the response of the /user/who_am_i/ endpoint
-    res = await fetch(
-      "http://127.0.0.1:5000/user/who_am_i/", 
-      {
-        method: "GET",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${res["access_token"]}`
-        }
-      }
-    );
+    res = await fetch("http://127.0.0.1:5000/user/who_am_i/", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${res["access_token"]}`,
+      },
+    });
     res = await res.json();
 
     // Store the content of the result to local storage
@@ -78,36 +70,46 @@ const Login = () => {
 
     // Move to the dashboard
     router.push("/dashboard/homepage");
-
   };
 
   // Component return
   return (
-    <div className="relative flex items-center justify-center bg-gradient-to-tr from-blue1 to-sky h-screen">
-      <div className="bg-white/[0.6] rounded-2xl shadow-lg shadow-sky h-fit w-fit py-5">
+    <div
+      className="relative flex items-center justify-center bg-gradient-to-tr
+      from-blue1 to-sky h-screen"
+    >
+      <div
+        className="bg-white/[0.6] rounded-2xl shadow-lg shadow-sky h-fit
+        w-fit py-5"
+      >
         <div className="px-5 h-full flex flex-col gap-5">
-          <div className="text-3xl">
-            WingSuite Login
-          </div>
+          <div className="text-3xl">WingSuite Login</div>
           <div className="">
-            <input 
-              className="bg-white/[0.3] border border-silver rounded-lg shadow-lg text-gray-700 w-full focus:outline-none focus:shadow-outline p-1" 
-              id="email" 
-              type="text" 
-              placeholder="Email" 
+            <input
+              className="bg-white/[0.3] border border-silver rounded-lg
+              shadow-lg text-gray-700 w-full focus:outline-none
+              focus:shadow-outline p-1"
+              id="email"
+              type="text"
+              placeholder="Email"
             />
           </div>
           <div className="">
-            <input 
-              className="bg-white/[0.3] border border-silver rounded-lg shadow-lg text-gray-700 w-full focus:outline-none focus:shadow-outline p-1" 
-              id="password" 
+            <input
+              className="bg-white/[0.3] border border-silver rounded-lg
+              shadow-lg text-gray-700 w-full focus:outline-none
+              focus:shadow-outline p-1"
+              id="password"
               type="password"
-              placeholder="Password" 
+              placeholder="Password"
             />
           </div>
-          <button 
-            onClick={loginPress} 
-            className="text-lg bg-sky/[0.8] rounded-md drop-shadow-lg px-3 py-0.5 w-fit hover:bg-white/[0.3] hover:-translate-y-[0.1rem] hover:shadow-xl">
+          <button
+            onClick={loginPress}
+            className="text-lg bg-sky/[0.8] rounded-md drop-shadow-lg px-3
+            py-0.5 w-fit hover:bg-white/[0.3] hover:-translate-y-[0.1rem]
+            hover:shadow-xl"
+          >
             Log In
           </button>
         </div>

@@ -12,6 +12,9 @@ import { usePathname } from "next/navigation";
 // JS Cookies import
 import Cookies from "js-cookie";
 
+// Custom imports
+import { sidebarContents } from "@/config/config";
+
 // Image
 import logo from "../../public/logo.png";
 
@@ -33,20 +36,6 @@ const Sidebar = () => {
     setFullName(localData["full_name"]);
   }, []);
 
-  // List of items for the sidebar
-  const menuItems = [
-    {
-      title: "Homepage",
-      link: "/dashboard/homepage",
-      icon: <VscHome />,
-    },
-    {
-      title: "Feedback",
-      link: "/dashboard/feedback",
-      icon: <VscHome />,
-    },
-  ];
-
   // Render the Logo
   const sidebarLogo = (
     <div
@@ -64,7 +53,7 @@ const Sidebar = () => {
   );
 
   // Render the items list
-  const menuList = menuItems.map((item) => (
+  const menuList = sidebarContents.map((item) => (
     <button
       key={`${item.title.toLowerCase()}`}
       className={`${
@@ -108,7 +97,7 @@ const Sidebar = () => {
           {sidebarLogo}
           <div
             className="flex w-full flex-col items-center gap-2
-            overflow-y-auto"
+            overflow-y-auto pt-2"
           >
             {menuList}
           </div>

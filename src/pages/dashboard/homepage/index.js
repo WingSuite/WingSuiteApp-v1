@@ -148,7 +148,7 @@ export default function Home() {
               className="flex flex-col gap-1 rounded-lg bg-silver px-2
               py-1"
             >
-              <div className="text-lg">{info[0]}</div>
+              <div className="text-lg">"{info[0]}"</div>
               <div className="font-bold">- C/{info[1]}</div>
             </div>
           ))

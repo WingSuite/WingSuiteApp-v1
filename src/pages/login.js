@@ -47,8 +47,6 @@ const Login = () => {
       return;
     }
 
-    console.log(res);
-
     // Store basic information into a cookie
     Cookies.set("refresh", res["refresh_token"]);
     Cookies.set("access", res["access_token"]);
@@ -66,7 +64,7 @@ const Login = () => {
     res = await res.json();
 
     // Store the content of the result to local storage
-    localStorage.setItem("whoami", JSON.stringify(res["content"]));
+    localStorage.setItem("whoami", JSON.stringify(res));
 
     // Move to the dashboard
     router.push("/dashboard/homepage");

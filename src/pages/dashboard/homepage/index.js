@@ -182,7 +182,7 @@ export default function Home() {
       <div className="m-10 flex max-h-full w-full flex-col">
         <PageTitle className="flex-none" />
         <div className="flex h-full flex-col gap-14 overflow-auto">
-          <div className="text-8xl">{greeting}</div>
+          <div className="text-8xl pt-2">{greeting}</div>
           {weekView}
           <div className="flex h-full flex-row gap-14 overflow-auto">
             {statsView}

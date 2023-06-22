@@ -12,9 +12,10 @@ import Cookies from "js-cookie";
 import { config, testData } from "@/config/config";
 
 // Util imports
+import { getTimeBounds, formatMilitary } from "@/utils/time";
 import { get, post } from "@/utils/call";
 
-// Custom imports
+// Custom components imports
 import { ButtonCard, StatCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pagetitle";
@@ -24,7 +25,13 @@ import Sidebar from "@/components/sidebar";
 export default function Home() {
   // Create useState for the last name of the user
   const [lastName, setLastName] = useState();
-  const [feedback, setFeedback] = useState([]);
+  const [feedbackData, setFeedbackData] = useState([]);
+  const [weekViewData, setWeekViewData] = useState(
+    config.daysOfTheWeek.reduce((obj, key) => {
+      obj[key] = [];
+      return obj;
+    }, {})
+  );
 
   // On mount of the Next.js page
   useEffect(() => {
@@ -34,15 +41,12 @@ export default function Home() {
     // Set the last name of the user
     setLastName(localData["last_name"]);
 
-    // Process information in async mode
+    // Process feedback information
     (async () => {
       // Get the user's feedback information
       var res = await post(
         "/user/get_feedback/",
-        {
-          page_size: 3,
-          page_index: 0,
-        },
+        { page_size: 3, page_index: 0 },
         Cookies.get("access")
       );
 
@@ -58,7 +62,52 @@ export default function Home() {
       }
 
       // Store the quotes to the useState
-      setFeedback(quotes);
+      setFeedbackData(quotes);
+    })();
+
+    // Process current week's events
+    (async () => {
+      // Initialize data for parsing
+      let resultWeekData = {
+        Monday: [],
+        Tuesday: [],
+        Wednesday: [],
+        Thursday: [],
+        Friday: [],
+        Saturday: [],
+        Sunday: [],
+      };
+
+      // Get the start and end bounds
+      const [start, end] = getTimeBounds();
+
+      // Get the user's feedback information
+      var res = await post(
+        "/user/get_events/",
+        { start_datetime: start, end_datetime: end },
+        Cookies.get("access")
+      );
+
+      // Iterate through the list of raw data
+      for (let item of res.message) {
+        // Get datetime information
+        const date = new Date(item.start_datetime * 1000);
+        let dayOfWeek = date.getDay();
+
+        // Change the day index
+        if (dayOfWeek === 0) dayOfWeek = 6;
+        else dayOfWeek -= 1;
+
+        // Add new information to resultWeekData
+        resultWeekData[config.daysOfTheWeek[dayOfWeek]].push({
+          name: item.name,
+          start: item.start_datetime,
+          end: item.end_datetime,
+        });
+      }
+
+      // Set week view data
+      setWeekViewData(resultWeekData);
     })();
   }, []);
 
@@ -73,8 +122,6 @@ export default function Home() {
   else greeting = `Good Evening C/${lastName} 🌃`;
 
   // Week View definition
-  // TODO: Get the Events System to work dynamically
-  // TODO: Solve system design for cascading events (Wing -> Flights)
   const weekView = (
     <div className="flex flex-col gap-4">
       <div className="text-4xl">This Week's View</div>
@@ -86,12 +133,14 @@ export default function Home() {
             border-silver p-2 shadow-lg"
           >
             <div className="text-lg">{item}</div>
-            {testData.weekView[item].map((event, index) => (
+            {weekViewData[item].map((event, index) => (
               <ButtonCard
                 key={`weekViewEvent-${event.name}-${index}`}
                 size="lg"
                 text={event.name}
-                subtext={event.datetime}
+                subtext={`${formatMilitary(event.start)}-${formatMilitary(
+                  event.end
+                )}`}
                 buttonInfo={`transition duration-200 ease-in border
                 border-transparent hover:border hover:border-black
                 hover:-translate-y-[0.1rem] hover:shadow-xl bg-gradient-to-tr
@@ -142,14 +191,14 @@ export default function Home() {
         className="flex max-h-full flex-col gap-4 overflow-auto rounded-lg
         pr-1"
       >
-        {feedback.length === 0 ? (
+        {feedbackData.length === 0 ? (
           <Nothing
             icon={<VscCloseAll />}
             mainText="No Feedback Provided"
             subText="You Kept Up Standards"
           />
         ) : (
-          feedback.map((info, index) => (
+          feedbackData.map((info, index) => (
             <div
               key={`feedbackView-${index}`}
               className="flex flex-col gap-1 rounded-lg bg-gradient-to-tr

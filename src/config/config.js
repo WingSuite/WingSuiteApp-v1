@@ -21,8 +21,8 @@ export const config = {
   ],
   eventColorMap: {
     "Physical Training": "bg-sky",
-    GMCOT: "bg-silver",
-    LLAB: "bg-scarlet",
+    "GMCOT": "bg-silver",
+    "LLAB": "bg-scarlet",
     "AES 101": "bg-bermuda",
   },
 };

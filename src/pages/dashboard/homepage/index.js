@@ -23,7 +23,7 @@ import PageTitle from "@/components/pagetitle";
 import Sidebar from "@/components/sidebar";
 
 // Home page definitions
-export default function Home() {
+export default function HomePage() {
   // Create useState for the last name of the user
   const [lastName, setLastName] = useState();
   const [feedbackData, setFeedbackData] = useState([]);

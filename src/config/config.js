@@ -19,12 +19,14 @@ export const config = {
     { name: "ASU Canvas", link: "https://canvas.asu.edu/" },
     { name: "DoDMERB", link: "https://dodmerb.tricare.osd.mil/" },
   ],
-  eventColorMap: {
-    "Physical Training": "bg-sky",
-    "GMCOT": "bg-silver",
-    "LLAB": "bg-scarlet",
-    "AES 101": "bg-bermuda",
-  },
+  pageNoteFoundMessages: [
+    "Huh, treasure's not here...",
+    "Well this is awkward...",
+    "Are you sure we're in the right place?",
+    "You might want to check your map...",
+    "Are we in Armageddon, New Mexico?",
+    "Yeah we are fo sho lost, fr fr",
+  ]
 };
 
 export const testData = {

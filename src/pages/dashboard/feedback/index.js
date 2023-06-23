@@ -33,7 +33,6 @@ import Sidebar from "@/components/sidebar";
 // Home page definitions
 export default function FeedbackPage() {
   // Define useStates and other constants
-  const [ownID, setOwnID] = useState("");
   const [listOfNames, setListOfNames] = useState([]);
   const [toolbarAccess, setToolbarAccess] = useState(false);
   const [toolbarSelect, setToolbarSelect] = useState(0);
@@ -52,7 +51,6 @@ export default function FeedbackPage() {
 
     // Set access for toolbar and other information
     setToolbarAccess(permissionsCheck(required.toolbar, user.permissions));
-    setOwnID(user._id);
 
     // Process everyone's name
     (async () => {
@@ -128,7 +126,6 @@ export default function FeedbackPage() {
       var res = await post(
         "/statistic/feedback/create_feedback/",
         {
-          from_user: ownID,
           to_user: target_user,
           name: feedbackName,
           feedback: feedbackText,
@@ -255,10 +252,10 @@ export default function FeedbackPage() {
       </div>
       <button
         onClick={sendFeedback}
-        className="w-fit rounded-lg border border-sky bg-gradient-to-tr
+        className="w-fit rounded-lg border border-silver bg-gradient-to-tr
         from-deepOcean to-sky bg-clip-text p-2 text-xl text-transparent
         transition duration-200 ease-in hover:-translate-y-[0.1rem]
-        hover:shadow-md hover:shadow-sky"
+        hover:shadow-md hover:shadow-sky hover:border-sky"
       >
         Send Feedback
       </button>

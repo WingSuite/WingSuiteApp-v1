@@ -60,8 +60,8 @@ const Login = () => {
   // Component return
   return (
     <div
-      className="relative flex h-screen items-center justify-center
-      bg-gradient-to-tr from-blue1 to-sky"
+      className="from-deepOcean relative flex h-screen items-center
+      justify-center bg-gradient-to-tr to-sky"
     >
       <div
         className="h-fit w-fit rounded-2xl bg-white/[0.6] py-5

@@ -3,8 +3,8 @@ import { VscBellSlash, VscCloseAll } from "react-icons/vsc";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import React from "react";
-import { useRouter } from 'next/router';
 
 // JS Cookies import
 import Cookies from "js-cookie";
@@ -13,7 +13,7 @@ import Cookies from "js-cookie";
 import { config } from "@/config/config";
 
 // Util imports
-import { getTimeBounds, formatMilitary } from "@/utils/time";
+import { getTimeBounds, formatMilitary, getTodayDay } from "@/utils/time";
 import { post } from "@/utils/call";
 
 // Custom components imports
@@ -133,8 +133,12 @@ export default function Home() {
         {config.daysOfTheWeek.map((item, index) => (
           <div
             key={`weekView-${item}-${index}`}
-            className="flex h-64 w-52 flex-col gap-2 rounded-lg border
-            border-silver p-2 shadow-lg"
+            className={`flex h-64 w-52 flex-col gap-2 rounded-lg border p-2
+            ${
+              getTodayDay() == item
+                ? "border-2 border-sky shadow-md shadow-sky"
+                : "border-silver shadow-lg"
+            }`}
           >
             <div className="text-lg">{item}</div>
             {weekViewData[item].map((event, index) => (
@@ -146,9 +150,9 @@ export default function Home() {
                   event.end
                 )}`}
                 buttonInfo={`transition duration-200 ease-in border
-                border-transparent hover:border hover:border-black
-                hover:-translate-y-[0.1rem] hover:shadow-xl bg-gradient-to-tr
-                from-blue1 to-sky text-white`}
+                border-transparent hover:border hover:border-darkOcean
+                hover:border hover:-translate-y-[0.1rem] hover:shadow-xl
+                bg-gradient-to-tr from-deepOcean to-sky text-white`}
               />
             ))}
           </div>
@@ -167,7 +171,9 @@ export default function Home() {
             key={`quickLink-${item.name}-${index}`}
             size="xl"
             text={item.name}
-            action={() => {router.push(item.link)}}
+            action={() => {
+              router.push(item.link);
+            }}
             buttonInfo="transition duration-200 ease-in border border-silver
             hover:-translate-y-[0.1rem] hover:shadow-lg hover:border-black p-2"
           />
@@ -207,7 +213,7 @@ export default function Home() {
             <div
               key={`feedbackView-${index}`}
               className="flex flex-col gap-1 rounded-lg bg-gradient-to-tr
-              from-blue1 to-sky px-2 py-1 shadow-lg"
+              from-deepOcean to-sky px-2 py-1 shadow-lg"
             >
               <div className="text-lg italic text-white ">"{info[0]}"</div>
               <div className="font-bold text-white">- C/{info[1]}</div>

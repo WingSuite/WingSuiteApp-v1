@@ -1,3 +1,6 @@
+// Config imports
+import { config } from "@/config/config";
+
 // Function to get start and end time of this week
 export function getTimeBounds() {
   // Get current day information
@@ -36,4 +39,18 @@ export function formatMilitary(unixTimestamp) {
 
   // Return final value
   return militaryTime;
+}
+
+// Function to get current day
+export function getTodayDay() {
+  // Get datetime information
+  const date = new Date();
+  let dayOfWeek = date.getDay();
+
+  // Change the day index
+  if (dayOfWeek === 0) dayOfWeek = 6;
+  else dayOfWeek -= 1;
+
+  // Return final value
+  return config.daysOfTheWeek[dayOfWeek];
 }

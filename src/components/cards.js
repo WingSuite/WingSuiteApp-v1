@@ -28,7 +28,7 @@ export function StatCard({ keyContent, valueContent }) {
     >
       <div className="text-2xl">{keyContent}</div>
       <div
-        className="mt-1 bg-gradient-to-r from-blue1 to-sky bg-clip-text
+        className="from-deepOcean mt-1 bg-gradient-to-r to-sky bg-clip-text
         text-3xl font-bold text-transparent"
       >
         {valueContent}
@@ -41,7 +41,7 @@ export function StatCard({ keyContent, valueContent }) {
 export function ButtonCard({
   text,
   size,
-  action = () => { },
+  action = () => {},
   subtext = null,
   buttonInfo = null,
 }) {

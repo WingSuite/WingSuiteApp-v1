@@ -13,9 +13,8 @@ module.exports = {
       black: "#000000",
       sky: "#54c0ff",
       darkSky: "#3394cc",
-      blue1: "#4678f4",
-      blue2: "#5e8bff",
-      blue3: "#4c8cf4",
+      deepOcean: "#4678f4",
+      darkOcean: "#0a50fa",
       silver: "#dbdbdb",
       darkSilver: "#a6a6a6",
       bermuda: "#0DD9B5",
@@ -27,8 +26,8 @@ module.exports = {
     },
     fontFamily: {
       sans: ["poppins", "serif"],
-      couture: ["couture", "sans-serif"]
+      couture: ["couture", "sans-serif"],
     },
   },
-  plugins: []
+  plugins: [],
 };

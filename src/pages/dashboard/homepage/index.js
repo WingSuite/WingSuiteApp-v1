@@ -13,13 +13,13 @@ import Cookies from "js-cookie";
 import { config } from "@/config/config";
 
 // Util imports
-import { getTimeBounds, formatMilitary, getTodayDay } from "@/utils/time";
+import { getTimeBounds, formatMilTime, getTodayDay } from "@/utils/time";
 import { post } from "@/utils/call";
 
 // Custom components imports
 import { ButtonCard, StatCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
-import PageTitle from "@/components/pagetitle";
+import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
 
 // Home page definitions
@@ -50,7 +50,7 @@ export default function HomePage() {
       // Get the user's feedback information
       var res = await post(
         "/user/get_feedback/",
-        { page_size: 3, page_index: 0 },
+        { page_size: 3, page_index: 0, sent: false },
         Cookies.get("access")
       );
 
@@ -121,9 +121,9 @@ export default function HomePage() {
   let greeting;
 
   // Get the greeting
-  if (hours < 12) greeting = `Good Morning C/${lastName} 🌞`;
-  else if (hours < 17) greeting = `Good Afternoon C/${lastName} 🌇`;
-  else greeting = `Good Evening C/${lastName} 🌃`;
+  if (hours < 12) greeting = `Good Morning ${lastName} 🌞`;
+  else if (hours < 17) greeting = `Good Afternoon ${lastName} 🌇`;
+  else greeting = `Good Evening ${lastName} 🌃`;
 
   // Week View definition
   const weekView = (
@@ -146,7 +146,7 @@ export default function HomePage() {
                 key={`weekViewEvent-${event.name}-${index}`}
                 size="lg"
                 text={event.name}
-                subtext={`${formatMilitary(event.start)}-${formatMilitary(
+                subtext={`${formatMilTime(event.start)}-${formatMilTime(
                   event.end
                 )}`}
                 buttonInfo={`transition duration-200 ease-in border
@@ -165,7 +165,7 @@ export default function HomePage() {
   const quickLinksView = (
     <div className="flex flex-col gap-4">
       <div className="text-4xl">Quick Links</div>
-      <div className="flex h-full flex-col justify-between">
+      <div className="flex h-full flex-col justify-between py-1">
         {config.quickLinks.map((item, index) => (
           <ButtonCard
             key={`quickLink-${item.name}-${index}`}
@@ -206,7 +206,7 @@ export default function HomePage() {
           <Nothing
             icon={<VscCloseAll />}
             mainText="No Feedback Provided"
-            subText="You Kept Up Standards"
+            subText="Keep Up the Good Work"
           />
         ) : (
           feedbackData.map((info, index) => (
@@ -216,7 +216,7 @@ export default function HomePage() {
               from-deepOcean to-sky px-2 py-1 shadow-lg"
             >
               <div className="text-lg italic text-white ">"{info[0]}"</div>
-              <div className="font-bold text-white">- C/{info[1]}</div>
+              <div className="font-bold text-white">- {info[1]}</div>
             </div>
           ))
         )}

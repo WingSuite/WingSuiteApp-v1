@@ -1,5 +1,4 @@
 // React Icons
-import { VscHome } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries

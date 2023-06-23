@@ -4,6 +4,7 @@ import { VscHome, VscComment, VscBell } from "react-icons/vsc";
 // Export config
 export const config = {
   apiBase: "http://127.0.0.1:5000/",
+  allAccessPermission: "*",
   daysOfTheWeek: [
     "Monday",
     "Tuesday",
@@ -26,48 +27,7 @@ export const config = {
     "You might want to check your map...",
     "Are we in Armageddon, New Mexico?",
     "Yeah we are fo sho lost, fr fr",
-  ]
-};
-
-export const testData = {
-  weekView: {
-    Monday: [
-      {
-        name: "Physical Training",
-        datetime: "0600",
-      },
-    ],
-    Tuesday: [
-      {
-        name: "GMCOT",
-        datetime: "0800",
-      },
-    ],
-    Wednesday: [
-      {
-        name: "Physical Training",
-        datetime: "0600",
-      },
-    ],
-    Thursday: [
-      {
-        name: "LLAB",
-        datetime: "0600",
-      },
-      {
-        name: "AES 101",
-        datetime: "0900",
-      },
-    ],
-    Friday: [
-      {
-        name: "Physical Training",
-        datetime: "0600",
-      },
-    ],
-    Saturday: [],
-    Sunday: [],
-  },
+  ],
 };
 
 // Sidebar config
@@ -88,3 +48,10 @@ export const sidebarContents = [
     icon: <VscComment />,
   },
 ];
+
+// Permissions config
+export const permissionsList = {
+  feedback: {
+    toolbar: ["statistic.feedback.create_feedback"],
+  },
+};

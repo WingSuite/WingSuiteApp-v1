@@ -1,3 +1,10 @@
+// React Icons
+import { VscChevronDown, VscChevronUp } from "react-icons/vsc";
+import { IconContext } from "react-icons";
+
+// React.js & Next.js libraries
+import { useState, useEffect } from "react";
+
 // Regular Card definition
 export function Card({
   text,
@@ -18,7 +25,7 @@ export function Card({
   );
 }
 
-// Key Value Card definition
+// Stat Card definition
 export function StatCard({ keyContent, valueContent }) {
   // Render component
   return (
@@ -28,7 +35,7 @@ export function StatCard({ keyContent, valueContent }) {
     >
       <div className="text-2xl">{keyContent}</div>
       <div
-        className="from-deepOcean mt-1 bg-gradient-to-r to-sky bg-clip-text
+        className="mt-1 bg-gradient-to-r from-deepOcean to-sky bg-clip-text
         text-3xl font-bold text-transparent"
       >
         {valueContent}
@@ -54,6 +61,36 @@ export function ButtonCard({
     >
       <div className={`text-${size}`}>{text}</div>
       <div className="text-sm">{subtext}</div>
+    </button>
+  );
+}
+
+// Collapsable Card definition
+export function CollapsableCard({
+  title,
+  mainText,
+  titleCSS,
+  mainTextCSS,
+  startState = false,
+}) {
+  // Define useState
+  const [collapsed, setCollapsed] = useState(startState);
+
+  // Render component
+  return (
+    <button
+      className="flex flex-col gap-2 rounded-md border border-silver p-2"
+      onClick={() => setCollapsed(!collapsed)}
+    >
+      <div className="flex w-full flex-row items-center justify-between">
+        <div className="text-2xl">{title}</div>
+        <div onClick={() => setCollapsed(!collapsed)}>
+          <IconContext.Provider value={{ size: "2em" }}>
+            {collapsed ? <VscChevronDown /> : <VscChevronUp />}
+          </IconContext.Provider>
+        </div>
+      </div>
+      {collapsed && <div className="text-xl text-left">{mainText}</div>}
     </button>
   );
 }

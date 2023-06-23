@@ -27,7 +27,7 @@ export function getTimeBounds() {
 }
 
 // Function to turn unix timestamp to military time
-export function formatMilitary(unixTimestamp) {
+export function formatMilTime(unixTimestamp) {
   // Get date information
   const date = new Date(unixTimestamp * 1000);
   const hours = date.getHours();
@@ -53,4 +53,16 @@ export function getTodayDay() {
 
   // Return final value
   return config.daysOfTheWeek[dayOfWeek];
+}
+
+// Function to get current day
+export function formatMilDate(unixTimestamp) {
+  // Process time information
+  const dateObject = new Date(unixTimestamp * 1000);
+  const day = dateObject.getDate();
+  const month = dateObject.toLocaleString('default', { month: 'short' });
+  const year = dateObject.getFullYear();
+
+  // Return formatted date
+  return `${day} ${month} ${year}`;
 }

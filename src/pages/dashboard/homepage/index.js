@@ -54,6 +54,9 @@ export default function HomePage() {
         Cookies.get("access")
       );
 
+      // If resulting API results in an error, return
+      if (res.status === "error") return;
+
       // Iterate through each item of the response and store just the quotes
       let quotes = [];
       for (let item of res.message) {
@@ -196,10 +199,10 @@ export default function HomePage() {
 
   // Feedback view definition
   const feedbackView = (
-    <div className="flex w-1/4 flex-col gap-4 overflow-auto">
+    <div className="flex w-1/4 flex-col gap-4 h-full overflow-auto">
       <div className="text-4xl">Feedback</div>
       <div
-        className="flex max-h-full flex-col gap-4 overflow-auto rounded-lg
+        className="flex h-full flex-col gap-4 overflow-auto rounded-lg
         px-1 pr-2"
       >
         {feedbackData.length === 0 ? (

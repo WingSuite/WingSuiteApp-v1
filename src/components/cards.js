@@ -34,10 +34,10 @@ export function StatCard({ keyContent, valueContent, buttonInfo }) {
       shadow-lg ${buttonInfo}`}
       key={keyContent}
     >
-      <div className="text-2xl">{keyContent}</div>
+      <div className="text-3xl">{keyContent}</div>
       <div
         className="mt-1 bg-gradient-to-r from-deepOcean to-sky bg-clip-text
-        text-5xl font-bold text-transparent"
+        text-6xl font-bold text-transparent"
       >
         {valueContent}
       </div>

@@ -25,7 +25,8 @@ import Sidebar from "@/components/sidebar";
 // Home page definitions
 export default function HomePage() {
   // Create useState for the last name of the user
-  const [lastName, setLastName] = useState();
+  const [lastName, setLastName] = useState("");
+  const [rank, setRank] = useState("");
   const [feedbackData, setFeedbackData] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [weekViewData, setWeekViewData] = useState(
@@ -43,8 +44,9 @@ export default function HomePage() {
     // Fetch the last name of the user from local storage
     const localData = JSON.parse(localStorage.getItem("whoami"));
 
-    // Set the last name of the user
+    // Get the last name and rank of the user
     setLastName(localData["last_name"]);
+    if ("rank" in localData) setRank(localData["rank"] + " ");
 
     // Process feedback information
     (async () => {
@@ -156,9 +158,9 @@ export default function HomePage() {
   let greeting;
 
   // Get the greeting
-  if (hours < 12) greeting = `Good Morning ${lastName} 🌞`;
-  else if (hours < 17) greeting = `Good Afternoon ${lastName} 🌇`;
-  else greeting = `Good Evening ${lastName} 🌃`;
+  if (hours < 12) greeting = `Good Morning ${rank}${lastName} 🌞`;
+  else if (hours < 17) greeting = `Good Afternoon ${rank}${lastName} 🌇`;
+  else greeting = `Good Evening ${rank}${lastName} 🌃`;
 
   // Week View definition
   const weekView = (
@@ -201,8 +203,8 @@ export default function HomePage() {
     <div className="flex flex-col gap-4">
       <div className="text-4xl">Quick Links</div>
       <div
-        className="flex h-full flex-col justify-between gap-1 overflow-auto
-        p-1"
+        className="flex h-full flex-col justify-between gap-2 overflow-auto
+        p-1 pb-4"
       >
         {config.quickLinks.map((item, index) => (
           <ButtonCard
@@ -224,11 +226,11 @@ export default function HomePage() {
   // Stats view definition
   // TODO: Connect Gebauer's API implementations to this system
   const statsView = (
-    <div className="flex h-full w-fit flex-1 flex-col gap-2">
+    <div className="flex h-full flex-1 flex-col gap-4">
       <div className="text-4xl">Stats</div>
       <div
         className="flex h-full flex-col justify-between overflow-auto px-1
-        py-4"
+        pb-4"
       >
         <StatCard keyContent="Last PFA Score" valueContent="N/A" />
         <StatCard keyContent="Last WK Score" valueContent="N/A" />
@@ -242,7 +244,7 @@ export default function HomePage() {
       <div className="text-4xl">Feedback</div>
       <div
         className="flex h-full flex-col gap-4 overflow-auto rounded-lg
-        px-1 pr-2"
+        px-1 pr-2 pb-4"
       >
         {feedbackData.length === 0 ? (
           <Nothing
@@ -272,7 +274,7 @@ export default function HomePage() {
       <div className="text-4xl">Notifications</div>
       <div
         className="flex h-full flex-col gap-4 overflow-auto rounded-lg px-1
-        pr-2"
+        pr-2 pb-4"
       >
         {notifications.length === 0 ? (
           <Nothing
@@ -303,7 +305,7 @@ export default function HomePage() {
       <div className="m-10 flex max-h-full w-full flex-col">
         <PageTitle className="flex-none" />
         <div className="flex h-full flex-col gap-14 overflow-auto">
-          <div className="pt-2 text-8xl">{greeting}</div>
+          <div className="pt-2 text-7xl">{greeting}</div>
           {weekView}
           <div className="flex h-full flex-row gap-14 overflow-hidden">
             {statsView}

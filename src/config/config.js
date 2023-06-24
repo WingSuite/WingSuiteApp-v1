@@ -55,4 +55,7 @@ export const permissionsList = {
   feedback: {
     toolbar: ["statistic.feedback.create_feedback"],
   },
+  notifications: {
+    toolbar: ["notification.create_notification"],
+  }
 };

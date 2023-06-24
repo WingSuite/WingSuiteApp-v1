@@ -38,8 +38,8 @@ export function AutoCompleteInput({ possibleItems, value, onChange }) {
       />
       {inputValue != "" && isFocused && (
         <div
-          className="absolute z-[999] flex max-h-32 w-full flex-col overflow-auto rounded-lg
-        border border-silver bg-white"
+          className="absolute z-[999] flex max-h-32 w-full flex-col
+          overflow-auto rounded-lg border border-silver bg-white"
         >
           {availableChoices.map((item, index) => (
             <button
@@ -48,7 +48,7 @@ export function AutoCompleteInput({ possibleItems, value, onChange }) {
                 setInputValue(item);
               }}
               key={`${item}-${index}`}
-              className="rounded-lg p-0.5 text-left hover:bg-silver"
+              className="rounded-lg py-0.5 px-2 text-left hover:bg-silver"
             >
               {item}
             </button>

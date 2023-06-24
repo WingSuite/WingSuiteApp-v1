@@ -28,6 +28,7 @@ export const config = {
     "Are we in Armageddon, New Mexico?",
     "Yeah we are fo sho lost, fr fr",
   ],
+  notificationPreviewTrimLength: 200,
 };
 
 // Sidebar config

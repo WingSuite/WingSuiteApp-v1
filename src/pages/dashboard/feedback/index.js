@@ -80,7 +80,7 @@ export default function FeedbackPage() {
     (async () => {
       // Get the user's feedback information
       var res = await post(
-        "/user/get_feedback/",
+        "/user/get_feedbacks/",
         { page_size: 3, page_index: 0, sent: toolbarSelect === 1 },
         Cookies.get("access")
       );

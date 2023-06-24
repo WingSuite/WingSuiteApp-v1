@@ -26,17 +26,18 @@ export function Card({
 }
 
 // Stat Card definition
-export function StatCard({ keyContent, valueContent }) {
+export function StatCard({ keyContent, valueContent, buttonInfo }) {
   // Render component
   return (
     <div
-      className="rounded-lg border border-silver px-2 py-2 text-left shadow-lg"
+      className={`rounded-lg border border-silver p-3 text-left
+      shadow-lg ${buttonInfo}`}
       key={keyContent}
     >
       <div className="text-2xl">{keyContent}</div>
       <div
         className="mt-1 bg-gradient-to-r from-deepOcean to-sky bg-clip-text
-        text-3xl font-bold text-transparent"
+        text-5xl font-bold text-transparent"
       >
         {valueContent}
       </div>
@@ -90,7 +91,7 @@ export function CollapsableCard({
           </IconContext.Provider>
         </div>
       </div>
-      {collapsed && <div className="text-xl text-left">{mainText}</div>}
+      {collapsed && <div className="text-left text-xl">{mainText}</div>}
     </button>
   );
 }

@@ -27,6 +27,7 @@ export default function HomePage() {
   // Create useState for the last name of the user
   const [lastName, setLastName] = useState();
   const [feedbackData, setFeedbackData] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [weekViewData, setWeekViewData] = useState(
     config.daysOfTheWeek.reduce((obj, key) => {
       obj[key] = [];
@@ -49,7 +50,7 @@ export default function HomePage() {
     (async () => {
       // Get the user's feedback information
       var res = await post(
-        "/user/get_feedback/",
+        "/user/get_feedbacks/",
         { page_size: 3, page_index: 0, sent: false },
         Cookies.get("access")
       );
@@ -116,6 +117,37 @@ export default function HomePage() {
       // Set week view data
       setWeekViewData(resultWeekData);
     })();
+
+    // Process notification data
+    (async () => {
+      // Get notification trim length
+      const trim = config.notificationPreviewTrimLength;
+
+      // Get the start and end bounds
+      const start = Math.floor((Date.now() - 7 * 24 * 60 * 60 * 1000) / 1000);
+      const end = Math.floor(Date.now() / 1000);
+
+      // Get the user's feedback information
+      var res = await post(
+        "/user/get_notifications/",
+        { start_datetime: start, end_datetime: end },
+        Cookies.get("access")
+      );
+
+      // Get every notification and store their name and message
+      let notificationData = [];
+      for (let item of res.message) {
+        // Clip text if it is more than 200 characters long
+        var text = item.notification;
+        text = text.length > trim ? text.substring(0, trim) + "..." : text;
+
+        // Append information
+        notificationData.push([item.name, text]);
+      }
+
+      // Set the notification data
+      setNotifications(notificationData);
+    })();
   }, []);
 
   // Get the greeting information
@@ -132,11 +164,11 @@ export default function HomePage() {
   const weekView = (
     <div className="flex flex-col gap-4">
       <div className="text-4xl">This Week's View</div>
-      <div className="flex flex-row justify-between">
+      <div className="flex h-full flex-row justify-between px-1">
         {config.daysOfTheWeek.map((item, index) => (
           <div
             key={`weekView-${item}-${index}`}
-            className={`flex h-64 w-52 flex-col gap-2 rounded-lg border p-2
+            className={`flex h-56 w-[13.5%] flex-col gap-2 rounded-lg border p-2
             ${
               getTodayDay() == item
                 ? "border-2 border-sky shadow-md shadow-sky"
@@ -168,7 +200,10 @@ export default function HomePage() {
   const quickLinksView = (
     <div className="flex flex-col gap-4">
       <div className="text-4xl">Quick Links</div>
-      <div className="flex h-full flex-col justify-between py-1">
+      <div
+        className="flex h-full flex-col justify-between gap-1 overflow-auto
+        p-1"
+      >
         {config.quickLinks.map((item, index) => (
           <ButtonCard
             key={`quickLink-${item.name}-${index}`}
@@ -177,8 +212,9 @@ export default function HomePage() {
             action={() => {
               router.push(item.link);
             }}
-            buttonInfo="transition duration-200 ease-in border border-silver
-            hover:-translate-y-[0.1rem] hover:shadow-lg hover:border-black p-2"
+            buttonInfo="flex-1 transition duration-200 ease-in border
+            border-silver hover:-translate-y-[0.1rem] hover:shadow-lg
+            hover:border-black p-2"
           />
         ))}
       </div>
@@ -188,9 +224,12 @@ export default function HomePage() {
   // Stats view definition
   // TODO: Connect Gebauer's API implementations to this system
   const statsView = (
-    <div className="flex h-full w-fit flex-1 flex-col gap-4">
+    <div className="flex h-full w-fit flex-1 flex-col gap-2">
       <div className="text-4xl">Stats</div>
-      <div className="flex h-full flex-col justify-around">
+      <div
+        className="flex h-full flex-col justify-between overflow-auto px-1
+        py-4"
+      >
         <StatCard keyContent="Last PFA Score" valueContent="N/A" />
         <StatCard keyContent="Last WK Score" valueContent="N/A" />
       </div>
@@ -199,7 +238,7 @@ export default function HomePage() {
 
   // Feedback view definition
   const feedbackView = (
-    <div className="flex w-1/4 flex-col gap-4 h-full overflow-auto">
+    <div className="flex h-full w-1/4 flex-col gap-4">
       <div className="text-4xl">Feedback</div>
       <div
         className="flex h-full flex-col gap-4 overflow-auto rounded-lg
@@ -218,7 +257,7 @@ export default function HomePage() {
               className="flex flex-col gap-1 rounded-lg bg-gradient-to-tr
               from-deepOcean to-sky px-2 py-1 shadow-lg"
             >
-              <div className="text-lg italic text-white ">"{info[0]}"</div>
+              <div className="text-xl italic text-white ">"{info[0]}"</div>
               <div className="font-bold text-white">- {info[1]}</div>
             </div>
           ))
@@ -228,16 +267,31 @@ export default function HomePage() {
   );
 
   // Notifications view definition
-  // TODO: Work on the notifications section for each unit a person is in
   const notificationsView = (
     <div className="flex w-1/3 flex-col gap-4">
       <div className="text-4xl">Notifications</div>
-      <div className="flex h-full flex-col gap-4 rounded-lg p-1">
-        <Nothing
-          icon={<VscBellSlash />}
-          mainText="No Notifications So Far"
-          subText="Get Some Rest"
-        />
+      <div
+        className="flex h-full flex-col gap-4 overflow-auto rounded-lg px-1
+        pr-2"
+      >
+        {notifications.length === 0 ? (
+          <Nothing
+            icon={<VscBellSlash />}
+            mainText="No Notifications So Far"
+            subText="Get Some Rest"
+          />
+        ) : (
+          notifications.map((info, index) => (
+            <div
+              key={`feedbackView-${index}`}
+              className="flex flex-col gap-1 rounded-lg bg-gradient-to-tr
+              from-deepOcean to-sky px-2 py-1 shadow-lg"
+            >
+              <div className="text-2xl font-bold text-white">{info[0]}</div>
+              <div className="text-base text-white">{info[1]}</div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
@@ -251,7 +305,7 @@ export default function HomePage() {
         <div className="flex h-full flex-col gap-14 overflow-auto">
           <div className="pt-2 text-8xl">{greeting}</div>
           {weekView}
-          <div className="flex h-full flex-row gap-14 overflow-auto">
+          <div className="flex h-full flex-row gap-14 overflow-hidden">
             {statsView}
             {feedbackView}
             {notificationsView}

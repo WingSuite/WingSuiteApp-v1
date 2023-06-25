@@ -203,18 +203,18 @@ export default function HomePage() {
     <div className="flex flex-col gap-4">
       <div className="text-4xl">Quick Links</div>
       <div
-        className="flex h-full flex-col justify-between gap-2 overflow-auto
+        className="flex h-full flex-col gap-4 overflow-auto
         p-1 pb-4"
       >
         {config.quickLinks.map((item, index) => (
           <ButtonCard
             key={`quickLink-${item.name}-${index}`}
-            size="xl"
+            size="2xl"
             text={item.name}
             action={() => {
               router.push(item.link);
             }}
-            buttonInfo="flex-1 transition duration-200 ease-in border
+            buttonInfo="h-20 transition duration-200 ease-in border
             border-silver hover:-translate-y-[0.1rem] hover:shadow-lg
             hover:border-black p-2"
           />
@@ -229,7 +229,7 @@ export default function HomePage() {
     <div className="flex h-full flex-1 flex-col gap-4">
       <div className="text-4xl">Stats</div>
       <div
-        className="flex h-full flex-col justify-between overflow-auto px-1
+        className="flex h-full flex-col gap-4 overflow-auto px-1
         pb-4"
       >
         <StatCard keyContent="Last PFA Score" valueContent="N/A" />

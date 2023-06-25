@@ -9,6 +9,9 @@ export function permissionsCheck(required, permissions) {
   // If the iterated item is the all access token, return true
   if (compareSet.has(config.allAccessPermission)) return true;
 
+  // If the required parameter is an empty list, then return false;
+  if (required.length === 0) return false;
+
   // Iterate through the user's permissions
   for (let item of required) {
     // If the iterated item is not in the user's permissions, return false

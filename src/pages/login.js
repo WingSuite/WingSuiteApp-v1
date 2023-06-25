@@ -46,6 +46,13 @@ const Login = () => {
     Cookies.set("refresh", res["refresh_token"]);
     Cookies.set("access", res["access_token"]);
 
+    // Using the given access token, store the information
+    // from the response of the /user/who_am_i/ endpoint
+    res = await get("/user/who_am_i/", res["access_token"]);
+
+    // Store the content of the result to local storage
+    localStorage.setItem("whoami", JSON.stringify(res));
+
     // Move to the dashboard
     router.push("/dashboard/homepage");
   };
@@ -53,8 +60,8 @@ const Login = () => {
   // Component return
   return (
     <div
-      className="from-deepOcean relative flex h-screen items-center
-      justify-center bg-gradient-to-tr to-sky"
+      className="relative flex h-screen items-center justify-center
+      bg-gradient-to-tr from-deepOcean to-sky"
     >
       <div
         className="h-fit w-fit rounded-2xl bg-white/[0.6] py-5

@@ -2,6 +2,7 @@
 
 ::-webkit-scrollbar {
   width: 0.4em;
+  height: 0.4em;
 }
 
 ::-webkit-scrollbar-track {
@@ -10,7 +11,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgb(194, 194, 194);
+  background-color: rgb(47, 105, 247);
   border-radius: 100vw;
 }
 
@@ -24,6 +25,13 @@
 @font-face {
   font-family: 'poppins';
   src: url('./fonts/Poppins-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'couture';
+  src: url('./fonts/couture-bld.otf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }

@@ -1,5 +1,4 @@
 // React Icons
-import { VscHome } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
@@ -11,6 +10,9 @@ import { usePathname } from "next/navigation";
 
 // JS Cookies import
 import Cookies from "js-cookie";
+
+// Custom imports
+import { sidebarContents } from "@/config/config";
 
 // Image
 import logo from "../../public/logo.png";
@@ -33,28 +35,35 @@ const Sidebar = () => {
     setFullName(localData["full_name"]);
   }, []);
 
-  // List of items for the sidebar
-  const menuItems = [
-    {
-      title: "Homepage",
-      link: "/dashboard/homepage",
-      icon: <VscHome />,
-    },
-  ];
+  // Render the Logo
+  const sidebarLogo = (
+    <div
+      className="mx-4 mb-10 mt-5 flex flex-row items-center
+      gap-2 text-sm text-white"
+    >
+      <div>
+        <Image alt="Logo" src={logo} width={90} height={90} />
+      </div>
+      <div className="flex flex-col">
+        <div className="text-3xl font-thin">WingSuite</div>
+        <div className="text-sm font-thin">Detachment 025</div>
+      </div>
+    </div>
+  );
 
   // Render the items list
-  const menuList = menuItems.map((item) => (
+  const menuList = sidebarContents.map((item) => (
     <button
       key={`${item.title.toLowerCase()}`}
       className={`${
         currentPath == `${item.link}`
-          ? `bg-white hover:-translate-y-[0.2rem] hover:shadow-md
+          ? `bg-white hover:-translate-y-[0.1rem] hover:shadow-md
           hover:shadow-white`
-          : `hover:bg-silver hover:-translate-y-[0.2rem] hover:shadow-md
-          hover:shadow-silver`
+          : `border border-transparent hover:-translate-y-[0.1rem]
+          hover:border-white hover:shadow-lg hover:shadow-sky`
       }
-				flex justify-start items-center rounded-lg transition ease-in
-        duration-200 px-3 py-2 my-1 mx-2 w-10/12`}
+    		flex w-10/12 items-center justify-start
+        rounded-lg px-2 py-1 transition duration-200 ease-in`}
       onClick={() => router.push(`${item.link}`)}
     >
       <IconContext.Provider
@@ -79,32 +88,26 @@ const Sidebar = () => {
   // Component return
   return (
     <div
-      className="bg-gradient-to-tr from-blue1 to-sky h-full w-[18rem]
-     drop-shadow-xl"
+      className="from-deepOcean h-full w-[18rem] bg-gradient-to-tr
+      to-sky drop-shadow-xl"
     >
-      <div className="h-full flex flex-col justify-between">
-        <div className="grid justify-items-center">
+      <div className="flex h-full flex-col justify-between">
+        <div className="grid justify-items-center overflow-hidden">
+          {sidebarLogo}
           <div
-            className="flex flex-row items-center text-white text-sm mx-4
-            mt-5 mb-10 gap-2"
+            className="flex w-full flex-col items-center gap-2
+            overflow-y-auto pt-2"
           >
-            <div>
-              <Image alt="Logo" src={logo} width={90} height={90} />
-            </div>
-            <div className="flex flex-col">
-              <div className="text-3xl font-thin">WingSuite</div>
-              <div className="text-sm font-thin">Detachment 025</div>
-            </div>
+            {menuList}
           </div>
-          {menuList}
         </div>
-        <div className="flex flex-col">
+        <div className="mt-5 flex flex-col">
           <div
-            className="flex flex-row items-center rounded-xl bg-white mb-4
-            mx-4 px-3 py-2 gap-2"
+            className="mx-4 mb-4 flex flex-row items-center gap-2
+            rounded-xl bg-white px-3 py-2"
           >
-            <div className="w-[2.3rem] h-[2.3rem] bg-silver rounded-full"></div>
-            <div className="flex-1 text-sm truncate">{fullName}</div>
+            <div className="h-[2.3rem] w-[2.3rem] rounded-full bg-silver" />
+            <div className="flex-1 truncate text-sm">{fullName}</div>
           </div>
         </div>
       </div>

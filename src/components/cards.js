@@ -1,3 +1,10 @@
+// React Icons
+import { VscChevronDown, VscChevronUp } from "react-icons/vsc";
+import { IconContext } from "react-icons";
+
+// React.js & Next.js libraries
+import { useState, useEffect } from "react";
+
 // Regular Card definition
 export function Card({
   text,
@@ -9,7 +16,7 @@ export function Card({
   // Render component
   return (
     <div
-      className={`text-left shadow-md rounded-md border-2
+      className={`rounded-md border-2 text-left shadow-md
         border-${bg} bg-${bg} text-${textColor} px-${1 + pad} p-${pad}`}
       key={text}
     >
@@ -18,31 +25,73 @@ export function Card({
   );
 }
 
-// Key Value Card definition
-export function StatCard({ keyContent, valueContent }) {
+// Stat Card definition
+export function StatCard({ keyContent, valueContent, buttonInfo }) {
   // Render component
   return (
     <div
-      className="text-left shadow-md rounded-lg border-2 px-4 py-5"
+      className={`rounded-lg border border-silver p-3 text-left
+      shadow-lg ${buttonInfo}`}
       key={keyContent}
     >
-      <div className="text-xl">{keyContent}</div>
-      <div className="text-5xl text-darkbermuda mt-3">{valueContent}</div>
+      <div className="text-3xl">{keyContent}</div>
+      <div
+        className="mt-1 bg-gradient-to-r from-deepOcean to-sky bg-clip-text
+        text-6xl font-bold text-transparent"
+      >
+        {valueContent}
+      </div>
     </div>
   );
 }
 
 // Button Card definition
-export function ButtonCard({ text, size, setSelected, subtext = null }) {
+export function ButtonCard({
+  text,
+  size,
+  action = () => {},
+  subtext = null,
+  buttonInfo = null,
+}) {
   // Render component
   return (
     <button
-      className="text-left shadow-md rounded-lg border-2 p-1.5 mb-3"
+      className={`rounded-lg p-1.5 text-left shadow-md ${buttonInfo}`}
       key={text}
-      onClick={() => setSelected(text)}
+      onClick={action}
     >
       <div className={`text-${size}`}>{text}</div>
-      <div>{subtext}</div>
+      <div className="text-sm">{subtext}</div>
+    </button>
+  );
+}
+
+// Collapsable Card definition
+export function CollapsableCard({
+  title,
+  mainText,
+  titleCSS,
+  mainTextCSS,
+  startState = false,
+}) {
+  // Define useState
+  const [collapsed, setCollapsed] = useState(startState);
+
+  // Render component
+  return (
+    <button
+      className="flex flex-col gap-2 rounded-md border border-silver p-2"
+      onClick={() => setCollapsed(!collapsed)}
+    >
+      <div className="flex w-full flex-row items-center justify-between">
+        <div className="text-2xl">{title}</div>
+        <div onClick={() => setCollapsed(!collapsed)}>
+          <IconContext.Provider value={{ size: "2em" }}>
+            {collapsed ? <VscChevronDown /> : <VscChevronUp />}
+          </IconContext.Provider>
+        </div>
+      </div>
+      {collapsed && <div className="text-left text-xl">{mainText}</div>}
     </button>
   );
 }

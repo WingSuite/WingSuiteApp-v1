@@ -1,9 +1,9 @@
 // Import
 import { toast } from "react-toastify";
 
-// Fucntion for success toaster
-export const successToaster = (message, position = "top-center") => {
-  // Toast exeuction
+// Function for success toaster
+export const successToaster = (message, position = "top-right") => {
+  // Toast execution
   toast.success(message, {
     position: position,
     autoClose: 5000,
@@ -16,9 +16,9 @@ export const successToaster = (message, position = "top-center") => {
   });
 };
 
-// Fucntion for info toaster
-export const infoToaster = (message, position = "top-center") => {
-  // Toast exeuction
+// Function for info toaster
+export const infoToaster = (message, position = "top-right") => {
+  // Toast execution
   toast.info(message, {
     position: position,
     autoClose: 5000,
@@ -31,9 +31,9 @@ export const infoToaster = (message, position = "top-center") => {
   });
 };
 
-// Fucntion for error toaster
-export const errorToaster = (message, position = "top-center") => {
-  // Toast exeuction
+// Function for error toaster
+export const errorToaster = (message, position = "top-right") => {
+  // Toast execution
   toast.error(message, {
     position: position,
     autoClose: 5000,

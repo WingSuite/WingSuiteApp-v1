@@ -16,6 +16,7 @@ import Cookies from "js-cookie";
 import { regularSidebarContents, unitSidebarConfig } from "@/config/config";
 
 // Util imports
+import { permissionsCheck } from "@/utils/permissionCheck";
 import { post } from "@/utils/call";
 
 // Image
@@ -35,10 +36,10 @@ const Sidebar = () => {
   // On mount of the Next.js page
   useEffect(() => {
     // Fetch the first and last name of the user from local storage
-    const localData = JSON.parse(localStorage.getItem("whoami"));
+    const user = JSON.parse(localStorage.getItem("whoami"));
 
     // Set the full name of the user
-    setFullName(localData["full_name"]);
+    setFullName(user.full_name);
 
     // Get the user's units
     (async () => {
@@ -46,8 +47,31 @@ const Sidebar = () => {
       let rawUnits = {};
       let collapses = {};
 
+      // If the user has the admin permissions, grant that user all access
+      if (permissionsCheck([], user.permissions)) {
+        // Set availableUnits to all units
+        var res = await post(
+          "/unit/get_all_units/",
+          { page_size: 2000, page_index: 0 },
+          Cookies.get("access")
+        );
+
+        // Process available units
+        for (let item of res.message) {
+          rawUnits[item.name] = item._id;
+          collapses[item.name] = false;
+        }
+
+        // Set the processed units and collapse trackers of the user
+        setUnitCollapse(collapses);
+        setUnits(rawUnits);
+
+        // Return
+        return;
+      }
+
       // Iterate through the user's units
-      for (let item of localData["units"]) {
+      for (let item of user["units"]) {
         // Get the iterate unit's data
         const unitData = await post(
           "/unit/get_unit_info/",
@@ -109,7 +133,7 @@ const Sidebar = () => {
       <div
         className={`text-${
           currentPath == `${item.link}` ? "black" : "white"
-        } text-sm`}
+        } text-left text-sm`}
       >
         {item.title}
       </div>
@@ -118,12 +142,17 @@ const Sidebar = () => {
 
   // Render the units list
   const unitList = Object.keys(units).map((item) => (
-    <div className="flex w-10/12 flex-col gap-1" key={`${item}`}>
+    <div className="flex w-10/12 flex-col gap-2" key={`${item}`}>
       <button
-        className={`flex w-full items-center justify-between rounded-lg
-    		border border-transparent px-2 py-1 transition duration-200
-        ease-in hover:-translate-y-[0.1rem] hover:border-white
-        hover:shadow-lg hover:shadow-sky`}
+        className={`${
+          currentPath.includes(encodeURIComponent(item))
+            ? `bg-white hover:-translate-y-[0.1rem] hover:shadow-md
+            hover:shadow-white`
+            : `border border-transparent hover:-translate-y-[0.1rem]
+            hover:border-white hover:shadow-lg hover:shadow-sky`
+        }
+        flex w-full items-center justify-start
+        rounded-lg px-2 py-1 transition duration-200 ease-in`}
         onClick={() =>
           setUnitCollapse((prevState) => ({
             ...prevState,
@@ -131,31 +160,51 @@ const Sidebar = () => {
           }))
         }
       >
-        <div className="flex flex-row">
+        <div className="flex w-full flex-row truncate pr-1">
           <IconContext.Provider
             value={{
-              color: false ? "#000000" : "#FFFFFF",
+              color: currentPath.includes(encodeURIComponent(item))
+                ? "#000000"
+                : "#FFFFFF",
               size: "1.2em",
               className: "mr-2",
             }}
           >
             <VscOrganization />
           </IconContext.Provider>
-          <div className={`text-${false ? "black" : "white"} text-sm`}>
+          <div
+            className={`text-${
+              currentPath.includes(encodeURIComponent(item)) ? "black" : "white"
+            } truncate text-left text-sm`}
+          >
             {item}
           </div>
         </div>
-        <IconContext.Provider value={{ size: "1.2em", color: "#FFFFFF" }}>
-          {unitCollapse[item] ? <VscChevronDown /> : <VscChevronUp />}
+        <IconContext.Provider
+          value={{
+            size: "1.2em",
+            color: currentPath.includes(encodeURIComponent(item))
+              ? "#000000"
+              : "#FFFFFF",
+          }}
+        >
+          {unitCollapse[item] ||
+          currentPath.includes(encodeURIComponent(item)) ? (
+            <VscChevronDown />
+          ) : (
+            <VscChevronUp />
+          )}
         </IconContext.Provider>
       </button>
-      {unitCollapse[item] && (
-        <div className="flex flex-col-reverse ml-6 gap-0.5">
+      {(unitCollapse[item] ||
+        currentPath.includes(encodeURIComponent(item))) && (
+        <div className="ml-6 flex flex-col-reverse gap-2">
           {unitSidebarConfig.map((sidebarItem) => (
             <button
               key={`${item}-${sidebarItem.title}`}
               className={`${
-                currentPath == `${sidebarItem.link}`
+                currentPath.includes(encodeURIComponent(item)) &&
+                currentPath.includes(sidebarItem.link)
                   ? `bg-white hover:-translate-y-[0.1rem] hover:shadow-md
                   hover:shadow-white`
                   : `border border-transparent hover:-translate-y-[0.1rem]
@@ -163,11 +212,17 @@ const Sidebar = () => {
               }
               flex w-full items-center justify-start rounded-lg px-2 py-1
               transition duration-200 ease-in`}
-              onClick={() => router.push(`/dashboard/unit/${item}${sidebarItem.link}`)}
+              onClick={() =>
+                router.push(`/dashboard/unit/${item}${sidebarItem.link}`)
+              }
             >
               <IconContext.Provider
                 value={{
-                  color: currentPath == `${sidebarItem.link}` ? "#000000" : "#FFFFFF",
+                  color:
+                    currentPath.includes(encodeURIComponent(item)) &&
+                    currentPath.includes(sidebarItem.link)
+                      ? "#000000"
+                      : "#FFFFFF",
                   size: "1.2em",
                   className: "mr-2",
                 }}
@@ -176,7 +231,10 @@ const Sidebar = () => {
               </IconContext.Provider>
               <div
                 className={`text-${
-                  currentPath == `${sidebarItem.link}` ? "black" : "white"
+                  currentPath.includes(encodeURIComponent(item)) &&
+                  currentPath.includes(sidebarItem.link)
+                    ? "black"
+                    : "white"
                 } text-sm`}
               >
                 {sidebarItem.title}

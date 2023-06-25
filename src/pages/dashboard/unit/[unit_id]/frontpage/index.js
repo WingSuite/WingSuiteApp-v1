@@ -41,7 +41,10 @@ export default function UnitFrontpagePage() {
     <div className="relative flex h-screen flex-row">
       <Sidebar />
       <div className="m-10 flex max-h-full w-full flex-col">
-        <PageTitle className="flex-none" />
+        <PageTitle
+          className="flex-none"
+          customName={`Unit / ${unit_id} / Front Page`}
+        />
       </div>
       <ToastContainer
         position="top-right"

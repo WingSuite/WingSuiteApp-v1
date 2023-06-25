@@ -46,13 +46,6 @@ const Login = () => {
     Cookies.set("refresh", res["refresh_token"]);
     Cookies.set("access", res["access_token"]);
 
-    // Using the given access token, store the information
-    // from the response of the /user/who_am_i/ endpoint
-    res = await get("/user/who_am_i/", res["access_token"]);
-
-    // Store the content of the result to local storage
-    localStorage.setItem("whoami", JSON.stringify(res));
-
     // Move to the dashboard
     router.push("/dashboard/homepage");
   };

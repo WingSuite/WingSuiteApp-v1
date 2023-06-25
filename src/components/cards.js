@@ -85,7 +85,7 @@ export function CollapsableCard({
     >
       <div className="flex w-full flex-row items-center justify-between">
         <div className="text-2xl">{title}</div>
-        <div onClick={() => setCollapsed(!collapsed)}>
+        <div>
           <IconContext.Provider value={{ size: "2em" }}>
             {collapsed ? <VscChevronDown /> : <VscChevronUp />}
           </IconContext.Provider>

@@ -1,5 +1,6 @@
 // React Icons imports
 import { VscHome, VscComment, VscBell } from "react-icons/vsc";
+import { BsPerson } from "react-icons/bs";
 
 // Export config
 export const config = {
@@ -31,8 +32,8 @@ export const config = {
   notificationPreviewTrimLength: 200,
 };
 
-// Sidebar config
-export const sidebarContents = [
+// Main Sidebar config
+export const regularSidebarContents = [
   {
     title: "Homepage",
     link: "/dashboard/homepage",
@@ -50,6 +51,15 @@ export const sidebarContents = [
   },
 ];
 
+// Unit sidebar config
+export const unitSidebarConfig = [
+  {
+    title: "Members",
+    link: "",
+    icon: <BsPerson />,
+  }
+];
+
 // Permissions config
 export const permissionsList = {
   feedback: {
@@ -57,5 +67,5 @@ export const permissionsList = {
   },
   notifications: {
     toolbar: ["notification.create_notification"],
-  }
+  },
 };

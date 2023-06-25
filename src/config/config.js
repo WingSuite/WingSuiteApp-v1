@@ -1,5 +1,5 @@
 // React Icons imports
-import { VscHome, VscComment, VscBell } from "react-icons/vsc";
+import { VscHome, VscComment, VscBell, VscBrowser } from "react-icons/vsc";
 import { BsPerson } from "react-icons/bs";
 
 // Export config
@@ -55,8 +55,13 @@ export const regularSidebarContents = [
 export const unitSidebarConfig = [
   {
     title: "Members",
-    link: "",
+    link: "/members",
     icon: <BsPerson />,
+  },
+  {
+    title: "Front Page",
+    link: "/frontpage",
+    icon: <VscBrowser />,
   }
 ];
 

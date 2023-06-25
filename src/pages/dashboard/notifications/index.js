@@ -1,10 +1,9 @@
 // React Icons
-import { VscBellSlash, VscCloseAll, VscEdit } from "react-icons/vsc";
+import { VscCloseAll, VscEdit } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import React from "react";
 
 // Toaster Components and CSS
@@ -15,7 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 // Config imports
-import { config, permissionsList } from "@/config/config";
+import { permissionsList } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
@@ -24,7 +23,7 @@ import { post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { TopDropDown, BottomDropDown } from "@/components/dropdown";
+import { BottomDropDown } from "@/components/dropdown";
 import { CollapsableCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";

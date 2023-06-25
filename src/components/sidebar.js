@@ -118,9 +118,8 @@ const Sidebar = () => {
 
   // Render the units list
   const unitList = Object.keys(units).map((item) => (
-    <div className="flex w-10/12 flex-col gap-1">
+    <div className="flex w-10/12 flex-col gap-1" key={`${item}`}>
       <button
-        key={`${item}`}
         className={`flex w-full items-center justify-between rounded-lg
     		border border-transparent px-2 py-1 transition duration-200
         ease-in hover:-translate-y-[0.1rem] hover:border-white
@@ -151,12 +150,12 @@ const Sidebar = () => {
         </IconContext.Provider>
       </button>
       {unitCollapse[item] && (
-        <div className="flex flex-col-reverse ml-6">
-          {unitSidebarConfig.map((item) => (
+        <div className="flex flex-col-reverse ml-6 gap-0.5">
+          {unitSidebarConfig.map((sidebarItem) => (
             <button
-              key={`${item.title.toLowerCase()}`}
+              key={`${item}-${sidebarItem.title}`}
               className={`${
-                currentPath == `${item.link}`
+                currentPath == `${sidebarItem.link}`
                   ? `bg-white hover:-translate-y-[0.1rem] hover:shadow-md
                   hover:shadow-white`
                   : `border border-transparent hover:-translate-y-[0.1rem]
@@ -164,23 +163,23 @@ const Sidebar = () => {
               }
               flex w-full items-center justify-start rounded-lg px-2 py-1
               transition duration-200 ease-in`}
-              onClick={() => router.push(`${item.link}`)}
+              onClick={() => router.push(`/dashboard/unit/${item}${sidebarItem.link}`)}
             >
               <IconContext.Provider
                 value={{
-                  color: currentPath == `${item.link}` ? "#000000" : "#FFFFFF",
+                  color: currentPath == `${sidebarItem.link}` ? "#000000" : "#FFFFFF",
                   size: "1.2em",
                   className: "mr-2",
                 }}
               >
-                {item.icon}
+                {sidebarItem.icon}
               </IconContext.Provider>
               <div
                 className={`text-${
-                  currentPath == `${item.link}` ? "black" : "white"
+                  currentPath == `${sidebarItem.link}` ? "black" : "white"
                 } text-sm`}
               >
-                {item.title}
+                {sidebarItem.title}
               </div>
             </button>
           ))}

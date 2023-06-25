@@ -1,6 +1,17 @@
 // React Icons imports
-import { VscHome, VscComment, VscBell, VscBrowser } from "react-icons/vsc";
+import {
+  VscHome,
+  VscComment,
+  VscBell,
+  VscBrowser,
+  VscGraph,
+  VscWarning,
+  VscMegaphone,
+  VscCalendar,
+  VscFolderLibrary
+} from "react-icons/vsc";
 import { BsPerson } from "react-icons/bs";
+import { BiNews } from "react-icons/bi";
 
 // Export config
 export const config = {
@@ -35,7 +46,7 @@ export const config = {
 // Main Sidebar config
 export const regularSidebarContents = [
   {
-    title: "Homepage",
+    title: "Home Page",
     link: "/dashboard/homepage",
     icon: <VscHome />,
   },
@@ -49,19 +60,49 @@ export const regularSidebarContents = [
     link: "/dashboard/feedback",
     icon: <VscComment />,
   },
+  {
+    title: "Metrics",
+    link: "/dashboard/metrics",
+    icon: <VscGraph />,
+  },
 ];
 
 // Unit sidebar config
 export const unitSidebarConfig = [
+  {
+    title: "Front Page",
+    link: "/frontpage",
+    icon: <BiNews />,
+  },
   {
     title: "Members",
     link: "/members",
     icon: <BsPerson />,
   },
   {
-    title: "Front Page",
-    link: "/frontpage",
-    icon: <VscBrowser />,
+    title: "Communications",
+    link: "/communications",
+    icon: <VscMegaphone />,
+  },
+  {
+    title: "Events",
+    link: "/events",
+    icon: <VscCalendar />,
+  },
+  {
+    title: "Metrics",
+    link: "/metrics",
+    icon: <VscGraph />,
+  },
+  {
+    title: "Resources",
+    link: "/resources",
+    icon: <VscFolderLibrary />,
+  },
+  {
+    title: "Emergency",
+    link: "/emergency",
+    icon: <VscWarning />,
   }
 ];
 

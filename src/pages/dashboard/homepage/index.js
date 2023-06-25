@@ -303,7 +303,7 @@ export default function HomePage() {
     <div className="relative flex h-screen flex-row">
       <Sidebar />
       <div className="m-10 flex max-h-full w-full flex-col">
-        <PageTitle className="flex-none" />
+        <PageTitle className="flex-none" customName="Home Page" />
         <div className="flex h-full flex-col gap-14 overflow-auto">
           <div className="pt-2 text-7xl">{greeting}</div>
           {weekView}

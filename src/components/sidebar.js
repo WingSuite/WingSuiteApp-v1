@@ -198,7 +198,7 @@ const Sidebar = () => {
       </button>
       {(unitCollapse[item] ||
         currentPath.includes(encodeURIComponent(item))) && (
-        <div className="ml-6 flex flex-col-reverse gap-2">
+        <div className="ml-6 flex flex-col gap-2">
           {unitSidebarConfig.map((sidebarItem) => (
             <button
               key={`${item}-${sidebarItem.title}`}

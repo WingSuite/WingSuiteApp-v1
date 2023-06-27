@@ -56,6 +56,11 @@ export const regularSidebarContents = [
     icon: <VscBell />,
   },
   {
+    title: "Events",
+    link: "/dashboard/events",
+    icon: <VscCalendar />,
+  },
+  {
     title: "Feedback",
     link: "/dashboard/feedback",
     icon: <VscComment />,
@@ -83,11 +88,6 @@ export const unitSidebarConfig = [
     title: "Communications",
     link: "/communications",
     icon: <VscMegaphone />,
-  },
-  {
-    title: "Events",
-    link: "/events",
-    icon: <VscCalendar />,
   },
   {
     title: "Metrics",

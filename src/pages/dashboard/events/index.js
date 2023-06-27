@@ -31,10 +31,7 @@ import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
 
 // Unit member page definition
-export default function UnitEventsPage() {
-  // Define router and get unit ID from URL
-  const router = useRouter();
-  const { unit_id } = router.query;
+export default function EventsPage() {
 
   // Render page
   return (

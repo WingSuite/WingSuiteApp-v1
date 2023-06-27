@@ -98,7 +98,7 @@ export default function NotificationsPage() {
       setToolbarAccess(Object.keys(workable).length > 0);
     })();
 
-    // Process the user's feedbacks
+    // Process the user's notifications
     (async () => {
       // Get the start and end bounds
       const start = Math.floor((Date.now() - 7 * 24 * 60 * 60 * 1000) / 1000);
@@ -117,15 +117,28 @@ export default function NotificationsPage() {
       // Iterate through each item of the response and store just the quotes
       let parsed = [];
       for (let item of res.message) {
+        // Get the author's name
         var from_user = await post(
           "/user/get_user/",
           { id: item.author },
           Cookies.get("access")
         );
+
+        // Get the source unit
+        var source_unit = await post(
+          "/unit/get_unit_info/",
+          { id: item.unit },
+          Cookies.get("access")
+        );
+
+        // Append information
         parsed.push([
           item.created_datetime,
           item.name,
-          from_user.message.full_name,
+          source_unit.message.name,
+          `${from_user.message.rank
+            ? from_user.message.rank
+            : ""} ${from_user.message.full_name}`,
           item.notification,
         ]);
       }
@@ -210,11 +223,17 @@ export default function NotificationsPage() {
             title={
               <div className="flex flex-row items-center gap-2">
                 <div className="mr-3 text-base">{formatMilDate(info[0])}</div>
-                <div>{info[1]}</div>
-                <div className="text-darkSilver">- {info[2]}</div>
+                <div className="text-3xl">{info[1]}</div>
+                <div
+                  className="ml-2 flex flex-col text-left text-xs
+                  text-darkSilver"
+                >
+                  <div>{info[2]}</div>
+                  <div>{info[3]}</div>
+                </div>
               </div>
             }
-            mainText={info[3]}
+            mainText={info[4]}
           />
         ))
       )}
@@ -223,9 +242,7 @@ export default function NotificationsPage() {
 
   // Component for editor
   const editor = (
-    <div
-      className="flex max-h-full w-1/2 flex-col gap-5 overflow-auto pb-2 pl-3"
-    >
+    <div className="flex max-h-full w-1/2 flex-col gap-5 overflow-auto pb-2 pl-3">
       <div className="flex flex-col gap-1">
         <div className="text-2xl">Recipient Unit</div>
         <BottomDropDown
@@ -270,9 +287,7 @@ export default function NotificationsPage() {
       <Sidebar />
       <div className="m-10 flex max-h-full w-full flex-col">
         <PageTitle className="flex-none" />
-        <div className="flex flex-row-reverse">
-          {toolbarAccess && toolbar}
-        </div>
+        <div className="flex flex-row-reverse">{toolbarAccess && toolbar}</div>
         <div className="flex h-full w-full flex-row gap-5 overflow-hidden">
           {inbox}
           {composerOpen && editor}

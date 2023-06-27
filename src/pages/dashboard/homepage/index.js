@@ -216,7 +216,7 @@ export default function HomePage() {
             }}
             buttonInfo="h-20 transition duration-200 ease-in border
             border-silver hover:-translate-y-[0.1rem] hover:shadow-lg
-            hover:border-black p-2"
+            hover:border-black px-2 py-1.5"
           />
         ))}
       </div>
@@ -244,7 +244,7 @@ export default function HomePage() {
       <div className="text-4xl">Feedback</div>
       <div
         className="flex h-full flex-col gap-4 overflow-auto rounded-lg
-        px-1 pr-2 pb-4"
+        px-1 pb-4 pr-2"
       >
         {feedbackData.length === 0 ? (
           <Nothing
@@ -274,7 +274,7 @@ export default function HomePage() {
       <div className="text-4xl">Notifications</div>
       <div
         className="flex h-full flex-col gap-4 overflow-auto rounded-lg px-1
-        pr-2 pb-4"
+        pb-4 pr-2"
       >
         {notifications.length === 0 ? (
           <Nothing

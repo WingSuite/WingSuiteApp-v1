@@ -8,7 +8,7 @@ import {
   VscWarning,
   VscMegaphone,
   VscCalendar,
-  VscFolderLibrary
+  VscFolderLibrary,
 } from "react-icons/vsc";
 import { BsPerson } from "react-icons/bs";
 import { BiNews } from "react-icons/bi";
@@ -103,7 +103,7 @@ export const unitSidebarConfig = [
     title: "Emergency",
     link: "/emergency",
     icon: <VscWarning />,
-  }
+  },
 ];
 
 // Permissions config
@@ -112,6 +112,10 @@ export const permissionsList = {
     toolbar: ["statistic.feedback.create_feedback"],
   },
   notifications: {
-    toolbar: ["notification.create_notification"],
+    toolbar: [
+      "notification.create_notification",
+      "notification.update_notification",
+      "notification.delete_notification",
+    ],
   },
 };

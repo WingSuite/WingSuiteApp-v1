@@ -25,9 +25,9 @@ import { post } from "@/utils/call";
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
 import { AutoCompleteInput } from "@/components/input";
-import { CollapsableCard } from "@/components/cards";
+import { CollapsableInfoCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
-import PageTitle from "@/components/pageTitle";
+import PageTitle from "@/components/pageTitle"; 
 import Sidebar from "@/components/sidebar";
 
 // Feedback page definitions
@@ -201,7 +201,7 @@ export default function FeedbackPage() {
         />
       ) : (
         feedbackData.map((info, index) => (
-          <CollapsableCard
+          <CollapsableInfoCard
             key={`feedbackInbox-${info[0]}-${index}`}
             title={
               <div className="flex flex-row items-center gap-2">
@@ -254,7 +254,7 @@ export default function FeedbackPage() {
         className="w-fit rounded-lg border border-silver bg-gradient-to-tr
         from-deepOcean to-sky bg-clip-text p-2 text-xl text-transparent
         transition duration-200 ease-in hover:-translate-y-[0.1rem]
-        hover:shadow-md hover:shadow-sky hover:border-sky"
+        hover:border-sky hover:shadow-md hover:shadow-sky"
       >
         Send Feedback
       </button>

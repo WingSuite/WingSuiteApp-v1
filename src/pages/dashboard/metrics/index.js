@@ -25,7 +25,7 @@ import { post } from "@/utils/call";
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
 import { BottomDropDown } from "@/components/dropdown";
-import { CollapsableCard } from "@/components/cards";
+import { CollapsableInfoCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
@@ -37,9 +37,7 @@ export default function UnitFrontpagePage() {
     <div className="relative flex h-screen flex-row">
       <Sidebar />
       <div className="m-10 flex max-h-full w-full flex-col">
-        <PageTitle
-          className="flex-none"
-        />
+        <PageTitle className="flex-none" />
       </div>
       <ToastContainer
         position="top-right"

@@ -24,7 +24,7 @@ import { post } from "@/utils/call";
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
 import { BottomDropDown } from "@/components/dropdown";
-import { CollapsableCard } from "@/components/cards";
+import { CollapsableInfoCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
@@ -39,6 +39,7 @@ export default function NotificationsPage() {
   const [notificationRecipient, setNotificationRecipient] = useState("");
   const [notificationName, setNotificationName] = useState("");
   const [notificationText, setNotificationText] = useState("");
+  const [actionTrigger, setActionTrigger] = useState(true);
   const required = permissionsList.notifications;
 
   // On mount of the Next.js page
@@ -136,20 +137,22 @@ export default function NotificationsPage() {
           item.created_datetime,
           item.name,
           source_unit.message.name,
-          `${from_user.message.rank
-            ? from_user.message.rank
-            : ""} ${from_user.message.full_name}`,
+          `${from_user.message.rank ? from_user.message.rank : ""} ${
+            from_user.message.full_name
+          }`,
           item.notification,
+          user._id == item.author,
+          item._id,
         ]);
       }
 
       // Store the quotes to the useState
       setNotificationData(parsed);
     })();
-  }, []);
+  }, [actionTrigger]);
 
   // Function definition for sending notification
-  const sendNotification = () => {
+  const createNotification = () => {
     // Get the target user's ID
     const target_unit = availableUnits[notificationRecipient];
 
@@ -181,6 +184,55 @@ export default function NotificationsPage() {
     setNotificationRecipient("");
     setNotificationName("");
     setNotificationText("");
+
+    // Trigger action
+    setActionTrigger(!actionTrigger);
+  };
+
+  // Function definition for updating a notification
+  const updateNotification = (id, title, text) => {
+    // Send API call for creating the feedback
+    (async () => {
+      // Get the user's feedback information
+      var res = await post(
+        "/notification/update_notification/",
+        {
+          id: id,
+          name: title,
+          notification: text,
+        },
+        Cookies.get("access")
+      );
+
+      // If the call was successful, send a success toaster
+      if (res.status == "success") successToaster(res.message);
+      if (res.status == "error") errorToaster(res.message);
+    })();
+
+    // Trigger action
+    setActionTrigger(!actionTrigger);
+  };
+
+  // Function definition for deleting a notification
+  const deleteNotification = (id) => {
+    // Send API call for creating the feedback
+    (async () => {
+      // Get the user's feedback information
+      var res = await post(
+        "/notification/delete_notification/",
+        {
+          id: id,
+        },
+        Cookies.get("access")
+      );
+
+      // If the call was successful, send a success toaster
+      if (res.status == "success") successToaster(res.message);
+      if (res.status == "error") errorToaster(res.message);
+    })();
+
+    // Trigger action
+    setActionTrigger(!actionTrigger);
   };
 
   // Component for toolbar
@@ -218,22 +270,20 @@ export default function NotificationsPage() {
         />
       ) : (
         notificationData.map((info, index) => (
-          <CollapsableCard
+          <CollapsableInfoCard
+            id={info[6]}
             key={`feedbackInbox-${info[0]}-${index}`}
-            title={
-              <div className="flex flex-row items-center gap-2">
-                <div className="mr-3 text-base">{formatMilDate(info[0])}</div>
-                <div className="text-3xl">{info[1]}</div>
-                <div
-                  className="ml-2 flex flex-col text-left text-xs
-                  text-darkSilver"
-                >
-                  <div>{info[2]}</div>
-                  <div>{info[3]}</div>
-                </div>
-              </div>
+            date={formatMilDate(info[0])}
+            title={info[1]}
+            titleAppendix={
+              <>
+                <div className="text-xs">{info[2]}</div>
+                <div className="text-xs">{info[3]}</div>
+              </>
             }
             mainText={info[4]}
+            updateFunc={updateNotification}
+            deleteFunc={deleteNotification}
           />
         ))
       )}
@@ -270,7 +320,7 @@ export default function NotificationsPage() {
         />
       </div>
       <button
-        onClick={sendNotification}
+        onClick={createNotification}
         className="w-fit rounded-lg border border-silver bg-gradient-to-tr
         from-deepOcean to-sky bg-clip-text p-2 text-xl text-transparent
         transition duration-200 ease-in hover:-translate-y-[0.1rem]

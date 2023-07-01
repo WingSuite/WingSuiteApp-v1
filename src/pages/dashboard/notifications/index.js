@@ -14,12 +14,12 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 // Config imports
-import { permissionsList } from "@/config/config";
+import { permissionsList, config } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
 import { formatMilDate } from "@/utils/time";
-import { post } from "@/utils/call";
+import { post, get } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
@@ -53,50 +53,24 @@ export default function NotificationsPage() {
     // Process user's available units
     (async () => {
       // Variable declaration
-      let workable = {};
+      var workable = {};
 
-      // Iterate through every unit that the user is part of
-      for (let unit of user.units) {
-        // Get the unit's officer list
-        var res = await post(
-          "/unit/get_unit_info/",
-          { id: unit },
-          Cookies.get("access")
-        );
+      // Set availableUnits to all units
+      var res = await get("/user/get_users_units/", Cookies.get("access"));
 
-        // If the iterate unit has the current user as an officer, add them to
-        // the list
-        if (res.message.officers.includes(user._id)) {
-          workable[res.message.name] = res.message._id;
-        }
+      console.log(res);
+
+      // Process available units
+      for (let item of res.message) {
+        workable[item.name] = item._id;
       }
 
-      // If the user has root or the create notifications permissions, give
-      // the user access to the toolbar and all units
-      if (permissionsCheck(required.toolbar, user.permissions)) {
-        // Set availableUnits to all units
-        var res = await post(
-          "/unit/get_all_units/",
-          { page_size: 2000, page_index: 0 },
-          Cookies.get("access")
-        );
-
-        // Process available units
-        for (let item of res.message) {
-          workable[item.name] = item._id;
-        }
-
-        // Set useStates
-        setAvailableUnits(workable);
-        setToolbarAccess(true);
-
-        // Return
-        return;
-      }
-
-      // Set data
+      // Set useStates
       setAvailableUnits(workable);
-      setToolbarAccess(Object.keys(workable).length > 0);
+      setToolbarAccess(true);
+
+      // Return
+      return;
     })();
 
     // Process the user's notifications
@@ -141,7 +115,8 @@ export default function NotificationsPage() {
             from_user.message.full_name
           }`,
           item.notification,
-          user._id == item.author,
+          user._id == item.author ||
+            user.permissions.includes(config.allAccessPermission),
           item._id,
         ]);
       }
@@ -282,8 +257,8 @@ export default function NotificationsPage() {
               </>
             }
             mainText={info[4]}
-            updateFunc={updateNotification}
-            deleteFunc={deleteNotification}
+            updateFunc={info[5] ? updateNotification : null}
+            deleteFunc={info[5] ? deleteNotification : null}
           />
         ))
       )}

@@ -106,7 +106,7 @@ export function CollapsableInfoCard({
           className="w-full text-2xl"
           onClick={() => setCollapsed(!collapsed)}
         >
-          <div className="flex w-full flex-row items-center gap-2">
+          <div className="flex w-full flex-row items-center gap-0.5">
             <div className="mr-3 text-base">{date}</div>
             <AutosizeInput
               className={`${editMode && `text-sky`}`}

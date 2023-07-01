@@ -1,10 +1,14 @@
 // React Icons
-import { VscBellSlash, VscCloseAll, VscEdit } from "react-icons/vsc";
+import {
+  VscArrowCircleRight,
+  VscArrowCircleLeft,
+  VscCloseAll,
+  VscEdit,
+} from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import React from "react";
 
 // Toaster Components and CSS
@@ -262,7 +266,12 @@ export default function FeedbackPage() {
             key={`feedbackInbox-${info[0]}-${index}`}
             date={formatMilDate(info[0])}
             title={info[1]}
-            titleAppendix={<div className="text-sm">{info[2]}</div>}
+            titleAppendix={
+              <div className="flex flex-row items-center gap-0.5 text-sm">
+                {toolbarSelect ? `To: ` : `From: `}
+                {info[2]}
+              </div>
+            }
             mainText={info[3]}
             updateFunc={toolbarSelect && info[5] ? updateFeedback : null}
             deleteFunc={toolbarSelect && info[5] ? deleteFeedback : null}

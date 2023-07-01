@@ -104,7 +104,7 @@ export function CollapsableInfoCard({
       <div className="flex w-full flex-row items-center justify-between">
         <div
           className="w-full text-2xl"
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={() => {!editMode && setCollapsed(!collapsed)}}
         >
           <div className="flex w-full flex-row items-center gap-0.5">
             <div className="mr-3 text-base">{date}</div>

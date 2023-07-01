@@ -109,7 +109,11 @@ export const unitSidebarConfig = [
 // Permissions config
 export const permissionsList = {
   feedback: {
-    toolbar: ["statistic.feedback.create_feedback"],
+    toolbar: [
+      "statistic.feedback.create_feedback",
+      "statistic.feedback.update_feedback",
+      "statistic.feedback.delete_feedback",
+    ],
   },
   notifications: {
     toolbar: [

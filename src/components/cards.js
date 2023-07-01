@@ -84,8 +84,8 @@ export function CollapsableInfoCard({
   title,
   titleAppendix,
   mainText,
-  updateFunc = () => {},
-  deleteFunc = () => {},
+  updateFunc = null,
+  deleteFunc = null,
   startState = false,
 }) {
   // Define useState

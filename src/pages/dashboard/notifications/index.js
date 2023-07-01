@@ -252,8 +252,14 @@ export default function NotificationsPage() {
             title={info[1]}
             titleAppendix={
               <>
-                <div className="text-xs">{info[2]}</div>
-                <div className="text-xs">{info[3]}</div>
+                <div className="flex flex-row items-center gap-1.5 text-xs">
+                  <div className="font-bold">For Personnel Under: </div>
+                  <div className="text-sky">{info[2]}</div>
+                </div>
+                <div className="flex flex-row items-center gap-1.5 text-xs">
+                  <div className="font-bold">From: </div>
+                  <div className="text-sky">{info[3]}</div>
+                </div>
               </>
             }
             mainText={info[4]}

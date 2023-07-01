@@ -111,7 +111,9 @@ export default function FeedbackPage() {
         parsed.push([
           item.datetime_created,
           item.name,
-          from_user.message.full_name,
+          `${from_user.message.rank ? from_user.message.rank : ""} ${
+            from_user.message.full_name
+          }`,
           item.feedback,
           item._id,
           user._id == item.from_user ||
@@ -267,9 +269,11 @@ export default function FeedbackPage() {
             date={formatMilDate(info[0])}
             title={info[1]}
             titleAppendix={
-              <div className="flex flex-row items-center gap-0.5 text-sm">
-                {toolbarSelect ? `To: ` : `From: `}
-                {info[2]}
+              <div className="flex flex-row items-center gap-1.5 text-sm">
+                <div className="font-bold">
+                  {toolbarSelect ? `To: ` : `From: `}
+                </div>
+                <div className="text-sky">{info[2]}</div>
               </div>
             }
             mainText={info[3]}

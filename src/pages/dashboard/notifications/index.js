@@ -58,8 +58,6 @@ export default function NotificationsPage() {
       // Set availableUnits to all units
       var res = await get("/user/get_users_units/", Cookies.get("access"));
 
-      console.log(res);
-
       // Process available units
       for (let item of res.message) {
         workable[item.name] = item._id;

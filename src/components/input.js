@@ -48,13 +48,67 @@ export function AutoCompleteInput({ possibleItems, value, onChange }) {
                 setInputValue(item);
               }}
               key={`${item}-${index}`}
-              className="rounded-lg py-0.5 px-2 text-left hover:bg-silver"
+              className="rounded-lg px-2 py-0.5 text-left hover:bg-silver"
             >
               {item}
             </button>
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+// Time input field
+export function TimeInput({
+  hour,
+  setHour,
+  minute,
+  setMinute,
+}) {
+  // Render component
+  return (
+    <div
+      className="flex w-20 items-center justify-around
+      rounded-lg border border-silver p-1"
+    >
+      <input
+        placeholder="00"
+        id="hour"
+        pattern="[0-9]*"
+        maxLength="2"
+        value={hour}
+        className="w-[2.05rem] rounded-lg px-1 text-xl"
+        onKeyDown={(event) =>
+          !/[0-9]/.test(event.key) &&
+          !(event.key === "Backspace") &&
+          !(event.key === "Delete") &&
+          event.preventDefault()
+        }
+        onBlur={() => {
+          if (parseInt(hour) > 23) setHour("00");
+        }}
+        onChange={(e) => setHour(e.target.value)}
+      />
+      :
+      <input
+        placeholder="00"
+        id="minute"
+        pattern="[0-9]*"
+        maxLength="2"
+        value={minute}
+        className="w-[2.05rem] rounded-lg px-1 text-xl"
+        onKeyDown={(event) =>
+          !/[0-9]/.test(event.key) &&
+          !(event.key === "Backspace") &&
+          !(event.key === "Delete") &&
+          event.preventDefault()
+        }
+        onBlur={() => {
+          if (parseInt(minute) > 59) setMinute("00");
+        }}
+        onChange={(e) => setMinute(e.target.value)}
+      />
     </div>
   );
 }

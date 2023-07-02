@@ -127,10 +127,10 @@ export default function NotificationsPage() {
   // Function definition for sending notification
   const createNotification = () => {
     // Get the target user's ID
-    const target_unit = availableUnits[notificationRecipient];
+    const targetUnit = availableUnits[notificationRecipient];
 
     // Check if the target_user is undefined
-    if (target_unit === undefined) {
+    if (targetUnit === undefined) {
       errorToaster("Improper recipient value. Please check your input.");
       return;
     }
@@ -141,7 +141,7 @@ export default function NotificationsPage() {
       var res = await post(
         "/notification/create_notification/",
         {
-          unit: target_unit,
+          unit: targetUnit,
           name: notificationName,
           notification: notificationText,
         },

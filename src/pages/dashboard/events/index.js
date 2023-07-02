@@ -41,7 +41,7 @@ export default function EventsPage() {
   const [availableUnits, setAvailableUnits] = useState([]);
   const [composerOpen, setComposerOpen] = useState(false);
   const [eventRecipient, setEventRecipient] = useState("");
-  const [eventName, setEventName] = useState("");
+  const [eventTitle, setEventTitle] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [eventLocation, setEventLocation] = useState("");
   const [eventTimes, setEventTimes] = useState({
@@ -51,6 +51,7 @@ export default function EventsPage() {
     endMinute: "",
   });
   const [eventDays, setEventDays] = useState([]);
+  const [actionTrigger, setActionTrigger] = useState(true);
   const required = permissionsList.events;
 
   // Calendar footer text
@@ -60,14 +61,6 @@ export default function EventsPage() {
     ) : (
       <p>No days selected</p>
     );
-
-  // Function to update eventTimes
-  const updateTimes = (key, value) => {
-    setEventTimes((state) => {
-      return { ...state, [key]: value };
-    });
-    console.log(eventTimes);
-  };
 
   // Preprocess information on mount
   useEffect(() => {
@@ -123,6 +116,129 @@ export default function EventsPage() {
     </button>
   );
 
+  // Function to update eventTimes
+  const updateTimes = (key, value) => {
+    setEventTimes((state) => {
+      return { ...state, [key]: value };
+    });
+  };
+
+  // Function to send call to create event
+  const createEvent = () => {
+    /*
+        INPUT CHECKERS
+    */
+
+    // Get the target user's ID
+    const targetUnit = availableUnits[eventRecipient];
+
+    // Check if the target_user is undefined
+    if (targetUnit === undefined) {
+      errorToaster("Improper recipient value. Please check your input.");
+      return;
+    }
+
+    // Check if event title is empty
+    if (eventTitle == "") {
+      errorToaster("Event title is empty");
+      return;
+    }
+
+    // Check if start event times are empty
+    if (eventTimes["startHour"] == "" || eventTimes["startMinute"] == "") {
+      errorToaster("Event start time should not be empty or partially filled");
+      return;
+    }
+
+    // Check if start event times are empty
+    if (eventTimes["startHour"] == "" || eventTimes["startMinute"] == "") {
+      errorToaster("Event start time should not be empty or partially filled");
+      return;
+    }
+
+    // Check if start event times is greater than the end time, if the end time
+    // was provided
+    if (eventTimes["endHour"] != "" && eventTimes["endMinute"] != "") {
+      // Get the unix time of the two dates
+      const startTime = new Date(`1970-01-01T${eventTimes["startHour"]}:${eventTimes["startMinute"]}:00`);
+      const endTime = new Date(`1970-01-01T${eventTimes["endHour"]}:${eventTimes["endMinute"]}:00`);
+
+      // Check if startTime is greater than the endTime
+      if (startTime > endTime) {
+        errorToaster("Event start time should not be after event end time");
+        return;
+      }
+    }
+
+    // Check if event days are filled
+    if (eventDays.length == 0) {
+      errorToaster("Select one or more days for the event");
+      return;
+    }
+
+    /*
+        EVENT CREATION
+    */
+
+    // Iterate through every day selected
+    for (let item of eventDays) {
+      // Call API for creating the event
+      (async () => {
+        // Variable declaration
+        var start_datetime = new Date(item.getTime());
+        var end_datetime = null;
+
+        // Calculate unix timestamps for start datetime
+        start_datetime.setHours(parseInt(eventTimes["startHour"]));
+        start_datetime.setMinutes(parseInt(eventTimes["startMinute"]));
+        start_datetime = start_datetime.getTime() / 1000;
+
+        // Calculate end datetime if the end dates were presented
+        if (eventTimes["endHour"] != "" && eventTimes["endMinute"] != "") {
+          // Calculate unix timestamps for start datetime
+          end_datetime = new Date(item.getTime());
+          end_datetime.setHours(parseInt(eventTimes["endHour"]));
+          end_datetime.setMinutes(parseInt(eventTimes["endMinute"]));
+          end_datetime = end_datetime.getTime() / 1000;
+        }
+
+        // Call API endpoint for creation
+        var res = await post(
+          "/event/create_event/",
+          {
+            name: eventTitle,
+            unit: targetUnit,
+            location: eventLocation,
+            start_datetime: start_datetime,
+            end_datetime: end_datetime,
+            description: eventDescription,
+          },
+          Cookies.get("access")
+        );
+
+        // If the call was successful, send a success toaster
+        if (res.status == "success") successToaster(res.message);
+        if (res.status == "error") errorToaster(res.message);
+      })();
+    }
+
+    // Clear inputs
+    setEventRecipient("");
+    setEventTitle("");
+    setEventDescription("");
+    setEventLocation("");
+    setEventTimes({
+      startHour: "",
+      startMinute: "",
+      endHour: "",
+      endMinute: "",
+    });
+    setEventDays([]);
+
+    // Trigger action
+    setActionTrigger(!actionTrigger);
+  };
+
   // Component for editor
   const editor = (
     <div
@@ -141,8 +257,8 @@ export default function EventsPage() {
         <div className="text-2xl">Event Title</div>
         <input
           className="rounded-lg border border-silver p-2 shadow-inner"
-          onChange={(event) => setEventName(event.target.value)}
-          value={eventName}
+          onChange={(event) => setEventTitle(event.target.value)}
+          value={eventTitle}
           id="feedbackTitle"
         />
       </div>
@@ -204,6 +320,7 @@ export default function EventsPage() {
         />
       </div>
       <button
+        onClick={createEvent}
         className="w-fit rounded-lg border border-silver bg-gradient-to-tr
           from-deepOcean to-sky bg-clip-text p-2 text-xl text-transparent
           transition duration-200 ease-in hover:-translate-y-[0.1rem]

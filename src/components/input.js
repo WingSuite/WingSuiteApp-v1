@@ -1,6 +1,9 @@
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
 
+// Autosize inputs import
+import AutosizeInput from "react-input-autosize";
+
 // Input field with autocomplete feature
 export function AutoCompleteInput({ possibleItems, value, onChange }) {
   // Define useStates
@@ -69,16 +72,16 @@ export function TimeInput({
   // Render component
   return (
     <div
-      className="flex w-20 items-center justify-around
+      className="flex w-fit items-center
       rounded-lg border border-silver p-1"
     >
-      <input
+      <AutosizeInput
         placeholder="00"
         id="hour"
         pattern="[0-9]*"
         maxLength="2"
         value={hour}
-        className="w-[2.05rem] rounded-lg px-1 text-xl"
+        className="rounded-lg px-1 text-xl"
         onKeyDown={(event) =>
           !/[0-9]/.test(event.key) &&
           !(event.key === "Backspace") &&
@@ -91,13 +94,13 @@ export function TimeInput({
         onChange={(e) => setHour(e.target.value)}
       />
       :
-      <input
+      <AutosizeInput
         placeholder="00"
         id="minute"
         pattern="[0-9]*"
         maxLength="2"
         value={minute}
-        className="w-[2.05rem] rounded-lg px-1 text-xl"
+        className="rounded-lg px-1 text-xl"
         onKeyDown={(event) =>
           !/[0-9]/.test(event.key) &&
           !(event.key === "Backspace") &&

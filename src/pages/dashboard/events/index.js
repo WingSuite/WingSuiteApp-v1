@@ -13,22 +13,31 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Date Picker imports
 import { DayPicker } from "react-day-picker";
+import 'react-day-picker/dist/style.css'
+
+// Calendar UI imports
+import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import startOfWeek from "date-fns/startOfWeek";
+import enUS from "date-fns/locale/en-US";
+import format from "date-fns/format";
+import getDay from "date-fns/getDay";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 // JS Cookies import
 import Cookies from "js-cookie";
 
 // Config imports
-import { permissionsList } from "@/config/config";
+import { permissionsList, config } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
-import { formatMilDate } from "@/utils/time";
+import { formatMilDate, getTodayDay } from "@/utils/time";
 import { post, get } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
 import { BottomDropDown } from "@/components/dropdown";
-import { CollapsableInfoCard } from "@/components/cards";
+import { CollapsableInfoCard, ButtonCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import { TimeInput } from "@/components/input";
 import PageTitle from "@/components/pageTitle";
@@ -53,6 +62,15 @@ export default function EventsPage() {
   const [eventDays, setEventDays] = useState([]);
   const [actionTrigger, setActionTrigger] = useState(true);
   const required = permissionsList.events;
+  const locales = {
+    'en-US': enUS,
+  };
+  const localizer = dateFnsLocalizer({
+    format,
+    startOfWeek,
+    getDay,
+    locales,
+  });
 
   // Calendar footer text
   const footer =
@@ -160,8 +178,12 @@ export default function EventsPage() {
     // was provided
     if (eventTimes["endHour"] != "" && eventTimes["endMinute"] != "") {
       // Get the unix time of the two dates
-      const startTime = new Date(`1970-01-01T${eventTimes["startHour"]}:${eventTimes["startMinute"]}:00`);
-      const endTime = new Date(`1970-01-01T${eventTimes["endHour"]}:${eventTimes["endMinute"]}:00`);
+      const startTime = new Date(
+        `1970-01-01T${eventTimes["startHour"]}:${eventTimes["startMinute"]}:00`
+      );
+      const endTime = new Date(
+        `1970-01-01T${eventTimes["endHour"]}:${eventTimes["endMinute"]}:00`
+      );
 
       // Check if startTime is greater than the endTime
       if (startTime > endTime) {
@@ -331,6 +353,20 @@ export default function EventsPage() {
     </div>
   );
 
+  // Week View definition
+  const WeekView = (
+    <div className="flex w-full flex-col overflow-y-hidden gap-2 pr-2">
+      <div style={{ height: "100vh" }}>
+        <Calendar
+          localizer={localizer}
+          events={[]}
+          startAccessor="start"
+          endAccessor="end"
+        />
+      </div>
+    </div>
+  );
+
   // Render page
   return (
     <div className="relative flex h-screen flex-row">
@@ -339,12 +375,7 @@ export default function EventsPage() {
         <PageTitle className="flex-none" />
         <div className="flex flex-row-reverse">{toolbarAccess && toolbar}</div>
         <div className="flex h-full w-full flex-row gap-5 overflow-hidden">
-          <div
-            className="flex max-h-full w-full flex-col gap-2 overflow-auto
-            bg-silver pr-2"
-          >
-            Test Area
-          </div>
+          {WeekView}
           {composerOpen && editor}
         </div>
       </div>

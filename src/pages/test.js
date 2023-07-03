@@ -1,55 +1,56 @@
-// Import necessary packages
-import { useState } from "react";
+import React from 'react';
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
+import format from 'date-fns/format';
+import startOfWeek from 'date-fns/startOfWeek';
+import getDay from 'date-fns/getDay';
+import enUS from 'date-fns/locale/en-US';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-export default function TimePicker() {
-  // Set initial states
-  const [hour, setHour] = useState("");
-  const [minute, setMinute] = useState("");
+const ColoredEvent = ({ event }) => (
+  <div className="">
+    <strong>{event.title}</strong>
+    <div>{format(event.start, 'HH:mm')} - {format(event.end, 'HH:mm')}</div>
+  </div>
+)
 
-  return (
-    <>
-      <div
-        className="flex w-20 items-center justify-around
-      rounded border-2 p-1"
-      >
-        <input
-          placeholder="00"
-          id="hour"
-          pattern="[0-9]*"
-          maxLength="2"
-          value={hour}
-          className="w-[2.05rem] rounded-lg px-1 text-xl"
-          onKeyDown={(event) =>
-            !/[0-9]/.test(event.key) &&
-            !(event.key === "Backspace") &&
-            !(event.key === "Delete") &&
-            event.preventDefault()
-          }
-          onBlur={() => {
-            if (parseInt(hour) > 23) setHour("00");
-          }}
-          onChange={(e) => setHour(e.target.value)}
-        />
-        :
-        <input
-          placeholder="00"
-          id="minute"
-          pattern="[0-9]*"
-          maxLength="2"
-          value={minute}
-          className="w-[2.05rem] rounded-lg px-1 text-xl"
-          onKeyDown={(event) =>
-            !/[0-9]/.test(event.key) &&
-            !(event.key === "Backspace") &&
-            !(event.key === "Delete") &&
-            event.preventDefault()
-          }
-          onBlur={() => {
-            if (parseInt(minute) > 59) setMinute("00");
-          }}
-          onChange={(e) => setMinute(e.target.value)}
-        />
-      </div>
-    </>
-  );
+const locales = {
+  'en-US': enUS,
+};
+
+const localizer = dateFnsLocalizer({
+  format,
+  startOfWeek,
+  getDay,
+  locales,
+});
+
+const handleEventClick = (event) => {
+  console.log(event);
 }
+
+// Let's create some events
+const events = [
+  {
+    start: new Date(), // the event starts now
+    end: new Date(new Date().valueOf() + 60 * 60 * 1000), // ends in 1 hour
+    title: "My first event",
+    id: 1234
+  },
+];
+
+const MyCalendar = () => (
+  <div style={{ height: 600 }}>
+    <Calendar
+      localizer={localizer}
+      events={events}
+      startAccessor="start"
+      endAccessor="end"
+      onSelectEvent={handleEventClick}
+      components={{
+        event: ColoredEvent,
+      }}
+    />
+  </div>
+);
+
+export default MyCalendar;

@@ -252,11 +252,11 @@ export default function NotificationsPage() {
               <>
                 <div className="flex flex-row items-center gap-1.5 text-xs">
                   <div className="font-bold">For Personnel Under: </div>
-                  <div className="text-sky">{info[2]}</div>
+                  <div>{info[2]}</div>
                 </div>
                 <div className="flex flex-row items-center gap-1.5 text-xs">
                   <div className="font-bold">From: </div>
-                  <div className="text-sky">{info[3]}</div>
+                  <div>{info[3]}</div>
                 </div>
               </>
             }

@@ -24,7 +24,7 @@ const PageTitle = ({ customName = "" }) => {
 
   // Return
   return (
-    <div className="mb-16 text-5xl">{currentPath != undefined && title}</div>
+    <div className="mb-8 text-5xl">{currentPath != undefined && title}</div>
   );
 };
 

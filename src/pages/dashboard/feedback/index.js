@@ -273,7 +273,7 @@ export default function FeedbackPage() {
                 <div className="font-bold">
                   {toolbarSelect ? `To: ` : `From: `}
                 </div>
-                <div className="text-sky">{info[2]}</div>
+                <div>{info[2]}</div>
               </div>
             }
             mainText={info[3]}

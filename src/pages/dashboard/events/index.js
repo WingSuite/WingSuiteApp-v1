@@ -13,10 +13,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Date Picker imports
 import { DayPicker } from "react-day-picker";
-import 'react-day-picker/dist/style.css'
+import "react-day-picker/dist/style.css";
 
 // Calendar UI imports
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
 import startOfWeek from "date-fns/startOfWeek";
 import enUS from "date-fns/locale/en-US";
 import format from "date-fns/format";
@@ -35,9 +35,10 @@ import { formatMilDate, getTodayDay } from "@/utils/time";
 import { post, get } from "@/utils/call";
 
 // Custom components imports
-import { errorToaster, successToaster } from "@/components/toasters";
-import { BottomDropDown } from "@/components/dropdown";
 import { CollapsableInfoCard, ButtonCard } from "@/components/cards";
+import { errorToaster, successToaster } from "@/components/toasters";
+import { CalendarComponent } from "@/components/calendar";
+import { BottomDropDown } from "@/components/dropdown";
 import { Nothing } from "@/components/nothing";
 import { TimeInput } from "@/components/input";
 import PageTitle from "@/components/pageTitle";
@@ -46,6 +47,7 @@ import Sidebar from "@/components/sidebar";
 // Unit member page definition
 export default function EventsPage() {
   // Define useStates and other constants
+  const [unitIDMapping, setUnitIDMapping] = useState({});
   const [toolbarAccess, setToolbarAccess] = useState(false);
   const [availableUnits, setAvailableUnits] = useState([]);
   const [composerOpen, setComposerOpen] = useState(false);
@@ -61,32 +63,19 @@ export default function EventsPage() {
   });
   const [eventDays, setEventDays] = useState([]);
   const [actionTrigger, setActionTrigger] = useState(true);
+  const [queryRange, setQueryRange] = useState({});
+  const [events, setEvents] = useState([]);
   const required = permissionsList.events;
-  const locales = {
-    'en-US': enUS,
-  };
-  const localizer = dateFnsLocalizer({
-    format,
-    startOfWeek,
-    getDay,
-    locales,
-  });
 
-  // Calendar footer text
-  const footer =
-    eventDays && eventDays.length > 0 ? (
-      <p>{eventDays.length} Day(s) Selected</p>
-    ) : (
-      <p>No days selected</p>
-    );
-
-  // Preprocess information on mount
+  // Preprocess information on user's units mount
   useEffect(() => {
-    // Fetch the permissions of the user from local storage
+    // Fetch the permissions of the user and unit ID map from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
+    const unitMap = JSON.parse(localStorage.getItem("unitIDMap"));
 
     // Set access for toolbar and other information
     setToolbarAccess(permissionsCheck(required.toolbar, user.permissions));
+    setUnitIDMapping(unitMap);
 
     // Process user's available units
     (async () => {
@@ -110,29 +99,55 @@ export default function EventsPage() {
     })();
   }, []);
 
-  // Component for toolbar
-  const toolbar = (
-    <button
-      className={`my-3 flex w-fit flex-row gap-4 rounded-lg border px-3
-        py-2 text-xl transition duration-200 ease-in hover:-translate-y-[0.1rem]
-        hover:shadow-lg ${
-          composerOpen
-            ? `border-sky bg-gradient-to-tr from-deepOcean
-            to-sky text-white hover:border-darkOcean`
-            : `border-silver hover:border-sky`
-        }`}
-      onClick={() => setComposerOpen(!composerOpen)}
-    >
-      <IconContext.Provider
-        value={{
-          size: "1.2em",
-        }}
-      >
-        <VscEdit />
-      </IconContext.Provider>
-      <div>Make Event</div>
-    </button>
-  );
+  // Preprocess information on the user's events
+  useEffect(() => {
+    (async () => {
+      // Return if the queryRange is nothing
+      if (Object.keys(queryRange).length == 0) return;
+
+      // Set availableUnits to all units
+      var res = await post(
+        "/user/get_events/",
+        {
+          start_datetime: queryRange.start,
+          end_datetime: queryRange.end,
+        },
+        Cookies.get("access")
+      );
+
+      // Extract message
+      res = res.message;
+
+      // Rename keys
+      res = res.map(
+        ({
+          name: title,
+          start_datetime: start,
+          end_datetime: end,
+          ...res
+        }) => ({
+          title,
+          start,
+          end,
+          ...res,
+        })
+      );
+
+      // Convert Unix timestamps to Date objects
+      res = res.map((event) => ({
+        ...event,
+        start: new Date(event.start * 1000),
+        end: event.end
+          ? new Date(event.end * 1000)
+          : new Date(event.start * 1000),
+        allDay: event.end ? false : true,
+        unit: unitIDMapping[event.unit],
+      }));
+
+      // Set the event information
+      setEvents(res);
+    })();
+  }, [queryRange, actionTrigger]);
 
   // Function to update eventTimes
   const updateTimes = (key, value) => {
@@ -261,6 +276,30 @@ export default function EventsPage() {
     setActionTrigger(!actionTrigger);
   };
 
+  // Component for toolbar
+  const toolbar = (
+    <button
+      className={`my-3 flex w-fit flex-row gap-4 rounded-lg border px-3
+          py-2 text-xl transition duration-200 ease-in hover:-translate-y-[0.1rem]
+          hover:shadow-lg ${
+            composerOpen
+              ? `border-sky bg-gradient-to-tr from-deepOcean
+              to-sky text-white hover:border-darkOcean`
+              : `border-silver hover:border-sky`
+          }`}
+      onClick={() => setComposerOpen(!composerOpen)}
+    >
+      <IconContext.Provider
+        value={{
+          size: "1.2em",
+        }}
+      >
+        <VscEdit />
+      </IconContext.Provider>
+      <div>Make Event</div>
+    </button>
+  );
+
   // Component for editor
   const editor = (
     <div
@@ -332,7 +371,13 @@ export default function EventsPage() {
       <div className="flex w-full flex-col gap-1">
         <div>
           <div className="text-2xl">Event Date</div>
-          <div className="text-xs">{footer}</div>
+          <div className="text-xs">
+            {eventDays && eventDays.length > 0 ? (
+              <p>{eventDays.length} Day(s) Selected</p>
+            ) : (
+              <p>No days selected</p>
+            )}
+          </div>
         </div>
         <DayPicker
           showOutsideDays
@@ -355,16 +400,7 @@ export default function EventsPage() {
 
   // Week View definition
   const WeekView = (
-    <div className="flex w-full flex-col overflow-y-hidden gap-2 pr-2">
-      <div style={{ height: "100vh" }}>
-        <Calendar
-          localizer={localizer}
-          events={[]}
-          startAccessor="start"
-          endAccessor="end"
-        />
-      </div>
-    </div>
+    <CalendarComponent events={events} updateRange={setQueryRange} />
   );
 
   // Render page

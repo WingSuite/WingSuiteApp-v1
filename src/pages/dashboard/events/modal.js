@@ -1,19 +1,13 @@
 // React Icons
-import { VscCheck, VscChromeClose, VscEdit } from "react-icons/vsc";
-import { IconContext } from "react-icons";
+import { VscCheck, VscChromeClose } from "react-icons/vsc";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import React from "react";
 
 // Autosize inputs import
 import TextareaAutosize from "react-textarea-autosize";
 import AutosizeInput from "react-input-autosize";
-
-// Toaster components and CSS
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 // Date Picker imports
 import { DayPicker } from "react-day-picker";
@@ -22,36 +16,18 @@ import "react-day-picker/dist/style.css";
 // Moment import
 import moment from "moment";
 
-// Modal imports
-import Modal from "react-modal";
-
-// JS Cookies import
-import Cookies from "js-cookie";
-
-// Config imports
-import { permissionsList, config } from "@/config/config";
-
-// Util imports
-import { permissionsCheck } from "@/utils/permissionCheck";
-import { formatMilDate, getTodayDay } from "@/utils/time";
-import { post, get } from "@/utils/call";
-
 // Custom components imports
-import { CollapsableInfoCard, ButtonCard } from "@/components/cards";
-import { errorToaster, successToaster } from "@/components/toasters";
-import { CalendarComponent } from "@/components/calendar";
+import { errorToaster } from "@/components/toasters";
 import { BottomDropDown } from "@/components/dropdown";
 import { TimeInput } from "@/components/input";
-import PageTitle from "@/components/pageTitle";
-import Sidebar from "@/components/sidebar";
 
 // Subcomponent to define the contents of the event modal
 export function EventModal({
   selectedEvent,
   units,
   setModalIsOpen,
-  deleteEvent,
-  updateEvent,
+  deleteEvent = null,
+  updateEvent = null,
 }) {
   // Define useStates
   const [event, setEvent] = useState(selectedEvent);
@@ -289,7 +265,7 @@ export function EventModal({
           >
             Close
           </button>
-          {!editMode && !deleteMode && (
+          {!editMode && !deleteMode && updateEvent != null && (
             <button
               onClick={() => {
                 setEditMode(true);
@@ -302,7 +278,7 @@ export function EventModal({
               Edit
             </button>
           )}
-          {editMode && (
+          {editMode && updateEvent != null && (
             <div
               className="mt-4 flex flex-row gap-2 rounded-lg border border-sky
             px-1 py-0.5 text-left text-sky "
@@ -332,7 +308,7 @@ export function EventModal({
               </button>
             </div>
           )}
-          {!deleteMode && !editMode && (
+          {!deleteMode && !editMode && deleteEvent != null && (
             <button
               onClick={() => setDeleteMode(true)}
               className="mt-4 rounded-lg border border-transparent px-1
@@ -343,7 +319,7 @@ export function EventModal({
               Delete
             </button>
           )}
-          {deleteMode && (
+          {deleteMode && deleteEvent != null && (
             <div
               className="mt-4 flex flex-row gap-2 rounded-lg border
             border-darkScarlet px-1 py-0.5 text-left text-darkScarlet "

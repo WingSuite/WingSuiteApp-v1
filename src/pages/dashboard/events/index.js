@@ -101,7 +101,6 @@ export default function EventsPage() {
 
       // Set useStates
       setAvailableUnits(workable);
-      setToolbarAccess(true);
 
       // Return
       return;
@@ -483,8 +482,8 @@ export default function EventsPage() {
               selectedEvent={selectedEvent}
               units={availableUnits}
               setModalIsOpen={setModalIsOpen}
-              updateEvent={updateEvent}
-              deleteEvent={deleteEvent}
+              updateEvent={toolbarAccess ? updateEvent : null}
+              deleteEvent={toolbarAccess ? deleteEvent : null}
             />
           </Modal>
           {composerOpen && composer}

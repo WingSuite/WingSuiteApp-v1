@@ -1,6 +1,17 @@
 // React Icons
-import { VscChevronDown, VscChevronUp } from "react-icons/vsc";
+import {
+  VscChevronDown,
+  VscChevronUp,
+  VscEdit,
+  VscTrash,
+  VscCheck,
+  VscChromeClose,
+} from "react-icons/vsc";
 import { IconContext } from "react-icons";
+
+// Autosize inputs import
+import TextareaAutosize from "react-textarea-autosize";
+import AutosizeInput from "react-input-autosize";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
@@ -34,10 +45,10 @@ export function StatCard({ keyContent, valueContent, buttonInfo }) {
       shadow-lg ${buttonInfo}`}
       key={keyContent}
     >
-      <div className="text-3xl">{keyContent}</div>
+      <div className="text-2xl">{keyContent}</div>
       <div
         className="mt-1 bg-gradient-to-r from-deepOcean to-sky bg-clip-text
-        text-6xl font-bold text-transparent"
+        text-5xl font-bold text-transparent"
       >
         {valueContent}
       </div>
@@ -67,31 +78,154 @@ export function ButtonCard({
 }
 
 // Collapsable Card definition
-export function CollapsableCard({
+export function CollapsableInfoCard({
+  id,
+  date,
   title,
+  titleAppendix,
   mainText,
-  titleCSS,
-  mainTextCSS,
+  updateFunc = null,
+  deleteFunc = null,
   startState = false,
 }) {
   // Define useState
+  const [titleContent, setTitleContent] = useState(title);
+  const [mainTextContent, setMainTextContent] = useState(mainText);
   const [collapsed, setCollapsed] = useState(startState);
+  const [editMode, setEditMode] = useState(false);
+  const [delMode, setDelMode] = useState(false);
 
   // Render component
   return (
-    <button
-      className="flex flex-col gap-2 rounded-md border border-silver p-2"
-      onClick={() => setCollapsed(!collapsed)}
+    <div
+      className={`flex w-full flex-col gap-2 rounded-md border
+      border-silver p-2 ${delMode && `border-scarlet text-scarlet`}`}
     >
       <div className="flex w-full flex-row items-center justify-between">
-        <div className="text-2xl">{title}</div>
-        <div onClick={() => setCollapsed(!collapsed)}>
-          <IconContext.Provider value={{ size: "2em" }}>
-            {collapsed ? <VscChevronDown /> : <VscChevronUp />}
-          </IconContext.Provider>
+        <div
+          className="w-full text-2xl"
+          onClick={() => {
+            !editMode && setCollapsed(!collapsed);
+          }}
+        >
+          <div className="flex w-full flex-row items-center gap-0.5">
+            <div className="mr-3 text-base">{date}</div>
+            <AutosizeInput
+              className={`${editMode && `text-sky`}`}
+              inputStyle={{ background: "transparent" }}
+              value={titleContent}
+              disabled={!editMode}
+              onChange={(e) => setTitleContent(e.target.value)}
+            />
+            <div
+              className={`ml-2 flex flex-col text-left
+              ${delMode ? `text-scarlet` : `text-darkSilver`}`}
+            >
+              {titleAppendix}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-row items-center gap-2">
+          {updateFunc != null && !editMode && !delMode && (
+            <button
+              onClick={() => {
+                setEditMode(true);
+                setCollapsed(true);
+              }}
+            >
+              <IconContext.Provider value={{ size: "1.5em" }}>
+                {<VscEdit />}
+              </IconContext.Provider>
+            </button>
+          )}
+          {deleteFunc != null && !editMode && !delMode && (
+            <button
+              onClick={() => {
+                setDelMode(true);
+              }}
+            >
+              <IconContext.Provider
+                value={{ size: "1.5em", className: "ml-2" }}
+              >
+                {<VscTrash />}
+              </IconContext.Provider>
+            </button>
+          )}
+          {editMode && (
+            <button
+              onClick={() => {
+                setEditMode(false);
+                setTitleContent(title);
+                setMainTextContent(mainText);
+              }}
+            >
+              <IconContext.Provider
+                value={{ size: "1.5em", className: "ml-2" }}
+              >
+                {<VscChromeClose />}
+              </IconContext.Provider>
+            </button>
+          )}
+          {editMode && (
+            <button
+              onClick={() => {
+                updateFunc(id, titleContent, mainTextContent);
+                setEditMode(false);
+              }}
+            >
+              <IconContext.Provider
+                value={{ size: "1.5em", className: "ml-2" }}
+              >
+                {<VscCheck />}
+              </IconContext.Provider>
+            </button>
+          )}
+          {delMode && (
+            <button
+              onClick={() => {
+                deleteFunc(id);
+                setEditMode(false);
+              }}
+            >
+              <IconContext.Provider
+                value={{ size: "1.5em", className: "ml-2" }}
+              >
+                {<VscCheck />}
+              </IconContext.Provider>
+            </button>
+          )}
+          {delMode && (
+            <button
+              onClick={() => {
+                setDelMode(false);
+              }}
+            >
+              <IconContext.Provider
+                value={{ size: "1.5em", className: "ml-2" }}
+              >
+                {<VscChromeClose />}
+              </IconContext.Provider>
+            </button>
+          )}
+          <button
+            onClick={() => {
+              !editMode && setCollapsed(!collapsed);
+            }}
+          >
+            <IconContext.Provider value={{ size: "2em" }}>
+              {collapsed ? <VscChevronDown /> : <VscChevronUp />}
+            </IconContext.Provider>
+          </button>
         </div>
       </div>
-      {collapsed && <div className="text-left text-xl">{mainText}</div>}
-    </button>
+      {collapsed && (
+        <TextareaAutosize
+          className={`resize-none bg-transparent ${editMode && `text-sky`}`}
+          value={mainTextContent}
+          disabled={!editMode}
+          onChange={(e) => setMainTextContent(e.target.value)}
+        />
+      )}
+    </div>
   );
 }

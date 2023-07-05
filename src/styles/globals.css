@@ -1,4 +1,12 @@
 @tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+
+  SCROLLBAR SPECIFICATIONS
+
+*/
 
 ::-webkit-scrollbar {
   width: 0.4em;
@@ -15,23 +23,99 @@
   border-radius: 100vw;
 }
 
-@tailwind components;
-@tailwind utilities;
+.light-scrollbar::-webkit-scrollbar {
+  width: 0.4em;
+  height: 0.4em;
+}
+
+.light-scrollbar::-webkit-scrollbar-track {
+  background: rgba(182, 182, 182, 0);
+  border-radius: 100vw;
+}
+
+.light-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(84, 192, 255, 0.377);
+  border-radius: 100vw;
+}
+
+/*
+
+  FOCUS SPECIFICATIONS
+
+*/
 
 :focus {
   outline: none;
 }
 
+/*
+
+  FONTS SPECIFICATIONS
+
+*/
+
 @font-face {
-  font-family: 'poppins';
-  src: url('./fonts/Poppins-Regular.ttf') format('truetype');
+  font-family: "poppins";
+  src: url("./fonts/Poppins-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'couture';
-  src: url('./fonts/couture-bld.otf') format('truetype');
+  font-family: "couture";
+  src: url("./fonts/couture-bld.otf") format("truetype");
   font-weight: normal;
   font-style: normal;
+}
+
+/*
+
+  CALENDAR SPECIFICATIONS
+
+*/
+
+.rbc-event,
+.rbc-day-slot .rbc-background-event {
+  background: linear-gradient(45deg, #0a50fa, #54c0ff) !important;
+  transition: all 200ms ease-in !important;
+  transform: translate(0, 0) !important;
+  width: 96% !important;
+  margin: auto !important;
+}
+
+.rbc-month-view .rbc-event {
+  margin-top: 1% !important;
+}
+
+.rbc-event:focus,
+.rbc-day-slot .rbc-background-event:focus {
+  outline: 0px auto #4678f4 !important;
+}
+
+.rbc-event:hover {
+  transform: translate(0, -0.1rem) !important;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.4) !important;
+}
+
+.rbc-time-column{
+  height: 150em !important;
+}
+
+/*
+
+  DATE PICKER SPECIFICATIONS
+
+*/
+
+.rdp {
+  --rdp-accent-color: #54c0ff !important;
+  --rdp-background-color-dark: #54c0ff !important;
+
+  margin: 0em !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.rdp-table {
+  width: 100% !important;
 }

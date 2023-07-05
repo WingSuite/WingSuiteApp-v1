@@ -203,20 +203,20 @@ export default function HomePage() {
     <div className="flex flex-col gap-4">
       <div className="text-4xl">Quick Links</div>
       <div
-        className="flex h-full flex-col justify-between gap-2 overflow-auto
+        className="flex h-full flex-col gap-4 overflow-auto
         p-1 pb-4"
       >
         {config.quickLinks.map((item, index) => (
           <ButtonCard
             key={`quickLink-${item.name}-${index}`}
-            size="xl"
+            size="2xl"
             text={item.name}
             action={() => {
               router.push(item.link);
             }}
-            buttonInfo="flex-1 transition duration-200 ease-in border
+            buttonInfo="h-20 transition duration-200 ease-in border
             border-silver hover:-translate-y-[0.1rem] hover:shadow-lg
-            hover:border-black p-2"
+            hover:border-black px-2 py-1.5"
           />
         ))}
       </div>
@@ -229,7 +229,7 @@ export default function HomePage() {
     <div className="flex h-full flex-1 flex-col gap-4">
       <div className="text-4xl">Stats</div>
       <div
-        className="flex h-full flex-col justify-between overflow-auto px-1
+        className="flex h-full flex-col gap-4 overflow-auto px-1
         pb-4"
       >
         <StatCard keyContent="Last PFA Score" valueContent="N/A" />
@@ -244,7 +244,7 @@ export default function HomePage() {
       <div className="text-4xl">Feedback</div>
       <div
         className="flex h-full flex-col gap-4 overflow-auto rounded-lg
-        px-1 pr-2 pb-4"
+        px-1 pb-4 pr-2"
       >
         {feedbackData.length === 0 ? (
           <Nothing
@@ -274,7 +274,7 @@ export default function HomePage() {
       <div className="text-4xl">Notifications</div>
       <div
         className="flex h-full flex-col gap-4 overflow-auto rounded-lg px-1
-        pr-2 pb-4"
+        pb-4 pr-2"
       >
         {notifications.length === 0 ? (
           <Nothing
@@ -303,7 +303,7 @@ export default function HomePage() {
     <div className="relative flex h-screen flex-row">
       <Sidebar />
       <div className="m-10 flex max-h-full w-full flex-col">
-        <PageTitle className="flex-none" />
+        <PageTitle className="flex-none" customName="Home Page" />
         <div className="flex h-full flex-col gap-14 overflow-auto">
           <div className="pt-2 text-7xl">{greeting}</div>
           {weekView}

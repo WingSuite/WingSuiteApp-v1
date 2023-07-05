@@ -1,10 +1,9 @@
 // React Icons
-import { VscBellSlash, VscCloseAll, VscEdit } from "react-icons/vsc";
+import { VscCloseAll, VscEdit } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import React from "react";
 
 // Toaster Components and CSS
@@ -15,17 +14,17 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 // Config imports
-import { config, permissionsList } from "@/config/config";
+import { permissionsList, config } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
 import { formatMilDate } from "@/utils/time";
-import { post } from "@/utils/call";
+import { post, get } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { TopDropDown, BottomDropDown } from "@/components/dropdown";
-import { CollapsableCard } from "@/components/cards";
+import { BottomDropDown } from "@/components/dropdown";
+import { CollapsableInfoCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
@@ -40,6 +39,7 @@ export default function NotificationsPage() {
   const [notificationRecipient, setNotificationRecipient] = useState("");
   const [notificationName, setNotificationName] = useState("");
   const [notificationText, setNotificationText] = useState("");
+  const [actionTrigger, setActionTrigger] = useState(true);
   const required = permissionsList.notifications;
 
   // On mount of the Next.js page
@@ -53,53 +53,25 @@ export default function NotificationsPage() {
     // Process user's available units
     (async () => {
       // Variable declaration
-      let workable = {};
+      var workable = {};
 
-      // Iterate through every unit that the user is part of
-      for (let unit of user.units) {
-        // Get the unit's officer list
-        var res = await post(
-          "/unit/get_unit_info/",
-          { id: unit },
-          Cookies.get("access")
-        );
+      // Set availableUnits to all units
+      var res = await get("/user/get_users_units/", Cookies.get("access"));
 
-        // If the iterate unit has the current user as an officer, add them to
-        // the list
-        if (res.message.officers.includes(user._id)) {
-          workable[res.message.name] = res.message._id;
-        }
+      // Process available units
+      for (let item of res.message) {
+        workable[item.name] = item._id;
       }
 
-      // If the user has root or the create notifications permissions, give
-      // the user access to the toolbar and all units
-      if (permissionsCheck(required.toolbar, user.permissions)) {
-        // Set availableUnits to all units
-        var res = await post(
-          "/unit/get_all_units/",
-          { page_size: 2000, page_index: 0 },
-          Cookies.get("access")
-        );
-
-        // Process available units
-        for (let item of res.message) {
-          workable[item.name] = item._id;
-        }
-
-        // Set useStates
-        setAvailableUnits(workable);
-        setToolbarAccess(true);
-
-        // Return
-        return;
-      }
-
-      // Set data
+      // Set useStates
       setAvailableUnits(workable);
-      setToolbarAccess(Object.keys(workable).length > 0);
+      setToolbarAccess(true);
+
+      // Return
+      return;
     })();
 
-    // Process the user's feedbacks
+    // Process the user's notifications
     (async () => {
       // Get the start and end bounds
       const start = Math.floor((Date.now() - 7 * 24 * 60 * 60 * 1000) / 1000);
@@ -118,31 +90,47 @@ export default function NotificationsPage() {
       // Iterate through each item of the response and store just the quotes
       let parsed = [];
       for (let item of res.message) {
+        // Get the author's name
         var from_user = await post(
           "/user/get_user/",
           { id: item.author },
           Cookies.get("access")
         );
+
+        // Get the source unit
+        var source_unit = await post(
+          "/unit/get_unit_info/",
+          { id: item.unit },
+          Cookies.get("access")
+        );
+
+        // Append information
         parsed.push([
           item.created_datetime,
           item.name,
-          from_user.message.full_name,
+          source_unit.message.name,
+          `${from_user.message.rank ? from_user.message.rank : ""} ${
+            from_user.message.full_name
+          }`,
           item.notification,
+          user._id == item.author ||
+            user.permissions.includes(config.allAccessPermission),
+          item._id,
         ]);
       }
 
       // Store the quotes to the useState
       setNotificationData(parsed);
     })();
-  }, []);
+  }, [actionTrigger]);
 
   // Function definition for sending notification
-  const sendNotification = () => {
+  const createNotification = () => {
     // Get the target user's ID
-    const target_unit = availableUnits[notificationRecipient];
+    const targetUnit = availableUnits[notificationRecipient];
 
     // Check if the target_user is undefined
-    if (target_unit === undefined) {
+    if (targetUnit === undefined) {
       errorToaster("Improper recipient value. Please check your input.");
       return;
     }
@@ -153,7 +141,7 @@ export default function NotificationsPage() {
       var res = await post(
         "/notification/create_notification/",
         {
-          unit: target_unit,
+          unit: targetUnit,
           name: notificationName,
           notification: notificationText,
         },
@@ -169,6 +157,55 @@ export default function NotificationsPage() {
     setNotificationRecipient("");
     setNotificationName("");
     setNotificationText("");
+
+    // Trigger action
+    setActionTrigger(!actionTrigger);
+  };
+
+  // Function definition for updating a notification
+  const updateNotification = (id, title, text) => {
+    // Send API call for creating the feedback
+    (async () => {
+      // Get the user's feedback information
+      var res = await post(
+        "/notification/update_notification/",
+        {
+          id: id,
+          name: title,
+          notification: text,
+        },
+        Cookies.get("access")
+      );
+
+      // If the call was successful, send a success toaster
+      if (res.status == "success") successToaster(res.message);
+      if (res.status == "error") errorToaster(res.message);
+    })();
+
+    // Trigger action
+    setActionTrigger(!actionTrigger);
+  };
+
+  // Function definition for deleting a notification
+  const deleteNotification = (id) => {
+    // Send API call for creating the feedback
+    (async () => {
+      // Get the user's feedback information
+      var res = await post(
+        "/notification/delete_notification/",
+        {
+          id: id,
+        },
+        Cookies.get("access")
+      );
+
+      // If the call was successful, send a success toaster
+      if (res.status == "success") successToaster(res.message);
+      if (res.status == "error") errorToaster(res.message);
+    })();
+
+    // Trigger action
+    setActionTrigger(!actionTrigger);
   };
 
   // Component for toolbar
@@ -206,16 +243,26 @@ export default function NotificationsPage() {
         />
       ) : (
         notificationData.map((info, index) => (
-          <CollapsableCard
+          <CollapsableInfoCard
+            id={info[6]}
             key={`feedbackInbox-${info[0]}-${index}`}
-            title={
-              <div className="flex flex-row items-center gap-2">
-                <div className="mr-3 text-base">{formatMilDate(info[0])}</div>
-                <div>{info[1]}</div>
-                <div className="text-darkSilver">- {info[2]}</div>
-              </div>
+            date={formatMilDate(info[0])}
+            title={info[1]}
+            titleAppendix={
+              <>
+                <div className="flex flex-row items-center gap-1.5 text-xs">
+                  <div className="font-bold">For Personnel Under: </div>
+                  <div>{info[2]}</div>
+                </div>
+                <div className="flex flex-row items-center gap-1.5 text-xs">
+                  <div className="font-bold">From: </div>
+                  <div>{info[3]}</div>
+                </div>
+              </>
             }
-            mainText={info[3]}
+            mainText={info[4]}
+            updateFunc={info[5] ? updateNotification : null}
+            deleteFunc={info[5] ? deleteNotification : null}
           />
         ))
       )}
@@ -224,9 +271,7 @@ export default function NotificationsPage() {
 
   // Component for editor
   const editor = (
-    <div
-      className="flex max-h-full w-1/2 flex-col gap-5 overflow-auto pb-2 pl-3"
-    >
+    <div className="flex max-h-full w-1/2 flex-col gap-5 overflow-auto pb-2 pl-3">
       <div className="flex flex-col gap-1">
         <div className="text-2xl">Recipient Unit</div>
         <BottomDropDown
@@ -254,7 +299,7 @@ export default function NotificationsPage() {
         />
       </div>
       <button
-        onClick={sendNotification}
+        onClick={createNotification}
         className="w-fit rounded-lg border border-silver bg-gradient-to-tr
         from-deepOcean to-sky bg-clip-text p-2 text-xl text-transparent
         transition duration-200 ease-in hover:-translate-y-[0.1rem]
@@ -271,9 +316,7 @@ export default function NotificationsPage() {
       <Sidebar />
       <div className="m-10 flex max-h-full w-full flex-col">
         <PageTitle className="flex-none" />
-        <div className="flex flex-row-reverse">
-          {toolbarAccess && toolbar}
-        </div>
+        <div className="flex flex-row-reverse">{toolbarAccess && toolbar}</div>
         <div className="flex h-full w-full flex-row gap-5 overflow-hidden">
           {inbox}
           {composerOpen && editor}

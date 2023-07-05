@@ -1,5 +1,17 @@
 // React Icons imports
-import { VscHome, VscComment, VscBell } from "react-icons/vsc";
+import {
+  VscHome,
+  VscComment,
+  VscBell,
+  VscBrowser,
+  VscGraph,
+  VscWarning,
+  VscMegaphone,
+  VscCalendar,
+  VscFolderLibrary,
+} from "react-icons/vsc";
+import { BsPerson } from "react-icons/bs";
+import { BiNews } from "react-icons/bi";
 
 // Export config
 export const config = {
@@ -31,10 +43,10 @@ export const config = {
   notificationPreviewTrimLength: 200,
 };
 
-// Sidebar config
-export const sidebarContents = [
+// Main Sidebar config
+export const regularSidebarContents = [
   {
-    title: "Homepage",
+    title: "Home Page",
     link: "/dashboard/homepage",
     icon: <VscHome />,
   },
@@ -44,18 +56,77 @@ export const sidebarContents = [
     icon: <VscBell />,
   },
   {
+    title: "Events",
+    link: "/dashboard/events",
+    icon: <VscCalendar />,
+  },
+  {
     title: "Feedback",
     link: "/dashboard/feedback",
     icon: <VscComment />,
+  },
+  {
+    title: "Metrics",
+    link: "/dashboard/metrics",
+    icon: <VscGraph />,
+  },
+];
+
+// Unit sidebar config
+export const unitSidebarConfig = [
+  {
+    title: "Front Page",
+    link: "/frontpage",
+    icon: <BiNews />,
+  },
+  {
+    title: "Members",
+    link: "/members",
+    icon: <BsPerson />,
+  },
+  {
+    title: "Communications",
+    link: "/communications",
+    icon: <VscMegaphone />,
+  },
+  {
+    title: "Metrics",
+    link: "/metrics",
+    icon: <VscGraph />,
+  },
+  {
+    title: "Resources",
+    link: "/resources",
+    icon: <VscFolderLibrary />,
+  },
+  {
+    title: "Emergency",
+    link: "/emergency",
+    icon: <VscWarning />,
   },
 ];
 
 // Permissions config
 export const permissionsList = {
-  feedback: {
-    toolbar: ["statistic.feedback.create_feedback"],
-  },
   notifications: {
-    toolbar: ["notification.create_notification"],
-  }
+    toolbar: [
+      "notification.create_notification",
+      "notification.update_notification",
+      "notification.delete_notification",
+    ],
+  },
+  events: {
+    toolbar: [
+      "event.create_event",
+      "event.update_event",
+      "event.delete_event",
+    ],
+  },
+  feedback: {
+    toolbar: [
+      "statistic.feedback.create_feedback",
+      "statistic.feedback.update_feedback",
+      "statistic.feedback.delete_feedback",
+    ],
+  },
 };

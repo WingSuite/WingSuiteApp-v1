@@ -1,10 +1,14 @@
 // React Icons
-import { VscBellSlash, VscCloseAll, VscEdit } from "react-icons/vsc";
+import {
+  VscArrowCircleRight,
+  VscArrowCircleLeft,
+  VscCloseAll,
+  VscEdit,
+} from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import React from "react";
 
 // Toaster Components and CSS
@@ -25,7 +29,7 @@ import { post } from "@/utils/call";
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
 import { AutoCompleteInput } from "@/components/input";
-import { CollapsableCard } from "@/components/cards";
+import { CollapsableInfoCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
@@ -41,6 +45,7 @@ export default function FeedbackPage() {
   const [feedbackTo, setFeedbackTo] = useState("");
   const [feedbackName, setFeedbackName] = useState("");
   const [feedbackText, setFeedbackText] = useState("");
+  const [actionTrigger, setActionTrigger] = useState(true);
   const required = permissionsList.feedback;
   const toolbarItems = ["Received", "Sent"];
 
@@ -74,6 +79,9 @@ export default function FeedbackPage() {
 
   // Load feedback data based on selection used
   useEffect(() => {
+    // Fetch the permissions of the user from local storage
+    const user = JSON.parse(localStorage.getItem("whoami"));
+
     // Reset feedback data
     setFeedbackData([]);
 
@@ -89,26 +97,34 @@ export default function FeedbackPage() {
       // If resulting API results in an error, return
       if (res.status === "error") return;
 
-      // Iterate through each item of the response and store just the quotes
+      // Iterate through each item of the response and store the feedbacks
       let parsed = [];
       for (let item of res.message) {
+        // Get the from user
         var from_user = await post(
           "/user/get_user/",
           { id: toolbarSelect == 0 ? item.from_user : item.to_user },
           Cookies.get("access")
         );
+
+        // Push new information
         parsed.push([
           item.datetime_created,
           item.name,
-          from_user.message.full_name,
+          `${from_user.message.rank ? from_user.message.rank : ""} ${
+            from_user.message.full_name
+          }`,
           item.feedback,
+          item._id,
+          user._id == item.from_user ||
+            user.permissions.includes(config.allAccessPermission),
         ]);
       }
 
       // Store the quotes to the useState
       setFeedbackData(parsed);
     })();
-  }, [toolbarSelect]);
+  }, [toolbarSelect, actionTrigger]);
 
   // Function definition for sending feedback
   const sendFeedback = () => {
@@ -143,6 +159,52 @@ export default function FeedbackPage() {
     setFeedbackTo("");
     setFeedbackName("");
     setFeedbackText("");
+  };
+
+  // Function definition for updating a feedback
+  const updateFeedback = (id, title, text) => {
+    // Send API call for creating the feedback
+    (async () => {
+      // Get the user's feedback information
+      var res = await post(
+        "/statistic/feedback/update_feedback/",
+        {
+          id: id,
+          name: title,
+          feedback: text,
+        },
+        Cookies.get("access")
+      );
+
+      // If the call was successful, send a success toaster
+      if (res.status == "success") successToaster(res.message);
+      if (res.status == "error") errorToaster(res.message);
+    })();
+
+    // Trigger action
+    setActionTrigger(!actionTrigger);
+  };
+
+  // Function definition for deleting a feedback
+  const deleteFeedback = (id) => {
+    // Send API call for creating the feedback
+    (async () => {
+      // Get the user's feedback information
+      var res = await post(
+        "/statistic/feedback/delete_feedback/",
+        {
+          id: id,
+        },
+        Cookies.get("access")
+      );
+
+      // If the call was successful, send a success toaster
+      if (res.status == "success") successToaster(res.message);
+      if (res.status == "error") errorToaster(res.message);
+    })();
+
+    // Trigger action
+    setActionTrigger(!actionTrigger);
   };
 
   // Component for toolbar
@@ -201,16 +263,22 @@ export default function FeedbackPage() {
         />
       ) : (
         feedbackData.map((info, index) => (
-          <CollapsableCard
+          <CollapsableInfoCard
+            id={info[4]}
             key={`feedbackInbox-${info[0]}-${index}`}
-            title={
-              <div className="flex flex-row items-center gap-2">
-                <div className="mr-3 text-base">{formatMilDate(info[0])}</div>
-                <div>{info[1]}</div>
-                <div className="text-darkSilver">- {info[2]}</div>
+            date={formatMilDate(info[0])}
+            title={info[1]}
+            titleAppendix={
+              <div className="flex flex-row items-center gap-1.5 text-sm">
+                <div className="font-bold">
+                  {toolbarSelect ? `To: ` : `From: `}
+                </div>
+                <div>{info[2]}</div>
               </div>
             }
             mainText={info[3]}
+            updateFunc={toolbarSelect && info[5] ? updateFeedback : null}
+            deleteFunc={toolbarSelect && info[5] ? deleteFeedback : null}
           />
         ))
       )}
@@ -254,7 +322,7 @@ export default function FeedbackPage() {
         className="w-fit rounded-lg border border-silver bg-gradient-to-tr
         from-deepOcean to-sky bg-clip-text p-2 text-xl text-transparent
         transition duration-200 ease-in hover:-translate-y-[0.1rem]
-        hover:shadow-md hover:shadow-sky hover:border-sky"
+        hover:border-sky hover:shadow-md hover:shadow-sky"
       >
         Send Feedback
       </button>

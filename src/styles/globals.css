@@ -76,16 +76,20 @@
 
 .rbc-event,
 .rbc-day-slot .rbc-background-event {
-  background-color: #0a50fa !important;
+  background: linear-gradient(45deg, #0a50fa, #54c0ff) !important;
   transition: all 200ms ease-in !important;
   transform: translate(0, 0) !important;
   width: 96% !important;
   margin: auto !important;
 }
 
+.rbc-month-view .rbc-event {
+  margin-top: 1% !important;
+}
+
 .rbc-event:focus,
 .rbc-day-slot .rbc-background-event:focus {
-  outline: 2px auto #4678f4 !important;
+  outline: 0px auto #4678f4 !important;
 }
 
 .rbc-event:hover {
@@ -104,8 +108,8 @@
 */
 
 .rdp {
-  --rdp-accent-color: #0a50fa !important;
-  --rdp-background-color-dark: #4678f4 !important;
+  --rdp-accent-color: #54c0ff !important;
+  --rdp-background-color-dark: #54c0ff !important;
 
   margin: 0em !important;
   width: 100% !important;

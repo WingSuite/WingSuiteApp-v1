@@ -104,7 +104,9 @@ export function CollapsableInfoCard({
       <div className="flex w-full flex-row items-center justify-between">
         <div
           className="w-full text-2xl"
-          onClick={() => {!editMode && setCollapsed(!collapsed)}}
+          onClick={() => {
+            !editMode && setCollapsed(!collapsed);
+          }}
         >
           <div className="flex w-full flex-row items-center gap-0.5">
             <div className="mr-3 text-base">{date}</div>
@@ -218,7 +220,7 @@ export function CollapsableInfoCard({
       </div>
       {collapsed && (
         <TextareaAutosize
-          className={`bg-transparent ${editMode && `text-sky`}`}
+          className={`resize-none bg-transparent ${editMode && `text-sky`}`}
           value={mainTextContent}
           disabled={!editMode}
           onChange={(e) => setMainTextContent(e.target.value)}

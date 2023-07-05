@@ -86,6 +86,7 @@ export function TimeInput({
           !/[0-9]/.test(event.key) &&
           !(event.key === "Backspace") &&
           !(event.key === "Delete") &&
+          !(event.key === "Tab") &&
           event.preventDefault()
         }
         onBlur={() => {
@@ -105,6 +106,7 @@ export function TimeInput({
           !/[0-9]/.test(event.key) &&
           !(event.key === "Backspace") &&
           !(event.key === "Delete") &&
+          !(event.key === "Tab") &&
           event.preventDefault()
         }
         onBlur={() => {

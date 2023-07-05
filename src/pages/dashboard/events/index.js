@@ -1,5 +1,5 @@
 // React Icons
-import { VscCloseAll, VscEdit } from "react-icons/vsc";
+import { VscCheck, VscChromeClose, VscEdit } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
@@ -15,13 +15,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 
-// Calendar UI imports
-import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
-import startOfWeek from "date-fns/startOfWeek";
-import enUS from "date-fns/locale/en-US";
-import format from "date-fns/format";
-import getDay from "date-fns/getDay";
-import "react-big-calendar/lib/css/react-big-calendar.css";
+// Moment import
+import moment from "moment";
+
+// Modal imports
+import Modal from "react-modal";
 
 // JS Cookies import
 import Cookies from "js-cookie";
@@ -39,18 +37,26 @@ import { CollapsableInfoCard, ButtonCard } from "@/components/cards";
 import { errorToaster, successToaster } from "@/components/toasters";
 import { CalendarComponent } from "@/components/calendar";
 import { BottomDropDown } from "@/components/dropdown";
-import { Nothing } from "@/components/nothing";
 import { TimeInput } from "@/components/input";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
+import { EventModal } from "./modal";
+
+// replace '#root' with '#__next' for Next.js
+Modal.setAppElement("#__next");
 
 // Unit member page definition
 export default function EventsPage() {
-  // Define useStates and other constants
+  // Define useStates for utility purposes
   const [unitIDMapping, setUnitIDMapping] = useState({});
   const [toolbarAccess, setToolbarAccess] = useState(false);
-  const [availableUnits, setAvailableUnits] = useState([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [composerOpen, setComposerOpen] = useState(false);
+  const [actionTrigger, setActionTrigger] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState({});
+
+  // Define useStates for composing an event
+  const [availableUnits, setAvailableUnits] = useState([]);
   const [eventRecipient, setEventRecipient] = useState("");
   const [eventTitle, setEventTitle] = useState("");
   const [eventDescription, setEventDescription] = useState("");
@@ -62,9 +68,12 @@ export default function EventsPage() {
     endMinute: "",
   });
   const [eventDays, setEventDays] = useState([]);
-  const [actionTrigger, setActionTrigger] = useState(true);
+
+  // Define useStates for getting event data
   const [queryRange, setQueryRange] = useState({});
   const [events, setEvents] = useState([]);
+
+  // Get the required permissions
   const required = permissionsList.events;
 
   // Preprocess information on user's units mount
@@ -156,7 +165,7 @@ export default function EventsPage() {
     });
   };
 
-  // Function to send call to create event
+  // Function to create event
   const createEvent = () => {
     /*
         INPUT CHECKERS
@@ -178,26 +187,20 @@ export default function EventsPage() {
     }
 
     // Check if start event times are empty
-    if (eventTimes["startHour"] == "" || eventTimes["startMinute"] == "") {
-      errorToaster("Event start time should not be empty or partially filled");
-      return;
-    }
-
-    // Check if start event times are empty
-    if (eventTimes["startHour"] == "" || eventTimes["startMinute"] == "") {
+    if (eventTimes.startHour == "" || eventTimes.startMinute == "") {
       errorToaster("Event start time should not be empty or partially filled");
       return;
     }
 
     // Check if start event times is greater than the end time, if the end time
     // was provided
-    if (eventTimes["endHour"] != "" && eventTimes["endMinute"] != "") {
+    if (eventTimes.endHour != "" || eventTimes.endMinute != "") {
       // Get the unix time of the two dates
       const startTime = new Date(
-        `1970-01-01T${eventTimes["startHour"]}:${eventTimes["startMinute"]}:00`
+        `1970-01-01T${eventTimes.startHour}:${eventTimes.startMinute}:00`
       );
       const endTime = new Date(
-        `1970-01-01T${eventTimes["endHour"]}:${eventTimes["endMinute"]}:00`
+        `1970-01-01T${eventTimes.endHour}:${eventTimes.endMinute}:00`
       );
 
       // Check if startTime is greater than the endTime
@@ -226,16 +229,16 @@ export default function EventsPage() {
         var end_datetime = null;
 
         // Calculate unix timestamps for start datetime
-        start_datetime.setHours(parseInt(eventTimes["startHour"]));
-        start_datetime.setMinutes(parseInt(eventTimes["startMinute"]));
+        start_datetime.setHours(parseInt(eventTimes.startHour));
+        start_datetime.setMinutes(parseInt(eventTimes.startMinute));
         start_datetime = start_datetime.getTime() / 1000;
 
         // Calculate end datetime if the end dates were presented
-        if (eventTimes["endHour"] != "" && eventTimes["endMinute"] != "") {
+        if (eventTimes.endHour != "" && eventTimes.endMinute != "") {
           // Calculate unix timestamps for start datetime
           end_datetime = new Date(item.getTime());
-          end_datetime.setHours(parseInt(eventTimes["endHour"]));
-          end_datetime.setMinutes(parseInt(eventTimes["endMinute"]));
+          end_datetime.setHours(parseInt(eventTimes.endHour));
+          end_datetime.setMinutes(parseInt(eventTimes.endMinute));
           end_datetime = end_datetime.getTime() / 1000;
         }
 
@@ -276,17 +279,71 @@ export default function EventsPage() {
     setActionTrigger(!actionTrigger);
   };
 
+  // Function to update the event
+  const updateEvent = (info) => {
+    // Update the event
+    (async () => {
+      // Call API endpoint for creation
+      var res = await post(
+        "/event/update_event/",
+        {
+          id: info._id,
+          name: info.title,
+          unit: availableUnits[info.unit],
+          description: info.description,
+          location: info.location,
+          start_datetime: info.start.getTime() / 1000,
+          end_datetime: info.end.getTime() / 1000
+        },
+        Cookies.get("access")
+      );
+
+      // If the call was successful, send a success toaster
+      if (res.status == "success") successToaster(res.message);
+      if (res.status == "error") errorToaster(res.message);
+    })();
+
+    // Exit out of view and set trigger
+    setActionTrigger(!actionTrigger);
+    setSelectedEvent({});
+    setModalIsOpen(false);
+  };
+
+  // Function to delete the event
+  const deleteEvent = () => {
+    // Delete the event
+    (async () => {
+      // Call API endpoint for creation
+      var res = await post(
+        "/event/delete_event/",
+        {
+          id: selectedEvent._id,
+        },
+        Cookies.get("access")
+      );
+
+      // If the call was successful, send a success toaster
+      if (res.status == "success") successToaster(res.message);
+      if (res.status == "error") errorToaster(res.message);
+    })();
+
+    // Exit out of view and set trigger
+    setActionTrigger(!actionTrigger);
+    setSelectedEvent({});
+    setModalIsOpen(false);
+  };
+
   // Component for toolbar
   const toolbar = (
     <button
       className={`my-3 flex w-fit flex-row gap-4 rounded-lg border px-3
-          py-2 text-xl transition duration-200 ease-in hover:-translate-y-[0.1rem]
-          hover:shadow-lg ${
-            composerOpen
-              ? `border-sky bg-gradient-to-tr from-deepOcean
-              to-sky text-white hover:border-darkOcean`
-              : `border-silver hover:border-sky`
-          }`}
+      py-2 text-xl transition duration-200 ease-in hover:-translate-y-[0.1rem]
+      hover:shadow-lg ${
+        composerOpen
+          ? `border-sky bg-gradient-to-tr from-deepOcean
+          to-sky text-white hover:border-darkOcean`
+          : `border-silver hover:border-sky`
+      }`}
       onClick={() => setComposerOpen(!composerOpen)}
     >
       <IconContext.Provider
@@ -300,8 +357,8 @@ export default function EventsPage() {
     </button>
   );
 
-  // Component for editor
-  const editor = (
+  // Component for composer
+  const composer = (
     <div
       className="flex max-h-full w-1/4 flex-col gap-5
       overflow-y-auto pb-2 pl-3 pr-3"
@@ -398,11 +455,6 @@ export default function EventsPage() {
     </div>
   );
 
-  // Week View definition
-  const WeekView = (
-    <CalendarComponent events={events} updateRange={setQueryRange} />
-  );
-
   // Render page
   return (
     <div className="relative flex h-screen flex-row">
@@ -411,8 +463,31 @@ export default function EventsPage() {
         <PageTitle className="flex-none" />
         <div className="flex flex-row-reverse">{toolbarAccess && toolbar}</div>
         <div className="flex h-full w-full flex-row gap-5 overflow-hidden">
-          {WeekView}
-          {composerOpen && editor}
+          <CalendarComponent
+            events={events}
+            updateRange={setQueryRange}
+            onEventClick={(e) => {
+              setModalIsOpen(true);
+              setSelectedEvent(e);
+            }}
+          />
+          <Modal
+            isOpen={modalIsOpen}
+            onRequestClose={() => setModalIsOpen(false)}
+            contentLabel="Example Modal"
+            className="m-auto w-fit max-w-[60%] border-0 outline-none"
+            overlayClassName="flex items-center justify-center bg-black
+            bg-opacity-30 fixed inset-0 z-[999]"
+          >
+            <EventModal
+              selectedEvent={selectedEvent}
+              units={availableUnits}
+              setModalIsOpen={setModalIsOpen}
+              updateEvent={updateEvent}
+              deleteEvent={deleteEvent}
+            />
+          </Modal>
+          {composerOpen && composer}
         </div>
       </div>
       <ToastContainer

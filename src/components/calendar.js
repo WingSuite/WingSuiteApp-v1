@@ -10,7 +10,11 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
 
 // Calendar definition
-export function CalendarComponent({ events, updateRange = () => {} }) {
+export function CalendarComponent({
+  events,
+  updateRange = () => {},
+  onEventClick = () => {},
+}) {
   // define useState(s)
   const [view, setView] = useState(Views.MONTH);
 
@@ -37,8 +41,7 @@ export function CalendarComponent({ events, updateRange = () => {} }) {
   // Event customizing specification
   const customRBCEvent = ({ event }) => (
     <div>
-      {console.log(event)}
-      <div className="text-lg ">{event.title}</div>
+      <div className="truncate text-base">{event.title}</div>
       {view != Views.MONTH && <div className="text-xs">{event.unit}</div>}
     </div>
   );
@@ -59,7 +62,6 @@ export function CalendarComponent({ events, updateRange = () => {} }) {
       style={{ height: "100vh" }}
       className="flex max-h-full w-full flex-col gap-2 overflow-y-hidden pr-2"
     >
-      {console.log(events)}
       <Calendar
         localizer={localizer}
         events={events}
@@ -67,6 +69,7 @@ export function CalendarComponent({ events, updateRange = () => {} }) {
         endAccessor="end"
         onView={setView}
         onNavigate={getStartEndTime}
+        onSelectEvent={onEventClick}
         showAllEvents={true}
         formats={formats}
         components={{

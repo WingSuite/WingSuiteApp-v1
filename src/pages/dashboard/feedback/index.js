@@ -23,6 +23,7 @@ import { config, permissionsList } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
+import { authCheck } from "@/utils/authCheck";
 import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
 
@@ -51,6 +52,9 @@ export default function FeedbackPage() {
 
   // On mount of the Next.js page
   useEffect(() => {
+    // Check for correct user auth
+    if (!authCheck()) return;
+
     // Fetch the permissions of the user from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
 
@@ -79,6 +83,9 @@ export default function FeedbackPage() {
 
   // Load feedback data based on selection used
   useEffect(() => {
+    // Check for correct user auth
+    if (!authCheck()) return;
+    
     // Fetch the permissions of the user from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
 

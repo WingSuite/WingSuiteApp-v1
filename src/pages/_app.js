@@ -4,9 +4,6 @@ import "@/styles/globals.css";
 // JS Cookies import
 import Cookies from "js-cookie";
 
-// React and Next.js imports
-import { useEffect } from "react";
-
 // Util imports
 import { get, post } from "@/utils/call";
 
@@ -17,6 +14,13 @@ export default function App({ Component, pageProps }) {
     // If the access token is not there, don't get the user's whoami
     var access = Cookies.get("access");
     var refresh = Cookies.get("refresh");
+
+    // Return if the access is undefined or empty
+    if (access == undefined || access == "") {
+      // Return
+      return;
+    }
+
     if (access != undefined) {
       // Using the given access token, store the information
       // from the response of the /user/who_am_i/ endpoint
@@ -42,7 +46,7 @@ export default function App({ Component, pageProps }) {
       );
 
       // Process the unit info and store it
-      var unitIDMap = {}
+      var unitIDMap = {};
       for (let item of res.message) {
         unitIDMap[item._id] = item.name;
       }

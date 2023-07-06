@@ -18,6 +18,7 @@ import { permissionsList, config } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
+import { authCheck } from "@/utils/authCheck";
 import { formatMilDate } from "@/utils/time";
 import { post, get } from "@/utils/call";
 
@@ -44,6 +45,9 @@ export default function NotificationsPage() {
 
   // On mount of the Next.js page
   useEffect(() => {
+    // Check for correct user auth
+    if (!authCheck()) return;
+
     // Fetch the permissions of the user from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
 

@@ -1,10 +1,9 @@
 // React Icons
-import { VscCheck, VscChromeClose, VscEdit } from "react-icons/vsc";
+import { VscEdit } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import React from "react";
 
 // Toaster components and CSS
@@ -15,9 +14,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 
-// Moment import
-import moment from "moment";
-
 // Modal imports
 import Modal from "react-modal";
 
@@ -25,15 +21,14 @@ import Modal from "react-modal";
 import Cookies from "js-cookie";
 
 // Config imports
-import { permissionsList, config } from "@/config/config";
+import { permissionsList } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
-import { formatMilDate, getTodayDay } from "@/utils/time";
+import { authCheck } from "@/utils/authCheck";
 import { post, get } from "@/utils/call";
 
 // Custom components imports
-import { CollapsableInfoCard, ButtonCard } from "@/components/cards";
 import { errorToaster, successToaster } from "@/components/toasters";
 import { CalendarComponent } from "@/components/calendar";
 import { BottomDropDown } from "@/components/dropdown";
@@ -78,6 +73,9 @@ export default function EventsPage() {
 
   // Preprocess information on user's units mount
   useEffect(() => {
+    // Check for correct user auth
+    if (!authCheck()) return;
+
     // Fetch the permissions of the user and unit ID map from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
     const unitMap = JSON.parse(localStorage.getItem("unitIDMap"));
@@ -109,6 +107,10 @@ export default function EventsPage() {
 
   // Preprocess information on the user's events
   useEffect(() => {
+    // Check for correct user auth
+    if (!authCheck()) return;
+
+    // Preprocess user's events
     (async () => {
       // Return if the queryRange is nothing
       if (Object.keys(queryRange).length == 0) return;
@@ -292,7 +294,7 @@ export default function EventsPage() {
           description: info.description,
           location: info.location,
           start_datetime: info.start.getTime() / 1000,
-          end_datetime: info.end.getTime() / 1000
+          end_datetime: info.end.getTime() / 1000,
         },
         Cookies.get("access")
       );

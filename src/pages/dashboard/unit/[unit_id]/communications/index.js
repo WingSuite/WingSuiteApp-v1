@@ -19,6 +19,7 @@ import { permissionsList } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
+import { authCheck } from "@/utils/authCheck";
 import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
 
@@ -35,6 +36,12 @@ export default function UnitCommunicationsPage() {
   // Define router and get unit ID from URL
   const router = useRouter();
   const { unit_id } = router.query;
+
+  // Execute function on mount
+  useEffect(() => {
+    // Check for correct user auth
+    if (!authCheck()) return;
+  }, []);
 
   // Render page
   return (

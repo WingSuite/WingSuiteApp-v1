@@ -19,6 +19,7 @@ import { permissionsList } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
+import { authCheck } from "@/utils/authCheck";
 import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
 
@@ -32,6 +33,12 @@ import Sidebar from "@/components/sidebar";
 
 // Unit member page definition
 export default function UnitFrontpagePage() {
+  // Execute function on mount
+  useEffect(() => {
+    // Check for correct user auth
+    if (!authCheck()) return;
+  }, []);
+
   // Render page
   return (
     <div className="relative flex h-screen flex-row">

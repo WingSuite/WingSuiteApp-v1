@@ -1,47 +1,37 @@
-// pages/index.js
-import { useState } from 'react';
-import Modal from 'react-modal';
+import React from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-Modal.setAppElement('#__next') // replace '#root' with '#__next' for Next.js
+const data = [
+  { event: 'Event 1', time: '10:23' },
+  { event: 'Event 2', time: '02:34' },
+  { event: 'Event 3', time: '03:45' },
+  // More data...
+];
 
-export default function HomePage() {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+// Convert "mm:ss" to total seconds
+data.forEach((d) => {
+  const parts = d.time.split(':');
+  d.seconds = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+});
 
-  function openModal() {
-    setModalIsOpen(true);
-  }
+console.log(data)
 
-  function closeModal() {
-    setModalIsOpen(false);
-  }
+const formatTick = (seconds) => {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+};
 
-  return (
-    <div className="flex items-center justify-center h-screen bg-gray-200">
-      <button
-        onClick={openModal}
-        className="px-4 py-2 text-black bg-blue-500 rounded"
-      >
-        Open Modal
-      </button>
+const MyLineChart = () => (
+  <ResponsiveContainer width="100%" height={300}>
+    <LineChart data={data} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+      <XAxis dataKey="event" />
+      <YAxis tickFormatter={formatTick} />
+      <Tooltip />
+      <CartesianGrid stroke="#f5f5f5" />
+      <Line type="monotone" dataKey="seconds" stroke="#ff7300" yAxisId={0} />
+    </LineChart>
+  </ResponsiveContainer>
+);
 
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Example Modal"
-        className="m-auto border-0 outline-none max-w-lg w-full"
-        overlayClassName="flex items-center justify-center bg-black bg-opacity-50 fixed inset-0"
-      >
-        <div className="bg-white p-6 rounded shadow-lg">
-          <h2 className="text-2xl mb-4">Hello!</h2>
-          <p className="mb-4">This is a simple modal example for Next.js with Tailwind CSS!</p>
-          <button
-            onClick={closeModal}
-            className="px-4 py-2 text-black bg-blue-500 rounded"
-          >
-            Close Modal
-          </button>
-        </div>
-      </Modal>
-    </div>
-  );
-}
+export default MyLineChart;

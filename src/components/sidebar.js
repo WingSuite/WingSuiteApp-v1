@@ -39,7 +39,7 @@ const Sidebar = () => {
   useEffect(() => {
     // Check for correct user auth
     if (!authCheck()) return;
-    
+
     // Fetch the first and last name of the user from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
 
@@ -271,7 +271,7 @@ const Sidebar = () => {
     Cookies.set("refresh", "");
 
     // Move to login page
-    router.push('/login');
+    router.push("/login");
   };
 
   // Component return
@@ -284,8 +284,8 @@ const Sidebar = () => {
         <div className="grid justify-items-center overflow-hidden">
           {sidebarLogo}
           <div
-            className="flex w-full flex-col items-center gap-2
-            overflow-y-auto pb-4 pt-2"
+            className="very-light-scrollbar flex w-full flex-col items-center
+            gap-2 overflow-y-auto pb-4 pt-2"
           >
             {menuList}
             {unitList}

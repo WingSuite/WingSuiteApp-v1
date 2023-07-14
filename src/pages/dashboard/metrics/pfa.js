@@ -6,43 +6,25 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 
-// React icons
-import { VscCloseAll, VscEdit } from "react-icons/vsc";
-import { IconContext } from "react-icons";
-
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import React from "react";
 
 // Toaster Components and CSS
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // JS Cookies import
 import Cookies from "js-cookie";
 
-// Config imports
-import { permissionsList, config } from "@/config/config";
-
 // Util imports
-import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
-import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
 
 // Custom components imports
-import { errorToaster, successToaster } from "@/components/toasters";
-import { BottomDropDown } from "@/components/dropdown";
-import { CollapsableInfoCard } from "@/components/cards";
-import { Nothing } from "@/components/nothing";
-import PageTitle from "@/components/pageTitle";
 import { StatCard } from "@/components/cards";
-import Sidebar from "@/components/sidebar";
 
 // Component to define PFA chart and content
 export default function PFAView() {
@@ -259,7 +241,7 @@ export default function PFAView() {
       return (
         <div
           className="custom-tooltip rounded-lg border border-silver bg-white
-        p-2 "
+          p-2"
         >
           <div className="text-2xl">{payload[0].payload.name}</div>
           <div className="text-sky">
@@ -277,17 +259,17 @@ export default function PFAView() {
       <div>{toolbar}</div>
       <div className="h-full w-full shrink">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={metricData} margin={{ right: 20 }}>
+          <LineChart data={metricData} margin={{ top: 15, right: 30 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" padding={{ left: 20 }} />
+            <XAxis dataKey="name" padding={{ left: 40, right: 40 }} />
             {!(toolbarSelect == 3) ? (
               <YAxis
                 tickCount={11}
                 domain={[0, 100]}
-                padding={{ bottom: 20 }}
+                padding={{ bottom: 40 }}
               />
             ) : (
-              <YAxis tickFormatter={formatTick} padding={{ bottom: 20 }} />
+              <YAxis tickFormatter={formatTick} padding={{ bottom: 40 }} />
             )}
             {!(toolbarSelect == 3) ? (
               <Tooltip content={<DefaultToolTip />}/>

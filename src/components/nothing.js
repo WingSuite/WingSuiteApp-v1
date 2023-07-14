@@ -6,8 +6,8 @@ export function Nothing({ mainText, subText, icon = <VscError /> }) {
   // Return component content
   return (
     <div
-      className="text-deepOcean flex h-full w-full flex-col items-center
-      justify-center rounded-lg"
+      className="flex h-full w-full flex-col items-center justify-center
+      rounded-lg border-2 border-dashed text-deepOcean"
     >
       <IconContext.Provider value={{ size: "5em", className: "mb-3" }}>
         {icon}

@@ -1,5 +1,6 @@
 // React Icons
 import { VscOrganization, VscChevronDown, VscChevronUp } from "react-icons/vsc";
+import { MdLogout } from "react-icons/md";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
@@ -17,6 +18,7 @@ import { regularSidebarContents, unitSidebarConfig } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
+import { authCheck } from "@/utils/authCheck";
 import { post } from "@/utils/call";
 
 // Image
@@ -35,6 +37,9 @@ const Sidebar = () => {
 
   // On mount of the Next.js page
   useEffect(() => {
+    // Check for correct user auth
+    if (!authCheck()) return;
+
     // Fetch the first and last name of the user from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
 
@@ -88,6 +93,8 @@ const Sidebar = () => {
       setUnitCollapse(collapses);
       setUnits(rawUnits);
     })();
+
+    // Send the user to the login page if ever the
   }, []);
 
   // Render the Logo
@@ -246,6 +253,27 @@ const Sidebar = () => {
     </div>
   ));
 
+  // Function to logout
+  const logoutButton = () => {
+    // Process logout
+    (async () => {
+      post(
+        "/auth/signout/",
+        { access: Cookies.get("access"), refresh: Cookies.get("refresh") },
+        Cookies.get("access")
+      );
+    })();
+
+    // Wipe localStorage and cookies
+    localStorage.setItem("unitIDMap", "{}");
+    localStorage.setItem("whoami", "{}");
+    Cookies.set("access", "");
+    Cookies.set("refresh", "");
+
+    // Move to login page
+    router.push("/login");
+  };
+
   // Component return
   return (
     <div
@@ -256,8 +284,8 @@ const Sidebar = () => {
         <div className="grid justify-items-center overflow-hidden">
           {sidebarLogo}
           <div
-            className="flex w-full flex-col items-center gap-2
-            overflow-y-auto pb-4 pt-2"
+            className="very-light-scrollbar flex w-full flex-col items-center
+            gap-2 overflow-y-auto pb-4 pt-2"
           >
             {menuList}
             {unitList}
@@ -265,11 +293,22 @@ const Sidebar = () => {
         </div>
         <div className="mt-5 flex flex-col">
           <div
-            className="mx-4 mb-4 flex flex-row items-center gap-2
-            rounded-xl bg-white px-3 py-2"
+            className="mx-4 mb-4 flex flex-row items-center gap-3
+            rounded-xl bg-white py-2 pl-3 pr-1"
           >
             <div className="h-[2.3rem] w-[2.3rem] rounded-full bg-silver" />
             <div className="flex-1 truncate text-sm">{fullName}</div>
+            <button onClick={logoutButton}>
+              <IconContext.Provider
+                value={{
+                  color: "#fc3535",
+                  size: "1.5em",
+                  className: "mr-2",
+                }}
+              >
+                <MdLogout />
+              </IconContext.Provider>
+            </button>
           </div>
         </div>
       </div>

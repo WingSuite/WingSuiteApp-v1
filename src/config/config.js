@@ -40,7 +40,7 @@ export const config = {
     "Are we in Armageddon, New Mexico?",
     "Yeah we are fo sho lost, fr fr",
   ],
-  notificationPreviewTrimLength: 200,
+  notificationPreviewTrimLength: 200
 };
 
 // Main Sidebar config
@@ -116,11 +116,7 @@ export const permissionsList = {
     ],
   },
   events: {
-    toolbar: [
-      "event.create_event",
-      "event.update_event",
-      "event.delete_event",
-    ],
+    toolbar: ["event.create_event", "event.update_event", "event.delete_event"],
   },
   feedback: {
     toolbar: [

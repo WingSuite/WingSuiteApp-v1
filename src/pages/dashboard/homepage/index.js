@@ -14,6 +14,7 @@ import { config } from "@/config/config";
 
 // Util imports
 import { getTimeBounds, formatMilTime, getTodayDay } from "@/utils/time";
+import { authCheck } from "@/utils/authCheck";
 import { post } from "@/utils/call";
 
 // Custom components imports
@@ -41,6 +42,9 @@ export default function HomePage() {
 
   // On mount of the Next.js page
   useEffect(() => {
+    // Check for correct user auth
+    if (!authCheck()) return;
+
     // Fetch the last name of the user from local storage
     const localData = JSON.parse(localStorage.getItem("whoami"));
 

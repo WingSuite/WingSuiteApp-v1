@@ -66,3 +66,12 @@ export function formatMilDate(unixTimestamp) {
   // Return formatted date
   return `${day} ${month} ${year}`;
 }
+
+// Function to get amount of seconds from "mm:ss" format
+export function getSeconds(minuteSecondString) {
+  // Calculate the string into minutes and seconds
+  const [minutes, seconds] = time.split(':').map(Number);
+
+  // Return the count
+  return minutes * 60 + seconds;
+}

@@ -271,7 +271,7 @@ export default function PFAView() {
           <div>{toolbar}</div>
           <div className="h-full w-full shrink">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={metricData} margin={{ top: 15, right: 30 }}>
+              <LineChart data={metricData} margin={{ right: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" padding={{ left: 40, right: 40 }} />
                 {!(toolbarSelect == 3) ? (

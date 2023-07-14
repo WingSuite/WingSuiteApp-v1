@@ -130,7 +130,7 @@ export default function WarriorKnowledgeView() {
         <div className="flex h-full w-full flex-col gap-4">
           <div className="mt-2 h-full w-full shrink">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={metricData} margin={{ top: 20, right: 30 }}>
+              <LineChart data={metricData} margin={{ right: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" padding={{ left: 40, right: 40 }} />
                 <YAxis

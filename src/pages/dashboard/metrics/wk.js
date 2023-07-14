@@ -9,63 +9,30 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// React Icons
-import { VscCloseAll, VscEdit } from "react-icons/vsc";
-import { IconContext } from "react-icons";
-
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import React from "react";
 
 // Toaster Components and CSS
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // JS Cookies import
 import Cookies from "js-cookie";
 
-// Config imports
-import { permissionsList } from "@/config/config";
-
 // Util imports
-import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
-import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
 
 // Custom components imports
 import { StatCard } from "@/components/cards";
-import { errorToaster, successToaster } from "@/components/toasters";
-import { BottomDropDown } from "@/components/dropdown";
-import { CollapsableInfoCard } from "@/components/cards";
-import { Nothing } from "@/components/nothing";
-import PageTitle from "@/components/pageTitle";
-import Sidebar from "@/components/sidebar";
-
 // Component to define Warrior Knowledge chart and content
 export default function WarriorKnowledgeView() {
   // Define useStates and other constants
-  const [compositeScores, setCompositeScores] = useState([]);
-  const [subScores, setSubScores] = useState({});
   const [metricData, setMetricData] = useState([]);
-  const [toolbarSelect, setToolbarSelect] = useState(0);
   const [average, setAverage] = useState(0);
   const [highest, setHighest] = useState(0);
   const [current, setCurrent] = useState(0);
   const [difference, setDifference] = useState([]);
-  const selectionMap = {
-    0: "composite_score",
-    1: "pushup",
-    2: "situp",
-    3: "run",
-  };
-  const toolbarItems = [
-    "Composite Score",
-    "Push-Ups",
-    "Sit-Ups",
-    "1.5 Mile Run",
-  ];
 
   // Execute function on mount
   useEffect(() => {
@@ -141,7 +108,7 @@ export default function WarriorKnowledgeView() {
         >
           <div className="text-2xl">{payload[0].payload.name}</div>
           <div className="text-sky">
-            {`${toolbarItems[toolbarSelect]} : ${payload[0].value}`}
+            {`Warrior Knowledge : ${payload[0].value}`}
           </div>
         </div>
       );

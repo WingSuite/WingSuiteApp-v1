@@ -15,6 +15,7 @@ import AutosizeInput from "react-input-autosize";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 // Regular Card definition
 export function Card({
@@ -226,6 +227,26 @@ export function CollapsableInfoCard({
           onChange={(e) => setMainTextContent(e.target.value)}
         />
       )}
+    </div>
+  );
+}
+
+// User Card definition
+export function UserCard({ name, email, phone }) {
+  // Render card
+  return (
+    <div
+      className="flex w-[14%] flex-col items-center gap-5
+      rounded-lg border border-silver bg-white px-4 pb-4 pt-4 shadow-lg"
+    >
+      <div className="relative h-[170px] w-full">
+        <Image src="/logobw.png" objectFit="contain" alt="Logo" layout="fill" />
+      </div>
+      <div className="w-full text-left">
+        <div className="font-bold">{name}</div>
+        <div>{email}</div>
+        <div>{phone}</div>
+      </div>
     </div>
   );
 }

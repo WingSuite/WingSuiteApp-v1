@@ -19,7 +19,7 @@ import { regularSidebarContents, unitSidebarConfig } from "@/config/config";
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
-import { post } from "@/utils/call";
+import { post, get } from "@/utils/call";
 
 // Image
 import logo from "../../public/logo.png";
@@ -75,12 +75,15 @@ const Sidebar = () => {
         return;
       }
 
+      // Get user's available units
+      res = await get("/user/get_users_units/", Cookies.get("access"));
+
       // Iterate through the user's units
-      for (let item of user["units"]) {
+      for (let item of res.message) {
         // Get the iterate unit's data
         const unitData = await post(
           "/unit/get_unit_info/",
-          { id: item },
+          { id: item._id },
           Cookies.get("access")
         );
 

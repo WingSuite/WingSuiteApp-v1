@@ -232,18 +232,21 @@ export function CollapsableInfoCard({
 }
 
 // User Card definition
-export function UserCard({ name, email, phone }) {
+export function UserCard({ name, rank, email, phone }) {
   // Render card
   return (
     <div
-      className="flex w-[14%] flex-col items-center gap-5
-      rounded-lg border border-silver bg-white px-4 pb-4 pt-4 shadow-lg"
+      className="relative flex h-[320px] w-[14%] flex-col items-center gap-5 rounded-lg
+      border-2 border-silver bg-white px-4 pb-4 pt-4 shadow-md transition
+      duration-200 ease-in hover:-translate-y-[0.1rem] hover:border-2
+      hover:border-sky hover:shadow-sky"
     >
       <div className="relative h-[170px] w-full">
         <Image src="/logobw.png" objectFit="contain" alt="Logo" layout="fill" />
       </div>
-      <div className="w-full text-left">
-        <div className="font-bold">{name}</div>
+      <div className="w-full text-left text-base">
+        <div className="font-bold truncate">{name}</div>
+        <div>{rank}</div>
         <div>{email}</div>
         <div>{phone}</div>
       </div>

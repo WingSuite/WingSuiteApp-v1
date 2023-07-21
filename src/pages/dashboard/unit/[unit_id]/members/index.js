@@ -114,7 +114,8 @@ export default function UnitMembersPage() {
           .includes(user._id);
         const hasAccess = permissionsCheck(required.handle, user.permissions);
         const isAdmin = permissionsCheck([], user.permissions);
-        const permitted = isAdmin || (hasAccess && isOfficer) || isSuperior.message;
+        const permitted =
+          isAdmin || (hasAccess && isOfficer) || isSuperior.message;
         setDoesUseHasAccess(permitted);
 
         // Get the user's feedback information

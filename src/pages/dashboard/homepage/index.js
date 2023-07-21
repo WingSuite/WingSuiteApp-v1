@@ -166,8 +166,9 @@ export default function HomePage() {
         Cookies.get("access")
       );
 
-      // Save last PFA score
-      setLastPFAScore(res.message[0].composite_score);
+      // Set lastPFAScore to "N/A" if there is no PFA data
+      if (res.message.length == 0) setLastPFAScore("N/A");
+      else setLastPFAScore(res.message[0].composite_score);
 
       // Call API to get the user's data
       res = await post(
@@ -176,8 +177,9 @@ export default function HomePage() {
         Cookies.get("access")
       );
 
-      // Save last PFA score
-      setLastWKScore(res.message[0].composite_score);
+      // Set lastPFAScore to "N/A" if there is no WK data
+      if (res.message.length == 0) setLastWKScore("N/A");
+      else setLastWKScore(res.message[0].composite_score);
     })();
   }, []);
 

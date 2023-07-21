@@ -94,7 +94,7 @@ export default function EventsPage() {
 
       // Process available units
       for (let item of res.message)
-        if (user.units.includes(item._id)) workable[item.name] = item._id;
+        if (item.is_superior) workable[item.name] = item._id;
 
       // If the user is an admin, grant all units
       if (user.permissions.includes(config.allAccessPermission))

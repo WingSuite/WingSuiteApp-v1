@@ -85,7 +85,7 @@ export default function FeedbackPage() {
   useEffect(() => {
     // Check for correct user auth
     if (!authCheck()) return;
-    
+
     // Fetch the permissions of the user from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
 
@@ -194,7 +194,7 @@ export default function FeedbackPage() {
 
   // Function definition for deleting a feedback
   const deleteFeedback = (id) => {
-    // Send API call for creating the feedback
+    // Send API call for deleting the feedback
     (async () => {
       // Get the user's feedback information
       var res = await post(

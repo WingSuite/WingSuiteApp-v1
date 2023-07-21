@@ -24,6 +24,7 @@ import { authCheck } from "@/utils/authCheck";
 import { post } from "@/utils/call";
 
 // Custom components imports
+import { Nothing } from "@/components/nothing";
 import { StatCard } from "@/components/cards";
 
 // Component to define PFA chart and content
@@ -38,6 +39,7 @@ export default function PFAView() {
   const [highest, setHighest] = useState(0);
   const [current, setCurrent] = useState(0);
   const [difference, setDifference] = useState([]);
+  const [isNothing, setIsNothing] = useState(false);
   const selectionMap = {
     0: "composite_score",
     1: "pushup",
@@ -67,6 +69,12 @@ export default function PFAView() {
 
       // Extract information
       const info = res.message.reverse();
+
+      // If info is empty, set isNothing to true
+      if (info.length == 0) {
+        setIsNothing(true);
+        return;
+      }
 
       // Get and set the list of labels
       setLabels(info.map((item) => item.name));
@@ -255,56 +263,65 @@ export default function PFAView() {
 
   // Render component
   return (
-    <div className="flex h-full w-full flex-col gap-4">
-      <div>{toolbar}</div>
-      <div className="h-full w-full shrink">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={metricData} margin={{ top: 15, right: 30 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" padding={{ left: 40, right: 40 }} />
-            {!(toolbarSelect == 3) ? (
-              <YAxis
-                tickCount={11}
-                domain={[0, 100]}
-                padding={{ bottom: 40 }}
-              />
-            ) : (
-              <YAxis tickFormatter={formatTick} padding={{ bottom: 40 }} />
-            )}
-            {!(toolbarSelect == 3) ? (
-              <Tooltip content={<DefaultToolTip />}/>
-            ) : (
-              <Tooltip content={<TimeToolTip />} />
-            )}
-            <Tooltip />
-            <Line
-              type="linear"
-              dataKey={
-                toolbarSelect == 3 ? "seconds" : toolbarItems[toolbarSelect]
-              }
-              stroke="#54c0ff"
-              strokeWidth={4}
-              dot={{ r: 8 }}
-              activeDot={{ r: 12 }}
+    <>
+      {isNothing ? (
+        <Nothing mainText="No Data Recorded" subText="* Cricket Chirps *" />
+      ) : (
+        <div className="flex h-full w-full flex-col gap-4">
+          <div>{toolbar}</div>
+          <div className="h-full w-full shrink">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={metricData} margin={{ right: 30 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" padding={{ left: 40, right: 40 }} />
+                {!(toolbarSelect == 3) ? (
+                  <YAxis
+                    tickCount={11}
+                    domain={[0, 100]}
+                    padding={{ bottom: 40 }}
+                  />
+                ) : (
+                  <YAxis tickFormatter={formatTick} padding={{ bottom: 40 }} />
+                )}
+                {!(toolbarSelect == 3) ? (
+                  <Tooltip content={<DefaultToolTip />} />
+                ) : (
+                  <Tooltip content={<TimeToolTip />} />
+                )}
+                <Tooltip />
+                <Line
+                  type="linear"
+                  dataKey={
+                    toolbarSelect == 3 ? "seconds" : toolbarItems[toolbarSelect]
+                  }
+                  stroke="#54c0ff"
+                  strokeWidth={4}
+                  dot={{ r: 8 }}
+                  activeDot={{ r: 12 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex w-full flex-row gap-10">
+            <StatCard
+              keyContent={`Highest ${toolbarItems[toolbarSelect]}`}
+              valueContent={highest}
             />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="flex w-full flex-row gap-10">
-        <StatCard
-          keyContent={`Highest ${toolbarItems[toolbarSelect]}`}
-          valueContent={highest}
-        />
-        <StatCard
-          keyContent={`Average ${toolbarItems[toolbarSelect]}`}
-          valueContent={average}
-        />
-        <StatCard
-          keyContent={`Last ${toolbarItems[toolbarSelect]}`}
-          valueContent={current}
-        />
-        <StatCard keyContent={`Current Difference`} valueContent={difference} />
-      </div>
-    </div>
+            <StatCard
+              keyContent={`Average ${toolbarItems[toolbarSelect]}`}
+              valueContent={average}
+            />
+            <StatCard
+              keyContent={`Last ${toolbarItems[toolbarSelect]}`}
+              valueContent={current}
+            />
+            <StatCard
+              keyContent={`Current Difference`}
+              valueContent={difference}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

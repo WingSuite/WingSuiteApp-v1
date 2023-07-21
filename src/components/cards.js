@@ -7,6 +7,7 @@ import {
   VscCheck,
   VscChromeClose,
 } from "react-icons/vsc";
+import { MdLogout } from "react-icons/md";
 import { IconContext } from "react-icons";
 
 // Autosize inputs import
@@ -15,6 +16,7 @@ import AutosizeInput from "react-input-autosize";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 // Regular Card definition
 export function Card({
@@ -226,6 +228,72 @@ export function CollapsableInfoCard({
           onChange={(e) => setMainTextContent(e.target.value)}
         />
       )}
+    </div>
+  );
+}
+
+// User Card definition
+export function UserCard({ id, name, rank, email, phone, deleteFunc = null }) {
+  // Define useStates
+  const [confirm, setConfirm] = useState(false);
+
+  // Render card
+  return (
+    <div
+      className="relative flex h-[320px] w-[14%] flex-col gap-5 rounded-lg
+      border-2 border-silver bg-white px-4 pb-4 pt-4 shadow-md transition
+      duration-200 ease-in hover:-translate-y-[0.1rem] hover:border-2
+      hover:border-sky hover:shadow-sky"
+    >
+      <div className="relative h-[170px] w-full">
+        <Image src="/logobw.png" objectFit="contain" alt="Logo" layout="fill" />
+      </div>
+      {deleteFunc && (
+        <div className="absolute right-0 top-0 flex flex-col gap-1 p-2">
+          {!confirm && (
+            <button
+              className="transition duration-200 ease-in hover:text-scarlet"
+              onClick={() => {
+                setConfirm(true);
+              }}
+            >
+              <IconContext.Provider value={{ size: "1.2em" }}>
+                <MdLogout />
+              </IconContext.Provider>
+            </button>
+          )}
+          {confirm && (
+            <button
+              className="transition duration-200 ease-in hover:text-scarlet"
+              onClick={() => {
+                setConfirm(false);
+              }}
+            >
+              <IconContext.Provider value={{ size: "1.2em" }}>
+                <VscChromeClose />
+              </IconContext.Provider>
+            </button>
+          )}
+          {confirm && (
+            <button
+              className="transition duration-200 ease-in hover:text-scarlet"
+              onClick={() => {
+                deleteFunc(id, name);
+              }}
+            >
+              <IconContext.Provider value={{ size: "1.2em" }}>
+                <VscCheck />
+              </IconContext.Provider>
+            </button>
+          )}
+        </div>
+      )}
+      <div className="w-full text-left text-base">
+        <div className="truncate font-bold">{name}</div>
+        <div>{rank}</div>
+        <div>{email}</div>
+        <div>{phone}</div>
+      </div>
     </div>
   );
 }

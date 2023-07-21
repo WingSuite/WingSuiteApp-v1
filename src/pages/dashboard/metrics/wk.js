@@ -24,7 +24,9 @@ import { authCheck } from "@/utils/authCheck";
 import { post } from "@/utils/call";
 
 // Custom components imports
+import { Nothing } from "@/components/nothing";
 import { StatCard } from "@/components/cards";
+
 // Component to define Warrior Knowledge chart and content
 export default function WarriorKnowledgeView() {
   // Define useStates and other constants
@@ -33,6 +35,7 @@ export default function WarriorKnowledgeView() {
   const [highest, setHighest] = useState(0);
   const [current, setCurrent] = useState(0);
   const [difference, setDifference] = useState([]);
+  const [isNothing, setIsNothing] = useState(false);
 
   // Execute function on mount
   useEffect(() => {
@@ -47,6 +50,12 @@ export default function WarriorKnowledgeView() {
         { page_size: 2000, page_index: 0 },
         Cookies.get("access")
       );
+
+      // If the result is empty, set isNothing to true
+      if (res.message.length == 0) {
+        setIsNothing(true);
+        return;
+      }
 
       // Get and set the list of labels
       const labels = res.message.reverse().map((item) => item.name);
@@ -87,11 +96,7 @@ export default function WarriorKnowledgeView() {
       // Update useStates
       setHighest(highest);
       setAverage(average / data.length);
-      setCurrent(
-        data.length == 0
-          ? "N/A"
-          : data.slice(-1)[0].composite_score
-      );
+      setCurrent(data.length == 0 ? "N/A" : data.slice(-1)[0].composite_score);
       setDifference(data.length <= 1 ? "N/A" : diff);
       setMetricData(data);
     })();
@@ -118,41 +123,54 @@ export default function WarriorKnowledgeView() {
 
   // Render component
   return (
-    <div className="flex h-full w-full flex-col gap-4">
-      <div className="h-full w-full shrink mt-2">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={metricData} margin={{ top: 20, right: 30 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" padding={{ left: 40, right: 40 }} />
-            <YAxis tickCount={11} domain={[0, 100]} padding={{ bottom: 40 }} />
-            <Tooltip content={<DefaultToolTip />} />
-            <Tooltip />
-            <Line
-              type="linear"
-              dataKey="composite_score"
-              stroke="#54c0ff"
-              strokeWidth={4}
-              dot={{ r: 8 }}
-              activeDot={{ r: 12 }}
+    <>
+      {isNothing ? (
+        <Nothing mainText="No Data Recorded" subText="* Cricket Chirps *" />
+      ) : (
+        <div className="flex h-full w-full flex-col gap-4">
+          <div className="mt-2 h-full w-full shrink">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={metricData} margin={{ right: 30 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" padding={{ left: 40, right: 40 }} />
+                <YAxis
+                  tickCount={11}
+                  domain={[0, 100]}
+                  padding={{ bottom: 40 }}
+                />
+                <Tooltip content={<DefaultToolTip />} />
+                <Tooltip />
+                <Line
+                  type="linear"
+                  dataKey="composite_score"
+                  stroke="#54c0ff"
+                  strokeWidth={4}
+                  dot={{ r: 8 }}
+                  activeDot={{ r: 12 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex w-full flex-row gap-10">
+            <StatCard
+              keyContent={`Highest Warrior Knowledge`}
+              valueContent={highest}
             />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="flex w-full flex-row gap-10">
-        <StatCard
-          keyContent={`Highest Warrior Knowledge`}
-          valueContent={highest}
-        />
-        <StatCard
-          keyContent={`Average Warrior Knowledge`}
-          valueContent={average}
-        />
-        <StatCard
-          keyContent={`Last Warrior Knowledge`}
-          valueContent={current}
-        />
-        <StatCard keyContent={`Current Difference`} valueContent={difference} />
-      </div>
-    </div>
+            <StatCard
+              keyContent={`Average Warrior Knowledge`}
+              valueContent={average}
+            />
+            <StatCard
+              keyContent={`Last Warrior Knowledge`}
+              valueContent={current}
+            />
+            <StatCard
+              keyContent={`Current Difference`}
+              valueContent={difference}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

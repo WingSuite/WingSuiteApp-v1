@@ -21,7 +21,7 @@ import Modal from "react-modal";
 import Cookies from "js-cookie";
 
 // Config imports
-import { permissionsList } from "@/config/config";
+import { permissionsList, config } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
@@ -35,7 +35,7 @@ import { BottomDropDown } from "@/components/dropdown";
 import { TimeInput } from "@/components/input";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
-import { EventModal } from "./modal";
+import EventModal from "./modal";
 
 // replace '#root' with '#__next' for Next.js
 Modal.setAppElement("#__next");
@@ -93,9 +93,12 @@ export default function EventsPage() {
       var res = await get("/user/get_users_units/", Cookies.get("access"));
 
       // Process available units
-      for (let item of res.message) {
-        workable[item.name] = item._id;
-      }
+      for (let item of res.message)
+        if (item.is_superior) workable[item.name] = item._id;
+
+      // If the user is an admin, grant all units
+      if (user.permissions.includes(config.allAccessPermission))
+        for (let item of res.message) workable[item.name] = item._id;
 
       // Set useStates
       setAvailableUnits(workable);

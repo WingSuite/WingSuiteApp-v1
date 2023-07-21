@@ -40,7 +40,7 @@ export const config = {
     "Are we in Armageddon, New Mexico?",
     "Yeah we are fo sho lost, fr fr",
   ],
-  notificationPreviewTrimLength: 200
+  notificationPreviewTrimLength: 200,
 };
 
 // Main Sidebar config
@@ -124,5 +124,15 @@ export const permissionsList = {
       "statistic.feedback.update_feedback",
       "statistic.feedback.delete_feedback",
     ],
+  },
+  unit: {
+    members: {
+      handle: [
+        "unit.add_members",
+        "unit.delete_members",
+        "unit.add_officers",
+        "unit.delete_officers",
+      ],
+    },
   },
 };

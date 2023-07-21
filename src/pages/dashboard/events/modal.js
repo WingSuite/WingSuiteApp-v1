@@ -22,7 +22,7 @@ import { BottomDropDown } from "@/components/dropdown";
 import { TimeInput } from "@/components/input";
 
 // Subcomponent to define the contents of the event modal
-export function EventModal({
+export default function EventModal({
   selectedEvent,
   units,
   setModalIsOpen,
@@ -30,7 +30,7 @@ export function EventModal({
   updateEvent = null,
 }) {
   // Define useStates
-  const [event, setEvent] = useState(selectedEvent);
+  const [event, setEvent] = useState(selectedEvent || []);
   const [editMode, setEditMode] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
   const [timeFrame, setTimeFrame] = useState({

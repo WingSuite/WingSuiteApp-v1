@@ -1,33 +1,17 @@
 // React Icons
-import { VscCloseAll, VscEdit } from "react-icons/vsc";
-import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import React from "react";
 
 // Toaster Components and CSS
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// JS Cookies import
-import Cookies from "js-cookie";
-
-// Config imports
-import { permissionsList } from "@/config/config";
-
 // Util imports
-import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
-import { formatMilDate } from "@/utils/time";
-import { post } from "@/utils/call";
 
 // Custom components imports
-import { errorToaster, successToaster } from "@/components/toasters";
-import { BottomDropDown } from "@/components/dropdown";
-import { CollapsableInfoCard } from "@/components/cards";
-import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
 
@@ -75,7 +59,7 @@ export default function MetricsPage() {
   return (
     <div className="relative flex h-screen flex-row">
       <Sidebar />
-      <div className="m-10 flex max-h-full w-full flex-col">
+      <div className="m-10 flex max-h-screen w-full flex-col overflow-y-auto">
         <PageTitle className="flex-none" />
         {toolbar}
         <div className="h-full">

@@ -36,14 +36,16 @@ import Sidebar from "@/components/sidebar";
 // Unit member page definition
 export default function UnitMembersPage() {
   // Define useStates
+  const [user, setUser] = useState({});
   const [reverseUnitIDMap, setReversedUnitIDMap] = useState({});
   const [membersList, setMembersList] = useState([]);
   const [officersList, setOfficersList] = useState([]);
-  const [isUserOfficer, setIsUserOfficer] = useState(false);
+  const [doesUserHasAccess, setDoesUseHasAccess] = useState(false);
   const [availableUsers, setAvailableUsers] = useState([]);
   const [selectedAdd, setSelectedAdd] = useState(0);
   const [selectedUser, setSelectedUser] = useState("");
   const [actionTrigger, setActionTrigger] = useState(false);
+  const required = permissionsList.unit.members;
 
   // Define router and get unit ID from URL
   const router = useRouter();
@@ -56,6 +58,7 @@ export default function UnitMembersPage() {
 
     // Get the user's information
     const user = JSON.parse(localStorage.getItem("whoami"));
+    setUser(user);
 
     // Get unit ID mapping in reverse order
     const unitIDMap = JSON.parse(localStorage.getItem("unitIDMap"));
@@ -98,14 +101,24 @@ export default function UnitMembersPage() {
         }
         officers = new Set(officers.map((item) => item._id));
 
-        // Check if the user is an officer of the unit
+        // Check if the user is a superior officer
+        var isSuperior = await post(
+          "/unit/is_superior_officer/",
+          { id: reversedMap[unit_id] },
+          Cookies.get("access")
+        );
+
+        // Check if the user is an officer of the unit or is an admin
         const isOfficer = res.message
           .map((item) => item._id)
           .includes(user._id);
-        setIsUserOfficer(isOfficer);
+        const hasAccess = permissionsCheck(required.handle, user.permissions);
+        const isAdmin = permissionsCheck([], user.permissions);
+        const permitted = isAdmin || (hasAccess && isOfficer) || isSuperior.message;
+        setDoesUseHasAccess(permitted);
 
         // Get the user's feedback information
-        if (isOfficer) {
+        if (permitted) {
           // Get every user in the organization
           var res = await post(
             "/user/everyone/",
@@ -154,12 +167,35 @@ export default function UnitMembersPage() {
       if (res.status == "success")
         successToaster(`${selectedUser} has been added`);
       if (res.status == "error") errorToaster(res.message);
-    })();
 
-    // Reset useStates
-    setSelectedAdd(0);
-    setSelectedUser("");
-    setActionTrigger(!actionTrigger);
+      // Reset useStates
+      setSelectedAdd(0);
+      setSelectedUser("");
+      setActionTrigger(!actionTrigger);
+    })();
+  };
+
+  // Function to remove users
+  const removeUser = (id, name, type) => {
+    // Send API call for deleting the user
+    (async () => {
+      // Get the user's feedback information
+      var res = await post(
+        type == 1 ? "/unit/delete_members/" : "/unit/delete_officers/",
+        {
+          id: reverseUnitIDMap[unit_id],
+          users: [id],
+        },
+        Cookies.get("access")
+      );
+
+      // If the call was successful, send a success toaster
+      if (res.status == "success") successToaster(`${name} has been removed`);
+      if (res.status == "error") errorToaster(res.message);
+
+      // Trigger action useState
+      setActionTrigger(!actionTrigger);
+    })();
   };
 
   // Add user card
@@ -211,14 +247,22 @@ export default function UnitMembersPage() {
         {officersList.map((item) => (
           <UserCard
             key={`Officer-${item._id}`}
+            id={item._id}
             name={item.full_name}
             rank={item.rank ? item.rank : "No Rank"}
             email={item.email}
             phone={item.phone_number}
+            deleteFunc={
+              doesUserHasAccess
+                ? (id, name) => {
+                    removeUser(id, name, 0);
+                  }
+                : null
+            }
           />
         ))}
         {selectedAdd == 1 && addUserCard}
-        {isUserOfficer && !(selectedAdd == 1) && (
+        {doesUserHasAccess && !(selectedAdd == 1) && (
           <button
             className="relative flex h-[320px] w-[14%] flex-col items-center
             justify-center gap-5 rounded-lg border-2 border-dashed
@@ -247,15 +291,23 @@ export default function UnitMembersPage() {
       <div className="flex flex-wrap gap-4">
         {membersList.map((item) => (
           <UserCard
+            id={item._id}
             key={`Member-${item._id}`}
             name={item.full_name}
             rank={item.rank ? item.rank : "No Rank"}
             email={item.email}
             phone={item.phone_number}
+            deleteFunc={
+              doesUserHasAccess
+                ? (id, name) => {
+                    removeUser(id, name, 1);
+                  }
+                : null
+            }
           />
         ))}
         {selectedAdd == 2 && addUserCard}
-        {isUserOfficer && !(selectedAdd == 2) && (
+        {doesUserHasAccess && !(selectedAdd == 2) && (
           <button
             className="relative flex h-[320px] w-[14%] flex-col items-center
             justify-center gap-5 rounded-lg border-2 border-dashed
@@ -281,7 +333,7 @@ export default function UnitMembersPage() {
   return (
     <div className="relative flex h-screen flex-row">
       <Sidebar />
-      <div className="m-10 flex max-h-full w-full flex-col">
+      <div className="m-10 flex max-h-screen w-full flex-col overflow-y-auto">
         <PageTitle className="flex-none" />
         <div className="flex flex-col gap-8">
           {officersDisplay}

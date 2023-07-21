@@ -1,5 +1,5 @@
 // Import
-import { config, permissionsList } from "@/config/config";
+import { config } from "@/config/config";
 
 // POST Call definition
 export function permissionsCheck(required, permissions) {

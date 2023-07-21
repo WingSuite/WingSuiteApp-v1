@@ -30,6 +30,8 @@ export default function HomePage() {
   const [rank, setRank] = useState("");
   const [feedbackData, setFeedbackData] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [lastWKScore, setLastWKScore] = useState("");
+  const [lastPFAScore, setLastPFAScore] = useState("");
   const [weekViewData, setWeekViewData] = useState(
     config.daysOfTheWeek.reduce((obj, key) => {
       obj[key] = [];
@@ -154,6 +156,29 @@ export default function HomePage() {
       // Set the notification data
       setNotifications(notificationData);
     })();
+
+    // Process stat data
+    (async () => {
+      // Call API to get the user's data
+      var res = await post(
+        "/user/get_pfa_data/",
+        { page_size: 1, page_index: 0 },
+        Cookies.get("access")
+      );
+
+      // Save last PFA score
+      setLastPFAScore(res.message[0].composite_score);
+
+      // Call API to get the user's data
+      res = await post(
+        "/user/get_warrior_data/",
+        { page_size: 1, page_index: 0 },
+        Cookies.get("access")
+      );
+
+      // Save last PFA score
+      setLastWKScore(res.message[0].composite_score);
+    })();
   }, []);
 
   // Get the greeting information
@@ -174,7 +199,7 @@ export default function HomePage() {
         {config.daysOfTheWeek.map((item, index) => (
           <div
             key={`weekView-${item}-${index}`}
-            className={`flex h-56 w-[13.5%] flex-col gap-2 rounded-lg border p-2
+            className={`flex h-56 w-[13.5%] flex-col gap-0.5 rounded-lg border p-2
             ${
               getTodayDay() == item
                 ? "border-2 border-sky shadow-md shadow-sky"
@@ -182,20 +207,25 @@ export default function HomePage() {
             }`}
           >
             <div className="text-lg">{item}</div>
-            {weekViewData[item].map((event, index) => (
-              <ButtonCard
-                key={`weekViewEvent-${event.name}-${index}`}
-                size="lg"
-                text={event.name}
-                subtext={`${formatMilTime(event.start)}-${formatMilTime(
-                  event.end
-                )}`}
-                buttonInfo={`transition duration-200 ease-in border
+            <div
+              className="flex w-full flex-col gap-2 overflow-y-auto pr-1
+              pt-1.5"
+            >
+              {weekViewData[item].map((event, index) => (
+                <ButtonCard
+                  key={`weekViewEvent-${event.name}-${index}`}
+                  size="lg"
+                  text={event.name}
+                  subtext={`${formatMilTime(event.start)}-${formatMilTime(
+                    event.end
+                  )}`}
+                  buttonInfo={`transition duration-200 ease-in border
                 border-transparent hover:border hover:border-darkOcean
                 hover:border hover:-translate-y-[0.1rem] hover:shadow-xl
                 bg-gradient-to-tr from-deepOcean to-sky text-white`}
-              />
-            ))}
+                />
+              ))}
+            </div>
           </div>
         ))}
       </div>
@@ -228,7 +258,6 @@ export default function HomePage() {
   );
 
   // Stats view definition
-  // TODO: Connect Gebauer's API implementations to this system
   const statsView = (
     <div className="flex h-full flex-1 flex-col gap-4">
       <div className="text-4xl">Stats</div>
@@ -236,8 +265,8 @@ export default function HomePage() {
         className="flex h-full flex-col gap-4 overflow-auto px-1
         pb-4"
       >
-        <StatCard keyContent="Last PFA Score" valueContent="N/A" />
-        <StatCard keyContent="Last WK Score" valueContent="N/A" />
+        <StatCard keyContent="Last PFA Score" valueContent={lastPFAScore} />
+        <StatCard keyContent="Last WK Score" valueContent={lastWKScore} />
       </div>
     </div>
   );

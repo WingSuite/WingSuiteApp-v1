@@ -20,15 +20,11 @@ import { permissionsList } from "@/config/config";
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
-import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { CollapsableInfoCard } from "@/components/cards";
-import { BottomDropDown } from "@/components/dropdown";
 import { AutoCompleteInput } from "@/components/input";
-import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
 import { UserCard } from "@/components/cards";
 import Sidebar from "@/components/sidebar";
@@ -36,7 +32,6 @@ import Sidebar from "@/components/sidebar";
 // Unit member page definition
 export default function UnitMembersPage() {
   // Define useStates
-  const [user, setUser] = useState({});
   const [reverseUnitIDMap, setReversedUnitIDMap] = useState({});
   const [membersList, setMembersList] = useState([]);
   const [officersList, setOfficersList] = useState([]);
@@ -58,7 +53,6 @@ export default function UnitMembersPage() {
 
     // Get the user's information
     const user = JSON.parse(localStorage.getItem("whoami"));
-    setUser(user);
 
     // Get unit ID mapping in reverse order
     const unitIDMap = JSON.parse(localStorage.getItem("unitIDMap"));
@@ -86,7 +80,7 @@ export default function UnitMembersPage() {
         }
         members = new Set(members.map((item) => item._id));
 
-        // Call API to get the units's member list
+        // Call API to get the units's officer list
         var res = await post(
           "/unit/get_all_officers/",
           { id: reversedMap[unit_id] },

@@ -29,5 +29,5 @@ module.exports = {
       couture: ["couture", "sans-serif"],
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 };

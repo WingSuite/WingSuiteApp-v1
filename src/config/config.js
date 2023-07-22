@@ -3,7 +3,6 @@ import {
   VscHome,
   VscComment,
   VscBell,
-  VscBrowser,
   VscGraph,
   VscWarning,
   VscMegaphone,
@@ -126,6 +125,9 @@ export const permissionsList = {
     ],
   },
   unit: {
+    frontpage: {
+      change: ["unit.update_frontpage"],
+    },
     members: {
       handle: [
         "unit.add_members",

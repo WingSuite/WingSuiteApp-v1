@@ -1,14 +1,14 @@
-import React from "react";
+import ReactMarkdown from 'react-markdown'
 
-// User Card definition
-export default function Test() {
-  // Render card
+export default function MyComponent() {
+  const markdown = `# This is a header
+  ## This is a smaller header
+  Here's some **bold** text.
+  `
+
   return (
-    <div className="flex flex-col items-center rounded-lg border border-silver bg-white p-4 shadow-lg">
-      <div className="w-1/2 h-24 bg-sky">Test</div>
-      <div>Test</div>
-      <div>Test</div>
-      <div>Text</div>
+    <div className='p-10'>
+      <ReactMarkdown className="prose">{markdown}</ReactMarkdown>
     </div>
-  );
+  )
 }

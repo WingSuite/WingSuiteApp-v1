@@ -40,6 +40,15 @@ export const config = {
     "Yeah we are fo sho lost, fr fr",
   ],
   notificationPreviewTrimLength: 200,
+  colorOrder: [
+    "#54C0FF",
+    "#0BB99A",
+    "#FC3535",
+    "#FFBC21",
+    "#D414FF",
+    "#FC056C",
+    "#00CF07",
+  ],
 };
 
 // Main Sidebar config

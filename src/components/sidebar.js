@@ -33,7 +33,7 @@ const Sidebar = () => {
 
   // Get current path and router
   const router = useRouter();
-  const currentPath = usePathname();
+  const currentPath = usePathname() || "";
 
   // On mount of the Next.js page
   useEffect(() => {

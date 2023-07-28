@@ -68,7 +68,7 @@ export default function PFAView() {
       );
 
       // Extract information
-      const info = res.message.reverse();
+      const info = res.message.message.reverse();
 
       // If info is empty, set isNothing to true
       if (info.length == 0) {

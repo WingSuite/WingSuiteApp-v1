@@ -52,6 +52,7 @@ export default function WarriorKnowledgeView() {
       );
 
       // If the result is empty, set isNothing to true
+      res = res.message;
       if (res.message.length == 0) {
         setIsNothing(true);
         return;

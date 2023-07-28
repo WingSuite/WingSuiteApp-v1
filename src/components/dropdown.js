@@ -25,8 +25,8 @@ export function BottomDropDown({
         }}
       >
         {defaultValue !== null ? defaultValue : innerElem}
-        {(!expanded && <VscChevronDown size="1.5em" />) ||
-          (expanded && <VscChevronUp size="1.5em" />)}
+        {(!expanded && <VscChevronDown size="1.5em" className="ml-1" />) ||
+          (expanded && <VscChevronUp size="1.5em" className="ml-1" />)}
       </button>
       {expanded && (
         <div

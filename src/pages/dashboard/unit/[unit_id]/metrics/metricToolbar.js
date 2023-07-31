@@ -1,9 +1,5 @@
 // React Icons
-import {
-  VscGraphScatter,
-  VscTable,
-  VscNewFile,
-} from "react-icons/vsc";
+import { VscGraphScatter, VscTable, VscNewFile } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
@@ -37,7 +33,7 @@ export function MetricToolBar() {
           </div>
         )}
         {c.viewSelect == 0 &&
-          c.metricToolbarItems.map((item, index) => (
+          c.format.scoring_formatted.map((item, index) => (
             <button
               key={`toolbarItems-${item}`}
               className={`h-full w-fit rounded-lg border px-2 py-1 text-base
@@ -55,9 +51,9 @@ export function MetricToolBar() {
       </div>
       <div className="flex flex-row gap-4">
         <button
-          className={`rounded-lg border border-silver px-2 pb-1 pt-2 transition
-          duration-200 ease-in hover:-translate-y-[0.1rem] hover:border-sky
-           hover:text-sky hover:shadow-lg ${
+          className={`rounded-lg border border-silver px-2 pb-1 pt-2
+          transition duration-200 ease-in hover:-translate-y-[0.1rem]
+          hover:border-sky hover:text-sky hover:shadow-lg ${
              c.viewSelect == 0 && `border-sky text-sky`
            }`}
           onClick={() => c.setViewSelect(0)}

@@ -1,10 +1,5 @@
 // React Icons
-import {
-  VscEdit,
-  VscTrash,
-  VscCheck,
-  VscChromeClose,
-} from "react-icons/vsc";
+import { VscEdit, VscTrash, VscCheck, VscChromeClose } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
@@ -32,18 +27,6 @@ export function DataTableView() {
   // Define the context for the unit metrics page
   const c = useContext(UnitMetricsAppContext);
 
-  // Define useState for this component
-  const [filteredData, setFilteredData] = useState([]);
-
-  // On mount, set the filtered data
-  useEffect(() => {
-    // Develope a copy of the data
-    const copy = c.data;
-
-    // Set the filtered data
-    setFilteredData(copy.filter((item) => item.name == c.xAxisSelection));
-  }, [c.xAxisSelection]);
-
   // Update handler for table view
   const handleUpdate = (id, value) => {
     c.setEditItem((prevState) => ({ ...prevState, [id]: value }));
@@ -55,7 +38,7 @@ export function DataTableView() {
     var copy = c.editItem;
 
     // If composite score is the only value, then just update that
-    if (c.selectionMap.length == 1) {
+    if (c.format.scoring_ids.length == 1) {
       (async () => {
         // Make the composite score a float
         copy.composite_score = Number(copy.composite_score);
@@ -77,7 +60,7 @@ export function DataTableView() {
 
     // Build temporary mappings and variables
     var body = {};
-    const temp_map = c.selectionMap.reduce((dict, row, index) => {
+    const temp_map = c.format.scoring_ids.reduce((dict, row, index) => {
       dict[row] = index;
       return dict;
     }, {});
@@ -94,7 +77,7 @@ export function DataTableView() {
     // format
     for (var item in copy) {
       // Ensure if an iterated time input is in "mm:ss" format
-      if (c.dataTypes[temp_map[item]] == "time") {
+      if (c.format.scoring_type[temp_map[item]] == "time") {
         // Check if in right format
         const [mins, secs] = copy[item].split(":");
         const isValid =
@@ -109,7 +92,7 @@ export function DataTableView() {
         if (!isValid) {
           errorToaster(
             `The ${
-              c.metricToolbarItems[temp_map[item]]
+              c.format.scoring_formatted[temp_map[item]]
             } value was not formatted correctly`
           );
           return false;
@@ -120,7 +103,7 @@ export function DataTableView() {
       }
 
       // Ensure that number formats are in integer value
-      else if (c.dataTypes[temp_map[item]] == "number")
+      else if (c.format.scoring_type[temp_map[item]] == "number")
         body.subscores[item] = Number(copy[item]);
     }
 
@@ -174,7 +157,7 @@ export function DataTableView() {
         >
           Unit
         </th>
-        {c.metricToolbarItems.map((item, index) => (
+        {c.format.scoring_formatted.map((item, index) => (
           <th
             className="bg-gray-50 text-gray-500 cursor-pointer px-6 py-3
             text-left text-xs font-medium uppercase leading-4 tracking-wider"
@@ -190,25 +173,25 @@ export function DataTableView() {
   );
 
   // Render the table body row for the metric values
-  const TableBodyRowMetricValues = ({item}) => (
+  const TableBodyRowMetricValues = ({ item }) => (
     <>
-      {c.metricToolbarItems.map((metric, index) => (
+      {c.format.scoring_formatted.map((metric, index) => (
         <td
           className="bg-gray-50 text-gray-500 px-6 py-3 text-left text-xs
           font-medium uppercase leading-4 tracking-wider"
           key={`table-${metric}`}
         >
           {c.isUpdating[item.id] &&
-          (index != 0 || c.metricToolbarItems.length == 1) ? (
+          (index != 0 || c.format.scoring_formatted.length == 1) ? (
             <AutosizeInput
               placeholder="00"
               id="hour"
               pattern="[0-9]*"
-              maxLength={c.dataTypes[index] == "time" ? "5" : "2"}
-              value={c.editItem[c.selectionMap[index]]}
+              maxLength={c.format.scoring_type[index] == "time" ? "5" : "2"}
+              value={c.editItem[c.format.scoring_ids[index]]}
               className="text-sky"
               onKeyDown={(event) =>
-                (c.dataTypes[index] == "time"
+                (c.format.scoring_type[index] == "time"
                   ? !/[0-9:]/.test(event.key)
                   : !/[0-9.]/.test(event.key)) &&
                 !(event.key === "Backspace") &&
@@ -219,11 +202,13 @@ export function DataTableView() {
                 event.preventDefault()
               }
               onChange={(e) =>
-                handleUpdate(c.selectionMap[index], e.target.value)
+                handleUpdate(c.format.scoring_ids[index], e.target.value)
               }
             />
           ) : (
-            c.specialProcess[c.dataTypes[index]](item[c.selectionMap[index]])
+            c.specialProcess[c.format.scoring_type[index]](
+              item[c.format.scoring_ids[index]]
+            )
           )}
         </td>
       ))}
@@ -233,133 +218,139 @@ export function DataTableView() {
   // Render table body
   const tableBody = (
     <tbody>
-      {filteredData.map((item) => (
-        <tr key={item.id}>
-          <td
-            className="whitespace-no-wrap text-gray-500 px-6 py-2 text-sm
+      {c.data
+        .filter((item) => item.name == c.xAxisSelection)
+        .map((item) => (
+          <tr key={item.id}>
+            <td
+              className="whitespace-no-wrap text-gray-500 px-6 py-2 text-sm
             leading-5"
-          >
-            {item.user}
-          </td>
-          <td
-            className="whitespace-no-wrap text-gray-500 px-6 py-2 text-sm
+            >
+              {item.user}
+            </td>
+            <td
+              className="whitespace-no-wrap text-gray-500 px-6 py-2 text-sm
             leading-5"
-          >
-            {item.unit}
-          </td>
-          <TableBodyRowMetricValues item={item}/>
-          <td
-            className="whitespace-no-wrap px-6 py-2 text-right text-sm
+            >
+              {item.unit}
+            </td>
+            <TableBodyRowMetricValues item={item} />
+            <td
+              className="whitespace-no-wrap px-6 py-2 text-right text-sm
             font-medium leading-5"
-          >
-            {c.isDeleting[item.id] ? (
-              <>
-                <button
-                  className="text-scarlet"
-                  onClick={() => {
-                    deleteSelected(item.id);
-                    c.setIsDeleting((prevState) => ({
-                      ...prevState,
-                      [item.id]: false,
-                    }));
-                  }}
-                >
-                  <IconContext.Provider value={{ size: "1.5em" }}>
-                    <VscCheck />
-                  </IconContext.Provider>
-                </button>
-                <button
-                  className="ml-4 text-scarlet"
-                  onClick={() =>
-                    c.setIsDeleting((prevState) => ({
-                      ...prevState,
-                      [item.id]: false,
-                    }))
-                  }
-                >
-                  <IconContext.Provider value={{ size: "1.5em" }}>
-                    <VscChromeClose />
-                  </IconContext.Provider>
-                </button>
-              </>
-            ) : c.isUpdating[item.id] ? (
-              <>
-                <button
-                  className="text-sky"
-                  onClick={() => {
-                    c.setEditItem({});
-                    c.setIsUpdating((prevState) => ({
-                      ...prevState,
-                      [item.id]: false,
-                    }));
-                  }}
-                >
-                  <IconContext.Provider value={{ size: "1.5em" }}>
-                    <VscChromeClose />
-                  </IconContext.Provider>
-                </button>
-                <button
-                  className="ml-4 text-sky"
-                  onClick={() => {
-                    var result = updateSelected();
-                    if (result) {
+            >
+              {c.isDeleting[item.id] ? (
+                <>
+                  <button
+                    className="text-scarlet"
+                    onClick={() => {
+                      deleteSelected(item.id);
+                      c.setIsDeleting((prevState) => ({
+                        ...prevState,
+                        [item.id]: false,
+                      }));
+                    }}
+                  >
+                    <IconContext.Provider value={{ size: "1.5em" }}>
+                      <VscCheck />
+                    </IconContext.Provider>
+                  </button>
+                  <button
+                    className="ml-4 text-scarlet"
+                    onClick={() =>
+                      c.setIsDeleting((prevState) => ({
+                        ...prevState,
+                        [item.id]: false,
+                      }))
+                    }
+                  >
+                    <IconContext.Provider value={{ size: "1.5em" }}>
+                      <VscChromeClose />
+                    </IconContext.Provider>
+                  </button>
+                </>
+              ) : c.isUpdating[item.id] ? (
+                <>
+                  <button
+                    className="text-sky"
+                    onClick={() => {
                       c.setEditItem({});
                       c.setIsUpdating((prevState) => ({
                         ...prevState,
                         [item.id]: false,
                       }));
-                    }
-                  }}
-                >
-                  <IconContext.Provider value={{ size: "1.5em" }}>
-                    <VscCheck />
-                  </IconContext.Provider>
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  className="text-blue-600 hover:text-blue-900"
-                  onClick={() => {
-                    Object.keys(c.editItem).length == 0 &&
-                      c.setEditItem(
-                        c.metricToolbarItems.reduce((dict, pt, index) => {
-                          dict[c.selectionMap[index]] = c.specialProcess[
-                            c.dataTypes[index]
-                          ](item[c.selectionMap[index]]);
-                          dict.id = item.id;
-                          return dict;
-                        }, {})
-                      );
-                    Object.keys(c.editItem).length == 0 &&
-                      c.setIsUpdating((prevState) => ({
+                    }}
+                  >
+                    <IconContext.Provider value={{ size: "1.5em" }}>
+                      <VscChromeClose />
+                    </IconContext.Provider>
+                  </button>
+                  <button
+                    className="ml-4 text-sky"
+                    onClick={() => {
+                      var result = updateSelected();
+                      if (result) {
+                        c.setEditItem({});
+                        c.setIsUpdating((prevState) => ({
+                          ...prevState,
+                          [item.id]: false,
+                        }));
+                      }
+                    }}
+                  >
+                    <IconContext.Provider value={{ size: "1.5em" }}>
+                      <VscCheck />
+                    </IconContext.Provider>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="text-blue-600 hover:text-blue-900"
+                    onClick={() => {
+                      Object.keys(c.editItem).length == 0 &&
+                        c.setEditItem(
+                          c.format.scoring_formatted.reduce(
+                            (dict, pt, index) => {
+                              dict[c.format.scoring_ids[index]] =
+                                c.specialProcess[c.format.scoring_type[index]](
+                                  item[c.format.scoring_ids[index]]
+                                );
+                              dict.id = item.id;
+                              return dict;
+                            },
+                            {}
+                          )
+                        );
+                      Object.keys(c.editItem).length == 0 &&
+                        c.setIsUpdating((prevState) => ({
+                          ...prevState,
+                          [item.id]: true,
+                        }));
+                    }}
+                  >
+                    <IconContext.Provider value={{ size: "1.5em" }}>
+                      <VscEdit />
+                    </IconContext.Provider>
+                  </button>
+                  <button
+                    className="text-red-600 hover:text-red-900 ml-4"
+                    onClick={() =>
+                      c.setIsDeleting((prevState) => ({
                         ...prevState,
                         [item.id]: true,
-                      }));
-                  }}
-                >
-                  <IconContext.Provider value={{ size: "1.5em" }}>
-                    <VscEdit />
-                  </IconContext.Provider>
-                </button>
-                <button
-                  className="text-red-600 hover:text-red-900 ml-4"
-                  onClick={() =>
-                    c.setIsDeleting((prevState) => ({
-                      ...prevState,
-                      [item.id]: true,
-                    }))
-                  }
-                >
-                  <IconContext.Provider value={{ size: "1.5em" }}>
-                    <VscTrash />
-                  </IconContext.Provider>
-                </button>
-              </>
-            )}
-          </td>
-        </tr>
-      ))}
+                      }))
+                    }
+                  >
+                    <IconContext.Provider value={{ size: "1.5em" }}>
+                      <VscTrash />
+                    </IconContext.Provider>
+                  </button>
+                </>
+              )}
+            </td>
+          </tr>
+        ))}
     </tbody>
   );
 

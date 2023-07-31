@@ -36,7 +36,8 @@ export function ScatterPlotView() {
   const DefaultToolTip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       // Get the value of the selected information
-      const value = payload[0].payload[c.selectionMap[c.metricToolbarSelect]];
+      const value =
+        payload[0].payload[c.format.scoring_ids[c.metricToolbarSelect]];
 
       // Render tooltip
       return (
@@ -50,8 +51,8 @@ export function ScatterPlotView() {
           <div className="text-lg">{payload[0].payload.user}</div>
           <div className="text-lg">{payload[0].payload.unit}</div>
           <div className="text-sky">
-            {`${c.metricToolbarItems[c.metricToolbarSelect]} : ${
-              c.dataTypes[c.metricToolbarSelect] == "time"
+            {`${c.format.scoring_formatted[c.metricToolbarSelect]} : ${
+              c.format.scoring_type[c.metricToolbarSelect] == "time"
                 ? getFormattedTime(value)
                 : value
             }`}
@@ -129,11 +130,11 @@ export function ScatterPlotView() {
           <YAxis
             type="number"
             tickFormatter={
-              c.dataTypes[c.metricToolbarSelect] == "time"
+              c.format.scoring_type[c.metricToolbarSelect] == "time"
                 ? getFormattedTime
                 : (e) => e
             }
-            dataKey={c.selectionMap[c.metricToolbarSelect]}
+            dataKey={c.format.scoring_ids[c.metricToolbarSelect]}
             name="Score Value"
             domain={[0, 100]}
             padding={{ bottom: 40 }}

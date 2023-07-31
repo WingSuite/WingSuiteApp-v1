@@ -25,6 +25,7 @@ export function StatisticsBoard() {
         </div>
       </div>
       <div className="flex max-h-full flex-col gap-5 overflow-y-auto p-2">
+        {}
         <StatCard
           keyContent={`Number of Datapoints`}
           valueContent={c.dataStats.length != 0 && c.dataStats[0]}
@@ -35,11 +36,11 @@ export function StatisticsBoard() {
         />
         <StatCard
           keyContent={`Overall Average ${
-            c.metricToolbarItems[c.metricToolbarSelect]
+            c.format.scoring_formatted[c.metricToolbarSelect]
           }`}
           valueContent={
             c.dataStats.length != 0 &&
-            c.specialProcess[c.dataTypes[c.metricToolbarSelect]](
+            c.specialProcess[c.format.scoring_type[c.metricToolbarSelect]](
               c.dataStats[2].toFixed(2)
             )
           }
@@ -47,18 +48,18 @@ export function StatisticsBoard() {
         <StatCard
           keyContent={
             `Overall Standard Deviation ` +
-            `${c.metricToolbarItems[c.metricToolbarSelect]}`
+            `${c.format.scoring_formatted[c.metricToolbarSelect]}`
           }
           valueContent={
             c.dataStats.length != 0 &&
-            c.specialProcess[c.dataTypes[c.metricToolbarSelect]](
+            c.specialProcess[c.format.scoring_type[c.metricToolbarSelect]](
               c.dataStats[3].toFixed(2)
             )
           }
         />
         <StatCard
           keyContent={`Average ${
-            c.metricToolbarItems[c.metricToolbarSelect]
+            c.format.scoring_formatted[c.metricToolbarSelect]
           } Per Unit`}
           valueContent={
             <div className="w-full truncate text-lg">
@@ -75,7 +76,7 @@ export function StatisticsBoard() {
                             text-transparent"
                           >
                             {c.specialProcess[
-                              c.dataTypes[c.metricToolbarSelect]
+                              c.format.scoring_type[c.metricToolbarSelect]
                             ](value.toFixed(2))}
                           </td>
                         </tr>
@@ -90,7 +91,7 @@ export function StatisticsBoard() {
         <StatCard
           keyContent={
             `Standard Deviation ` +
-            `${c.metricToolbarItems[c.metricToolbarSelect]} Per Unit`
+            `${c.format.scoring_formatted[c.metricToolbarSelect]} Per Unit`
           }
           valueContent={
             <div className="w-full truncate text-lg">
@@ -107,7 +108,7 @@ export function StatisticsBoard() {
                             text-transparent"
                           >
                             {c.specialProcess[
-                              c.dataTypes[c.metricToolbarSelect]
+                              c.format.scoring_type[c.metricToolbarSelect]
                             ](value.toFixed(2))}
                           </td>
                         </tr>

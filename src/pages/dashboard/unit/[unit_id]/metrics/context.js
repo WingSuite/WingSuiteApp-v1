@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 import * as statCalc from "@/utils/statsAnalysis";
 import { getSeconds } from "@/utils/time";
 import { authCheck } from "@/utils/authCheck";
-import { post } from "@/utils/call";
+import { get, post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster } from "@/components/toasters";
@@ -34,17 +34,18 @@ export function UnitMetricsAppProvider({ children }) {
   const [xAxisSelection, setXAxisSelection] = useState(0);
   const [viewSelect, setViewSelect] = useState(0);
   const [data, setData] = useState([]);
+  const [format, setFormat] = useState({});
   const [dataTypes, setDataTypes] = useState([]);
-  const [nameMappings, setNameMappings] = useState([[], []]);
-  const [unitMappings, setUnitMappings] = useState([[], []]);
   const [selectionMap, setSelectionMap] = useState([]);
   const [metricToolbarItems, setMetricToolbarItems] = useState([]);
+  const [nameMappings, setNameMappings] = useState([[], []]);
+  const [unitMappings, setUnitMappings] = useState([[], []]);
   const [dataStats, setDataStats] = useState([]);
   const [isDeleting, setIsDeleting] = useState({});
   const [isUpdating, setIsUpdating] = useState({});
   const [editItem, setEditItem] = useState({});
   const [actionTrigger, setActionTrigger] = useState(false);
-  const viewList = [<ScatterPlotView/>, <DataTableView/>, <AddDataView/>];
+  const viewList = [<ScatterPlotView />, <DataTableView />, <AddDataView />];
   const toolbarItems = ["PFA", "Warrior Knowledge"];
   const specialProcess = {
     time: getFormattedTime,
@@ -52,6 +53,10 @@ export function UnitMetricsAppProvider({ children }) {
       return Number(e);
     },
   };
+  const metricFetchFormatEndpoints = [
+    "/statistic/pfa/get_pfa_format_info/",
+    "/statistic/warrior/get_warrior_format_info/",
+  ];
   const metricFetchEndPoints = [
     "/unit/get_all_pfa_data/",
     "/unit/get_all_warrior_data/",
@@ -96,10 +101,13 @@ export function UnitMetricsAppProvider({ children }) {
       if (res.status == "error")
         errorToaster("Error occurred fetching unit data");
 
-      // Extract util mappings from response and save that information
-      setSelectionMap(res.values);
-      setDataTypes(res.values_type);
-      setMetricToolbarItems(res.values_formatted);
+      // Get metric format for iterated metric
+      var metricFormatInfo = await get(
+        metricFetchFormatEndpoints[toolbarSelect],
+        Cookies.get("access")
+      );
+      metricFormatInfo = metricFormatInfo.message;
+      setFormat(metricFormatInfo);
 
       // Compile the data
       var data = [];
@@ -107,8 +115,10 @@ export function UnitMetricsAppProvider({ children }) {
         for (let stat of res.message[unit]) {
           // Track subscore info
           var subscoreInfo = {};
-          for (let [idx, subscore] of res.values.slice(1).entries()) {
-            if (res.values_type[idx + 1] == "time")
+          for (let [idx, subscore] of metricFormatInfo.scoring_ids
+            .slice(1)
+            .entries()) {
+            if (metricFormatInfo.scoring_type[idx + 1] == "time")
               subscoreInfo[subscore] = getSeconds(stat.subscores[subscore]);
             else subscoreInfo[subscore] = stat.subscores[subscore];
           }
@@ -153,7 +163,7 @@ export function UnitMetricsAppProvider({ children }) {
     if (data.length == 0) return;
 
     // Copy data for cleaner code
-    const metric = selectionMap[metricToolbarSelect];
+    const metric = format.scoring_ids[metricToolbarSelect];
     const exam = xAxisSelection;
 
     // Setup a data stat variable to compile stats
@@ -200,6 +210,7 @@ export function UnitMetricsAppProvider({ children }) {
         viewSelect,
         setViewSelect,
         data,
+        format,
         setData,
         dataTypes,
         setDataTypes,

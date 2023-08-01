@@ -28,31 +28,46 @@ export function UnitMetricsAppProvider({ children }) {
   const router = useRouter();
   const { unit_id } = router.query;
 
-  // Define useStates and other constants
-  const [toolbarSelect, setToolbarSelect] = useState(0);
+  // Data and data tracking related useStates
+  const [unitPersonnel, setUnitPersonnel] = useState({});
+  const [unitPersonnelReverse, setUnitPersonnelReverse] = useState({});
+  const [editItem, setEditItem] = useState({});
+  const [data, setData] = useState([]);
+
+  // Selection based and tracking useStates
   const [metricToolbarSelect, setMetricToolbarSelect] = useState(0);
   const [xAxisSelection, setXAxisSelection] = useState(0);
+  const [toolbarSelect, setToolbarSelect] = useState(0);
+  const [isDeleting, setIsDeleting] = useState({});
+  const [isUpdating, setIsUpdating] = useState({});
   const [viewSelect, setViewSelect] = useState(0);
-  const [data, setData] = useState([]);
-  const [format, setFormat] = useState({});
-  const [dataTypes, setDataTypes] = useState([]);
-  const [selectionMap, setSelectionMap] = useState([]);
-  const [metricToolbarItems, setMetricToolbarItems] = useState([]);
+
+  // Mapper useStates
   const [nameMappings, setNameMappings] = useState([[], []]);
   const [unitMappings, setUnitMappings] = useState([[], []]);
   const [dataStats, setDataStats] = useState([]);
-  const [isDeleting, setIsDeleting] = useState({});
-  const [isUpdating, setIsUpdating] = useState({});
-  const [editItem, setEditItem] = useState({});
+  const [format, setFormat] = useState({});
+
+  // Page related useStates
   const [actionTrigger, setActionTrigger] = useState(false);
+
+  // View mappings
   const viewList = [<ScatterPlotView />, <DataTableView />, <AddDataView />];
   const toolbarItems = ["PFA", "Warrior Knowledge"];
+
+  // Special Process mapping
   const specialProcess = {
     time: getFormattedTime,
     number: (e) => {
       return Number(e);
     },
   };
+
+  // Endpoint mappings
+  const metricAddEndPoints = [
+    "/statistic/pfa/create_pfa/",
+    "/statistic/warrior/create_warrior/",
+  ];
   const metricFetchFormatEndpoints = [
     "/statistic/pfa/get_pfa_format_info/",
     "/statistic/warrior/get_warrior_format_info/",
@@ -60,6 +75,10 @@ export function UnitMetricsAppProvider({ children }) {
   const metricFetchEndPoints = [
     "/unit/get_all_pfa_data/",
     "/unit/get_all_warrior_data/",
+  ];
+  const metricGetTestEndpoints = [
+    "/statistic/pfa/get_test_pfa_score/",
+    "/statistic/warrior/get_test_warrior_score/",
   ];
   const metricEditEndPoints = [
     "/statistic/pfa/update_pfa/",
@@ -88,6 +107,51 @@ export function UnitMetricsAppProvider({ children }) {
     // Return if unit_id is undefined
     if (unit_id == undefined) return;
 
+    // Calculate the unit's people
+    (async () => {
+      // Call API endpoint to get unit's members
+      var res = await post(
+        "/unit/get_all_members/",
+        { id: unitMap[unit_id] || "" },
+        Cookies.get("access")
+      );
+
+      // Send a message if there was an error
+      if (res.status == "error") {
+        errorToaster("Error occurred fetching unit data");
+        return;
+      }
+
+      // Save the personnel list
+      var personnel = res.message;
+
+      // Call API endpoint to get unit's officers
+      res = await post(
+        "/unit/get_all_officers/",
+        { id: unitMap[unit_id] || "" },
+        Cookies.get("access")
+      );
+
+      // Send a message if there was an error
+      if (res.status == "error") {
+        errorToaster("Error occurred fetching unit data");
+        return;
+      }
+
+      // Append to the personnel list and create a mapping for list of names
+      personnel = [...personnel, ...res.message];
+      var listOfNames = {};
+      for (let item of personnel) {
+        listOfNames[item.full_name] = item._id;
+      }
+      setUnitPersonnel(listOfNames);
+      setUnitPersonnelReverse(
+        Object.fromEntries(
+          Object.entries(listOfNames).map(([key, value]) => [value, key])
+        )
+      );
+    })();
+
     // Get the user's metric data
     (async () => {
       // Call API to get the unit's data
@@ -98,8 +162,10 @@ export function UnitMetricsAppProvider({ children }) {
       );
 
       // Send a message if there was an error
-      if (res.status == "error")
+      if (res.status == "error") {
         errorToaster("Error occurred fetching unit data");
+        return;
+      }
 
       // Get metric format for iterated metric
       var metricFormatInfo = await get(
@@ -201,41 +267,43 @@ export function UnitMetricsAppProvider({ children }) {
   return (
     <UnitMetricsAppContext.Provider
       value={{
-        toolbarSelect,
-        setToolbarSelect,
+        unitPersonnel,
+        setUnitPersonnel,
+        unitPersonnelReverse,
+        setUnitPersonnelReverse,
+        editItem,
+        setEditItem,
+        data,
+        setData,
         metricToolbarSelect,
         setMetricToolbarSelect,
         xAxisSelection,
         setXAxisSelection,
-        viewSelect,
-        setViewSelect,
-        data,
-        format,
-        setData,
-        dataTypes,
-        setDataTypes,
-        nameMappings,
-        setNameMappings,
-        unitMappings,
-        setUnitMappings,
-        selectionMap,
-        setSelectionMap,
-        metricToolbarItems,
-        setMetricToolbarItems,
-        dataStats,
-        setDataStats,
+        toolbarSelect,
+        setToolbarSelect,
         isDeleting,
         setIsDeleting,
         isUpdating,
         setIsUpdating,
-        editItem,
-        setEditItem,
+        viewSelect,
+        setViewSelect,
+        nameMappings,
+        setNameMappings,
+        unitMappings,
+        setUnitMappings,
+        dataStats,
+        setDataStats,
+        format,
+        setFormat,
         actionTrigger,
         setActionTrigger,
         viewList,
         toolbarItems,
         specialProcess,
+        metricAddEndPoints,
+        metricFetchFormatEndpoints,
         metricFetchEndPoints,
+        metricGetTestEndpoints,
         metricEditEndPoints,
         metricDeleteEndPoints,
       }}

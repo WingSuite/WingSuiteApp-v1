@@ -27,7 +27,7 @@ export function MetricToolBar() {
               listOfItems={c.nameMappings[0]}
               setSelected={(e) => c.setXAxisSelection(c.nameMappings[1][e])}
               defaultValue={
-                c.nameMappings[0][c.xAxisSelection] || "Select Unit"
+                c.nameMappings[0][c.xAxisSelection] || "Select Metric"
               }
             />
           </div>

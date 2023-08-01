@@ -68,6 +68,7 @@ export function TimeInput({
   setHour,
   minute,
   setMinute,
+  id = null
 }) {
   // Render component
   return (
@@ -77,7 +78,7 @@ export function TimeInput({
     >
       <AutosizeInput
         placeholder="00"
-        id="hour"
+        id={`${id == null ? `` : id}-hour`}
         pattern="[0-9]*"
         maxLength="2"
         value={hour}
@@ -97,7 +98,7 @@ export function TimeInput({
       :
       <AutosizeInput
         placeholder="00"
-        id="minute"
+        id={`${id == null ? `` : id}-minute`}
         pattern="[0-9]*"
         maxLength="2"
         value={minute}

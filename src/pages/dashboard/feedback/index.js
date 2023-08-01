@@ -1,7 +1,5 @@
 // React Icons
 import {
-  VscArrowCircleRight,
-  VscArrowCircleLeft,
   VscCloseAll,
   VscEdit,
 } from "react-icons/vsc";

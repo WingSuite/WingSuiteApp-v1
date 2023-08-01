@@ -23,6 +23,7 @@ import { getFormattedTime } from "@/utils/time";
 
 // Custom components imports
 import { MetricToolBar } from "./metricToolbar";
+import { Nothing } from "@/components/nothing";
 
 // Import unit metric context
 import { UnitMetricsAppContext } from "./context";
@@ -112,60 +113,68 @@ export function ScatterPlotView() {
 
   // Define the ScatterPlot
   return (
-    <div className="flex w-9/12 flex-col gap-8">
-      <MetricToolBar />
-      <ResponsiveContainer width="100%" height="91%">
-        <ScatterChart margin={{ right: 30 }}>
-          <CartesianGrid />
-          <XAxis
-            type="number"
-            dataKey="name"
-            name="Metric Datapoint"
-            tickFormatter={(value) => c.nameMappings[0][value]}
-            ticks={Object.values(c.nameMappings[1])}
-            tick={<CustomTick />}
-            padding={{ left: 40, right: 40 }}
-            onClick={(e) => c.setXAxisSelection(e.value)}
-          />
-          <YAxis
-            type="number"
-            tickFormatter={
-              c.format.scoring_type[c.metricToolbarSelect] == "time"
-                ? getFormattedTime
-                : (e) => e
-            }
-            dataKey={c.format.scoring_ids[c.metricToolbarSelect]}
-            name="Score Value"
-            domain={[0, 100]}
-            padding={{ bottom: 40 }}
-          />
-          <Tooltip content={<DefaultToolTip />} />
-          <Tooltip />
-          {c.metricToolbarSelect == 0 && (
-            <ReferenceLine y={75} stroke="red" label="Failure Point" />
-          )}
-          {c.unitMappings[0].map((unit, index) => (
-            <Scatter
-              key={index}
-              name={unit}
-              shape={(props) => (
-                <circle
-                  cx={props.cx}
-                  cy={props.cy}
-                  r={7}
-                  fill={
-                    config.colorOrder[
-                      c.unitMappings[1][unit] % config.colorOrder.length
-                    ]
-                  }
-                />
+    <>
+      <div className="flex w-9/12 flex-col gap-8">
+        <MetricToolBar />
+        {c.data.length == 0 ? (
+          <div className="h-full w-full">
+            <Nothing mainText="No Data Recorded" subText="* Cricket Chirps *" />
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height="91%">
+            <ScatterChart margin={{ right: 30 }}>
+              <CartesianGrid />
+              <XAxis
+                type="number"
+                dataKey="name"
+                name="Metric Datapoint"
+                tickFormatter={(value) => c.nameMappings[0][value]}
+                ticks={Object.values(c.nameMappings[1])}
+                tick={<CustomTick />}
+                padding={{ left: 40, right: 40 }}
+                onClick={(e) => c.setXAxisSelection(e.value)}
+              />
+              <YAxis
+                type="number"
+                tickFormatter={
+                  c.format.scoring_type[c.metricToolbarSelect] == "time"
+                    ? getFormattedTime
+                    : (e) => e
+                }
+                dataKey={c.format.scoring_ids[c.metricToolbarSelect]}
+                name="Score Value"
+                domain={[0, 100]}
+                padding={{ bottom: 40 }}
+              />
+              <Tooltip content={<DefaultToolTip />} />
+              <Tooltip />
+              {c.metricToolbarSelect == 0 && (
+                <ReferenceLine y={75} stroke="red" label="Failure Point" />
               )}
-              data={c.data.filter((item) => item.unit === unit)}
-            />
-          ))}
-          <Legend content={<CustomLegend />} />
-        </ScatterChart>
-      </ResponsiveContainer>
-    </div>
+              {c.unitMappings[0].map((unit, index) => (
+                <Scatter
+                  key={index}
+                  name={unit}
+                  shape={(props) => (
+                    <circle
+                      cx={props.cx}
+                      cy={props.cy}
+                      r={7}
+                      fill={
+                        config.colorOrder[
+                          c.unitMappings[1][unit] % config.colorOrder.length
+                        ]
+                      }
+                    />
+                  )}
+                  data={c.data.filter((item) => item.unit === unit)}
+                />
+              ))}
+              <Legend content={<CustomLegend />} />
+            </ScatterChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+    </>
   );
 }

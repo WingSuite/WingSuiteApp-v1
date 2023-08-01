@@ -63,13 +63,7 @@ export function AutoCompleteInput({ possibleItems, value, onChange }) {
 }
 
 // Time input field
-export function TimeInput({
-  hour,
-  setHour,
-  minute,
-  setMinute,
-  id = null
-}) {
+export function TimeInput({ hour, setHour, minute, setMinute, id = null }) {
   // Render component
   return (
     <div

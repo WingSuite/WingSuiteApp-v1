@@ -13,6 +13,7 @@ import Cookies from "js-cookie";
 import AutosizeInput from "react-input-autosize";
 
 // Util imports
+import { Nothing } from "@/components/nothing";
 import { post } from "@/utils/call";
 
 // Custom components imports
@@ -356,14 +357,20 @@ export function DataTableView() {
 
   // Render the data table
   return (
-    <div className="flex w-9/12 flex-col gap-2">
+    <div className="flex w-9/12 flex-col gap-8">
       <MetricToolBar />
-      <div className="flex flex-col overflow-y-auto">
-        <table className="divide-gray-200 min-w-full divide-y">
-          {tableHead}
-          {tableBody}
-        </table>
-      </div>
+      {c.data.length == 0 ? (
+        <div className="h-full w-full">
+          <Nothing mainText="No Data Recorded" subText="* Cricket Chirps *" />
+        </div>
+      ) : (
+        <div className="flex flex-col overflow-y-auto">
+          <table className="divide-gray-200 min-w-full divide-y">
+            {tableHead}
+            {tableBody}
+          </table>
+        </div>
+      )}
     </div>
   );
 }

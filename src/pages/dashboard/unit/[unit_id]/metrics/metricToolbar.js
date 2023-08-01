@@ -32,7 +32,7 @@ export function MetricToolBar() {
             />
           </div>
         )}
-        {c.viewSelect == 0 &&
+        {(c.viewSelect == 0 && Object.keys(c.format).length != 0) ?
           c.format.scoring_formatted.map((item, index) => (
             <button
               key={`toolbarItems-${item}`}
@@ -47,7 +47,7 @@ export function MetricToolBar() {
             >
               {item}
             </button>
-          ))}
+          )) : null}
       </div>
       <div className="flex flex-row gap-4">
         <button

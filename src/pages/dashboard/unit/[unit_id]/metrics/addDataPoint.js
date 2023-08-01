@@ -1,35 +1,8 @@
-// ReChart imports
-import {
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-  ReferenceLine,
-} from "recharts";
-
-// React Icons
-import {
-  VscGraphScatter,
-  VscTable,
-  VscNewFile,
-  VscEdit,
-  VscTrash,
-  VscCheck,
-  VscChromeClose,
-} from "react-icons/vsc";
-import { IconContext } from "react-icons";
-
 // React.js & Next.js libraries
-import { useState, useEffect, useContext, use } from "react";
-import { useRouter } from "next/router";
+import { useState, useEffect, useContext } from "react";
 import React from "react";
 
 // Toaster Components and CSS
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Date Picker imports
@@ -39,17 +12,7 @@ import "react-day-picker/dist/style.css";
 // JS Cookies import
 import Cookies from "js-cookie";
 
-// Autosize inputs import
-import AutosizeInput from "react-input-autosize";
-
-// Config imports
-import { permissionsList, config } from "@/config/config";
-
 // Util imports
-import * as statCalc from "@/utils/statsAnalysis";
-import { getSeconds, getFormattedTime } from "@/utils/time";
-import { permissionsCheck } from "@/utils/permissionCheck";
-import { authCheck } from "@/utils/authCheck";
 import { post } from "@/utils/call";
 
 // Custom components imports
@@ -58,9 +21,6 @@ import { AutoCompleteInput, TimeInput } from "@/components/input";
 import { BottomDropDown } from "@/components/dropdown";
 import { MetricToolBar } from "./metricToolbar";
 import { Nothing } from "@/components/nothing";
-import PageTitle from "@/components/pageTitle";
-import { StatCard } from "@/components/cards";
-import Sidebar from "@/components/sidebar";
 
 // Import unit metric context
 import { UnitMetricsAppContext } from "./context";
@@ -95,7 +55,7 @@ export function AddDataView() {
   // Define useStates and constants for adding user metrics
   const [insert, setInsert] = useState({});
   const [actionTrigger, setActionTrigger] = useState(false);
-  const [result, setResult] = useState("N/A");
+  const [result, setResult] = useState(0);
   const split = c.format.scoring_ids.length == 1 ? 0 : 1;
 
   // On change of the toolbar, change the schema of the the insert useState
@@ -267,7 +227,26 @@ export function AddDataView() {
 
       // If the resulting call was successful, wipe all trackers and inputs
       if (res.status == "success") {
-        
+        // Clear trackers
+        setInsert({ to_user: "", name: "", datetime_taken: 0 });
+        setResult(0);
+
+        // Iterate through the inputs and clear them
+        // Loop through all inputs and see if there's an input it in
+        for (let [index, item] of iterList.entries()) {
+          // Retrieve values if the iterated scoring info is number format
+          if (iterTypes[index] == "number") {
+            // Add item to tracker
+            document.getElementById(item).value = "";
+          }
+
+          // Retrieve values if the iterated scoring info is time format
+          else if (iterTypes[index] == "time") {
+            // Extract hour and minute information
+            document.getElementById(`${item}-hour`).value = "";
+            document.getElementById(`${item}-minute`).value = "";
+          }
+        }
       }
     })();
   };
@@ -286,121 +265,133 @@ export function AddDataView() {
 
   // Render AddDataView
   return (
-    <div className="flex w-9/12 flex-col gap-2">
-      <MetricToolBar />
-      <div className="flex w-full flex-row justify-center gap-10 overflow-auto">
-        <div className="flex w-1/4 flex-col p-2">
-          <div className="flex flex-col gap-4">
-            <div className="text-5xl">Basic Info</div>
-            <div className="flex flex-col gap-1">
-              <div className="text-2xl">Metric Name</div>
-              <input
-                className="rounded-lg border border-silver p-2"
-                id="name"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-2xl">User</div>
-              <AutoCompleteInput
-                possibleItems={Object.keys(c.unitPersonnel)}
-                onChange={(e) => updateInsert("to_user", c.unitPersonnel[e])}
-                value={c.unitPersonnelReverse[insert.to_user]}
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-2xl">Date Taken</div>
-              <DayPicker
-                showOutsideDays
-                mode="single"
-                className="w-full"
-                style={{ width: "100%" }}
-                selected={new Date(insert.datetime_taken * 1000)}
-                onSelect={(e) => {
-                  updateInsert("datetime_taken", Math.floor(e / 1000));
-                }}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex w-1/4 flex-col gap-5 p-2">
-          <div
-            className={`flex flex-col gap-4 ${
-              c.format.info_ids.length == 0 ? "hidden" : ""
-            }`}
-          >
-            <div className="text-5xl">User Info</div>
-            {c.format.info_ids.map((item, index) => (
-              <div className="flex flex-col gap-1" key={`info-${index}`}>
-                <div className="text-2xl">{c.format.info_formatted[index]}</div>
-                {c.format.info_type[index] == "selection" && (
-                  <SelectionComponent type={0} item={item} />
-                )}
-                {c.format.info_type[index] == "number" && (
-                  <input
-                    className="rounded-lg border border-silver p-2"
-                    onChange={() => setActionTrigger(!actionTrigger)}
-                    type="number"
-                    id={item}
-                  />
-                )}
+    <>
+      <div className="flex w-9/12 flex-col gap-8">
+        <MetricToolBar />
+        <div
+          className="flex w-full flex-row justify-center gap-10
+            overflow-auto"
+        >
+          <div className="flex w-1/4 flex-col p-2">
+            <div className="flex flex-col gap-4">
+              <div className="text-5xl">Basic Info</div>
+              <div className="flex flex-col gap-1">
+                <div className="text-2xl">Metric Name</div>
+                <input
+                  className="rounded-lg border border-silver p-2"
+                  id="name"
+                />
               </div>
-            ))}
-          </div>
-          <div className="flex flex-col gap-4">
-            <div className="text-5xl">Scoring</div>
-            {c.format.scoring_ids.slice(split).map((item, index) => (
-              <div className="flex flex-col gap-1" key={`score-${index}`}>
-                <div className="text-2xl">
-                  {c.format.scoring_formatted.slice(split)[index]}
-                </div>
-                {c.format.scoring_type.slice(split)[index] == "selection" && (
-                  <SelectionComponent type={0} item={item} />
-                )}
-                {c.format.scoring_type.slice(split)[index] == "number" && (
-                  <input
-                    className="rounded-lg border border-silver p-2"
-                    onChange={() => setActionTrigger(!actionTrigger)}
-                    type="number"
-                    id={item}
-                  />
-                )}
-                {c.format.scoring_type.slice(split)[index] == "time" && (
-                  <TimeComponent
-                    item={item}
-                    onChange={() => setActionTrigger(!actionTrigger)}
-                  />
-                )}
+              <div className="flex flex-col gap-1">
+                <div className="text-2xl">User</div>
+                <AutoCompleteInput
+                  possibleItems={Object.keys(c.unitPersonnel)}
+                  onChange={(e) => updateInsert("to_user", c.unitPersonnel[e])}
+                  value={
+                    insert.to_user == ""
+                      ? ""
+                      : c.unitPersonnelReverse[insert.to_user]
+                  }
+                />
               </div>
-            ))}
+              <div className="flex flex-col gap-1">
+                <div className="text-2xl">Date Taken</div>
+                <DayPicker
+                  showOutsideDays
+                  mode="single"
+                  className="w-full"
+                  style={{ width: "100%" }}
+                  selected={new Date(insert.datetime_taken * 1000)}
+                  onSelect={(e) => {
+                    updateInsert("datetime_taken", Math.floor(e / 1000));
+                  }}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="flex h-full w-1/4 flex-col p-2">
-          <div className="flex flex-col gap-4">
-            <div className="text-5xl">Result</div>
+          <div className="flex w-1/4 flex-col gap-5 p-2">
             <div
-              className="mb-1.5 flex h-full w-full flex-col items-center
-              rounded-lg border border-silver p-2 text-7xl shadow-inner"
+              className={`flex flex-col gap-4 ${
+                c.format.info_ids.length == 0 ? "hidden" : ""
+              }`}
             >
-              <div
-                className="border-silver bg-gradient-to-tr from-deepOcean
-                to-sky bg-clip-text p-2 font-semibold text-transparent"
-              >
-                {result}
-              </div>
+              <div className="text-5xl">User Info</div>
+              {c.format.info_ids.map((item, index) => (
+                <div className="flex flex-col gap-1" key={`info-${index}`}>
+                  <div className="text-2xl">
+                    {c.format.info_formatted[index]}
+                  </div>
+                  {c.format.info_type[index] == "selection" && (
+                    <SelectionComponent type={0} item={item} />
+                  )}
+                  {c.format.info_type[index] == "number" && (
+                    <input
+                      className="rounded-lg border border-silver p-2"
+                      onChange={() => setActionTrigger(!actionTrigger)}
+                      type="number"
+                      id={item}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
-            <button
-              onClick={createMetric}
-              className="w-fit rounded-lg border border-silver
-              bg-gradient-to-tr from-deepOcean to-sky bg-clip-text p-2
-              text-xl text-transparent transition duration-200 ease-in
-              hover:-translate-y-[0.1rem] hover:border-sky hover:shadow-md
-              hover:shadow-sky"
-            >
-              Create Metric
-            </button>
+            <div className="flex flex-col gap-4">
+              <div className="text-5xl">Scoring</div>
+              {c.format.scoring_ids.slice(split).map((item, index) => (
+                <div className="flex flex-col gap-1" key={`score-${index}`}>
+                  <div className="text-2xl">
+                    {c.format.scoring_formatted.slice(split)[index]}
+                  </div>
+                  {c.format.scoring_type.slice(split)[index] == "selection" && (
+                    <SelectionComponent type={0} item={item} />
+                  )}
+                  {c.format.scoring_type.slice(split)[index] == "number" && (
+                    <input
+                      className="rounded-lg border border-silver p-2"
+                      onChange={() => setActionTrigger(!actionTrigger)}
+                      type="number"
+                      id={item}
+                    />
+                  )}
+                  {c.format.scoring_type.slice(split)[index] == "time" && (
+                    <TimeComponent
+                      item={item}
+                      onChange={() => setActionTrigger(!actionTrigger)}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex h-full w-1/4 flex-col p-2">
+            <div className="flex flex-col gap-4">
+              <div className="text-5xl">Result</div>
+              <div
+                className="mb-1.5 flex h-full w-full flex-col items-center
+              rounded-lg border border-silver p-2 text-7xl shadow-inner"
+              >
+                <div
+                  className="border-silver bg-gradient-to-tr
+                    from-deepOcean to-sky bg-clip-text p-2 font-semibold
+                    text-transparent"
+                >
+                  {result}
+                </div>
+              </div>
+              <button
+                onClick={createMetric}
+                className="w-fit rounded-lg border border-silver
+                  bg-gradient-to-tr from-deepOcean to-sky bg-clip-text p-2
+                  text-xl text-transparent transition duration-200 ease-in
+                  hover:-translate-y-[0.1rem] hover:border-sky hover:shadow-md
+                  hover:shadow-sky"
+              >
+                Create Metric
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

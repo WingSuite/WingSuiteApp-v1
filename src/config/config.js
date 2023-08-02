@@ -49,6 +49,9 @@ export const config = {
     "#FC056C",
     "#00CF07",
   ],
+  phoneRegex: /^\(\d{3}\) \d{3}-\d{4}$/,
+  passwordRegex:
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
 };
 
 // Main Sidebar config

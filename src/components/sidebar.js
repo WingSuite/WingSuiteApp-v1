@@ -25,7 +25,7 @@ import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
 import { post, get } from "@/utils/call";
 
-// Image
+// Image import
 import logo from "../../public/logo.png";
 
 // Login Page definitions

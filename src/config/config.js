@@ -84,7 +84,7 @@ export const permissionsList = {
     user_list: {
       page: ["*"],
     },
-    perm_list: {
+    permissions_editing: {
       page: ["user.add_permissions", "user.delete_permissions"],
     },
     unit_handling: {
@@ -197,11 +197,11 @@ export const adminSidebarContext = [
   {
     id: "user_list",
     title: "Users List",
-    link: "user_List",
+    link: "user_list",
     icon: <VscListFlat />,
   },
   {
-    id: "perm_list",
+    id: "permissions_editing",
     title: "Permissions Editing",
     link: "permissions_editing",
     icon: <VscKey />,

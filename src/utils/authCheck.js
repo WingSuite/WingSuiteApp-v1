@@ -4,11 +4,14 @@ import Cookies from "js-cookie";
 // React and Next.js imports
 import Router from "next/router";
 
-// Authentication checker
-export function authCheck() {
+// Util imports
+import { permissionsCheck } from "@/utils/permissionCheck";
 
-  // Get access token
+// Authentication checker
+export function authCheck(permissions = []) {
+  // Get access token nad user's data
   var access = Cookies.get("access");
+  const user = JSON.parse(localStorage.getItem("whoami")).permissions;
 
   // Return if the access is undefined or empty
   if (access == undefined || access == "") {
@@ -17,6 +20,17 @@ export function authCheck() {
 
     // Return false
     return false;
+  }
+
+  // Check if the user has access to the page
+  if (permissions.length != 0) {
+    if (!permissionsCheck(permissions, user)) {
+      // Move to login page
+      Router.push("/dashboard/homepage/");
+
+      // Return false
+      return false;
+    }
   }
 
   // Return true if all good

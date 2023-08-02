@@ -70,8 +70,22 @@ export function formatMilDate(unixTimestamp) {
 // Function to get amount of seconds from "mm:ss" format
 export function getSeconds(minuteSecondString) {
   // Calculate the string into minutes and seconds
-  const [minutes, seconds] = time.split(':').map(Number);
+  const [minutes, seconds] = minuteSecondString.split(':').map(Number);
 
   // Return the count
   return minutes * 60 + seconds;
+}
+
+// Function to get "mm:ss" from seconds values format
+export function getFormattedTime(minuteSecondString) {
+    // Get calculations
+    const seconds = minuteSecondString;
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    const formattedTime = `${m.toString().padStart(2, "0")}:${s
+      .toString()
+      .padStart(2, "0")}`;
+
+  // Return the formatted information
+  return formattedTime;
 }

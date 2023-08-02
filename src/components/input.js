@@ -63,12 +63,7 @@ export function AutoCompleteInput({ possibleItems, value, onChange }) {
 }
 
 // Time input field
-export function TimeInput({
-  hour,
-  setHour,
-  minute,
-  setMinute,
-}) {
+export function TimeInput({ hour, setHour, minute, setMinute, id = null }) {
   // Render component
   return (
     <div
@@ -77,7 +72,7 @@ export function TimeInput({
     >
       <AutosizeInput
         placeholder="00"
-        id="hour"
+        id={`${id == null ? `` : id}-hour`}
         pattern="[0-9]*"
         maxLength="2"
         value={hour}
@@ -97,7 +92,7 @@ export function TimeInput({
       :
       <AutosizeInput
         placeholder="00"
-        id="minute"
+        id={`${id == null ? `` : id}-minute`}
         pattern="[0-9]*"
         maxLength="2"
         value={minute}

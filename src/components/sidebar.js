@@ -13,8 +13,12 @@ import { usePathname } from "next/navigation";
 // JS Cookies import
 import Cookies from "js-cookie";
 
-// Custom imports
-import { regularSidebarContents, unitSidebarConfig } from "@/config/config";
+// Config imports
+import {
+  regularSidebarContents,
+  unitSidebarConfig,
+  permissionsList,
+} from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
@@ -27,13 +31,13 @@ import logo from "../../public/logo.png";
 // Login Page definitions
 const Sidebar = () => {
   // Define useStates
-  const [fullName, setFullName] = useState("");
   const [unitCollapse, setUnitCollapse] = useState({});
+  const [userInfo, setUserInfo] = useState({});
   const [units, setUnits] = useState([]);
 
   // Get current path and router
   const router = useRouter();
-  const currentPath = usePathname();
+  const currentPath = usePathname() || "";
 
   // On mount of the Next.js page
   useEffect(() => {
@@ -43,8 +47,8 @@ const Sidebar = () => {
     // Fetch the first and last name of the user from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
 
-    // Set the full name of the user
-    setFullName(user.full_name);
+    // Save the info of the user
+    setUserInfo(user);
 
     // Get the user's units
     (async () => {
@@ -209,48 +213,59 @@ const Sidebar = () => {
       {(unitCollapse[item] ||
         currentPath.includes(encodeURIComponent(item))) && (
         <div className="ml-6 flex flex-col gap-2">
-          {unitSidebarConfig.map((sidebarItem) => (
-            <button
-              key={`${item}-${sidebarItem.title}`}
-              className={`${
-                currentPath.includes(encodeURIComponent(item)) &&
-                currentPath.includes(sidebarItem.link)
-                  ? `bg-white hover:-translate-y-[0.1rem] hover:shadow-md
-                  hover:shadow-white`
-                  : `border border-transparent hover:-translate-y-[0.1rem]
-                  hover:border-white hover:shadow-lg hover:shadow-sky`
-              }
-              flex w-full items-center justify-start rounded-lg px-2 py-1
-              transition duration-200 ease-in`}
-              onClick={() =>
-                router.push(`/dashboard/unit/${item}${sidebarItem.link}`)
-              }
-            >
-              <IconContext.Provider
-                value={{
-                  color:
+          {unitSidebarConfig.map((sidebarItem) => {
+            const iterPermission = permissionsList.unit[sidebarItem.id];
+            var hasAccess = true;
+            if (iterPermission != undefined && "page" in iterPermission)
+              hasAccess = permissionsCheck(
+                iterPermission.page,
+                userInfo.permissions
+              );
+            if (hasAccess) {
+              return (
+                <button
+                  key={`${item}-${sidebarItem.title}`}
+                  className={`${
                     currentPath.includes(encodeURIComponent(item)) &&
                     currentPath.includes(sidebarItem.link)
-                      ? "#000000"
-                      : "#FFFFFF",
-                  size: "1.2em",
-                  className: "mr-2",
-                }}
-              >
-                {sidebarItem.icon}
-              </IconContext.Provider>
-              <div
-                className={`text-${
-                  currentPath.includes(encodeURIComponent(item)) &&
-                  currentPath.includes(sidebarItem.link)
-                    ? "black"
-                    : "white"
-                } text-sm`}
-              >
-                {sidebarItem.title}
-              </div>
-            </button>
-          ))}
+                      ? `bg-white hover:-translate-y-[0.1rem] hover:shadow-md
+                    hover:shadow-white`
+                      : `border border-transparent hover:-translate-y-[0.1rem]
+                    hover:border-white hover:shadow-lg hover:shadow-sky`
+                  }
+                flex w-full items-center justify-start rounded-lg px-2 py-1
+                transition duration-200 ease-in`}
+                  onClick={() =>
+                    router.push(`/dashboard/unit/${item}${sidebarItem.link}`)
+                  }
+                >
+                  <IconContext.Provider
+                    value={{
+                      color:
+                        currentPath.includes(encodeURIComponent(item)) &&
+                        currentPath.includes(sidebarItem.link)
+                          ? "#000000"
+                          : "#FFFFFF",
+                      size: "1.2em",
+                      className: "mr-2",
+                    }}
+                  >
+                    {sidebarItem.icon}
+                  </IconContext.Provider>
+                  <div
+                    className={`text-${
+                      currentPath.includes(encodeURIComponent(item)) &&
+                      currentPath.includes(sidebarItem.link)
+                        ? "black"
+                        : "white"
+                    } text-sm`}
+                  >
+                    {sidebarItem.title}
+                  </div>
+                </button>
+              );
+            }
+          })}
         </div>
       )}
     </div>
@@ -300,7 +315,7 @@ const Sidebar = () => {
             rounded-xl bg-white py-2 pl-3 pr-1"
           >
             <div className="h-[2.3rem] w-[2.3rem] rounded-full bg-silver" />
-            <div className="flex-1 truncate text-sm">{fullName}</div>
+            <div className="flex-1 truncate text-sm">{userInfo.full_name}</div>
             <button onClick={logoutButton}>
               <IconContext.Provider
                 value={{

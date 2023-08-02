@@ -22,7 +22,7 @@ export function Renderer() {
       <Toolbar />
       <div
         className="flex h-full w-full flex-row gap-8 overflow-y-auto
-          pt-1"
+        pt-1"
       >
         {c.viewList[c.viewSelect]}
         <StatisticsBoard />

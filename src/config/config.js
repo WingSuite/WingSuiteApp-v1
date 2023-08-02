@@ -152,12 +152,7 @@ export const permissionsList = {
       ],
     },
     metrics: {
-      page: [
-        "unit.get_all_pfa_data",
-        "unit.get_all_warrior_data",
-        "statistic.pfa.get_pfa_format_info",
-        "statistic.warrior.get_warrior_format_info",
-      ],
+      page: ["unit.get_all_pfa_data", "unit.get_all_warrior_data"],
       edit: [
         "statistic.pfa.update_pfa",
         "statistic.warrior.update_warrior",
@@ -171,5 +166,40 @@ export const permissionsList = {
     //     "unit.emergency"
     //   ]
     // }
+  },
+};
+
+// Endpoints config
+export const endPointsList = {
+  user: {
+    metrics: {
+      data: ["/user/get_pfa_data/", "/user/get_warrior_data/"],
+      format: [
+        "/statistic/pfa/get_pfa_format_info/",
+        "/statistic/warrior/get_warrior_format_info/",
+      ],
+    },
+  },
+  unit: {
+    metrics: {
+      add: ["/statistic/pfa/create_pfa/", "/statistic/warrior/create_warrior/"],
+      format: [
+        "/statistic/pfa/get_pfa_format_info/",
+        "/statistic/warrior/get_warrior_format_info/",
+      ],
+      data: ["/unit/get_all_pfa_data/", "/unit/get_all_warrior_data/"],
+      testing: [
+        "/statistic/pfa/get_test_pfa_score/",
+        "/statistic/warrior/get_test_warrior_score/",
+      ],
+      edit: [
+        "/statistic/pfa/update_pfa/",
+        "/statistic/warrior/update_warrior/",
+      ],
+      delete: [
+        "/statistic/pfa/delete_pfa/",
+        "/statistic/warrior/delete_warrior/",
+      ],
+    },
   },
 };

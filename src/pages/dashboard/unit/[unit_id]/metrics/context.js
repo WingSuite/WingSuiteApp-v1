@@ -6,10 +6,13 @@ import React from "react";
 // JS Cookies import
 import Cookies from "js-cookie";
 
+// Config imports
+import { endPointsList } from "@/config/config";
+
 // Util imports
 import * as statCalc from "@/utils/statsAnalysis";
-import { getSeconds } from "@/utils/time";
 import { authCheck } from "@/utils/authCheck";
+import { getSeconds } from "@/utils/time";
 import { get, post } from "@/utils/call";
 
 // Custom components imports
@@ -65,30 +68,12 @@ export function UnitMetricsAppProvider({ children }) {
   };
 
   // Endpoint mappings
-  const metricAddEndPoints = [
-    "/statistic/pfa/create_pfa/",
-    "/statistic/warrior/create_warrior/",
-  ];
-  const metricFetchFormatEndpoints = [
-    "/statistic/pfa/get_pfa_format_info/",
-    "/statistic/warrior/get_warrior_format_info/",
-  ];
-  const metricFetchEndPoints = [
-    "/unit/get_all_pfa_data/",
-    "/unit/get_all_warrior_data/",
-  ];
-  const metricGetTestEndpoints = [
-    "/statistic/pfa/get_test_pfa_score/",
-    "/statistic/warrior/get_test_warrior_score/",
-  ];
-  const metricEditEndPoints = [
-    "/statistic/pfa/update_pfa/",
-    "/statistic/warrior/update_warrior/",
-  ];
-  const metricDeleteEndPoints = [
-    "/statistic/pfa/delete_pfa/",
-    "/statistic/warrior/delete_warrior/",
-  ];
+  const metricAddEndPoints = endPointsList.unit.metrics.add;
+  const metricFetchFormatEndpoints = endPointsList.unit.metrics.format;
+  const metricFetchEndPoints = endPointsList.unit.metrics.data;
+  const metricGetTestEndpoints = endPointsList.unit.metrics.testing;
+  const metricEditEndPoints = endPointsList.unit.metrics.edit;
+  const metricDeleteEndPoints = endPointsList.unit.metrics.delete;
 
   // Execute function on mount
   useEffect(() => {

@@ -33,11 +33,48 @@ export function numOfUniqueUnits(data, metric, exam) {
 }
 
 // Function to calculate overall average metric value
-export function overallAvgMetricValue(data, metric, exam) {
-  const metricValues = data
-    .filter((item) => item.name === exam && item[metric] !== undefined)
-    .map((item) => item[metric]);
+export function overallAvgMetricValue(data, metric, exam = null) {
+  var metricValues = [];
+  if (exam == null) {
+    metricValues = data
+      .filter((item) => item[metric] !== undefined)
+      .map((item) => item[metric]);
+  } else {
+    metricValues = data
+      .filter((item) => item.name === exam && item[metric] !== undefined)
+      .map((item) => item[metric]);
+  }
   return average(metricValues);
+}
+
+// Function to calculate the max value
+export function overallMaxValue(data, metric, exam = null) {
+  var metricValues = [];
+  if (exam == null) {
+    metricValues = data
+      .filter((item) => item[metric] !== undefined)
+      .map((item) => item[metric]);
+  } else {
+    metricValues = data
+      .filter((item) => item.name === exam && item[metric] !== undefined)
+      .map((item) => item[metric]);
+  }
+  return Math.max(...metricValues);
+}
+
+// Function to calculate the max value
+export function overallMinValue(data, metric, exam = null) {
+  var metricValues = [];
+  if (exam == null) {
+    metricValues = data
+      .filter((item) => item[metric] !== undefined)
+      .map((item) => item[metric]);
+  } else {
+    metricValues = data
+      .filter((item) => item.name === exam && item[metric] !== undefined)
+      .map((item) => item[metric]);
+  }
+  return Math.min(...metricValues);
 }
 
 // Function to calculate overall standard deviation for that metric value

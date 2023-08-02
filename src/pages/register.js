@@ -134,11 +134,11 @@ const Login = () => {
         </div>
       </div>
       <div
-        className="h-fit w-1/6 rounded-2xl bg-white/[0.6] py-5
+        className="h-fit w-[20rem] rounded-2xl bg-white/[0.6] py-5
         shadow-lg shadow-sky"
       >
         {!success && (
-          <div className="flex h-full flex-col gap-5 px-5">
+          <div className="flex h-full flex-col gap-3 px-5">
             <div className="text-3xl">Register</div>
             <div className="flex flex-col">
               <div className="">First Name</div>
@@ -279,7 +279,7 @@ const Login = () => {
         )}
       </div>
       <div className="flex flex-row items-center gap-1 text-white">
-        <div>Already Have Acess?</div>
+        <div>Already Have Access?</div>
         <button
           className="rounded-lg border border-transparent px-2 py-1 text-white
           transition duration-200 ease-in hover:-translate-y-[0.1rem]

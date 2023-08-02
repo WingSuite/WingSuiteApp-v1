@@ -8,6 +8,10 @@ import {
   VscMegaphone,
   VscCalendar,
   VscFolderLibrary,
+  VscPerson,
+  VscListFlat,
+  VscKey,
+  VscOrganization,
 } from "react-icons/vsc";
 import { BsPerson } from "react-icons/bs";
 import { BiNews } from "react-icons/bi";
@@ -54,75 +58,6 @@ export const config = {
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
 };
 
-// Main Sidebar config
-export const regularSidebarContents = [
-  {
-    title: "Home Page",
-    link: "/dashboard/homepage",
-    icon: <VscHome />,
-  },
-  {
-    title: "Notifications",
-    link: "/dashboard/notifications",
-    icon: <VscBell />,
-  },
-  {
-    title: "Events",
-    link: "/dashboard/events",
-    icon: <VscCalendar />,
-  },
-  {
-    title: "Feedback",
-    link: "/dashboard/feedback",
-    icon: <VscComment />,
-  },
-  {
-    title: "Metrics",
-    link: "/dashboard/metrics",
-    icon: <VscGraph />,
-  },
-];
-
-// Unit sidebar config
-export const unitSidebarConfig = [
-  {
-    id: "frontpage",
-    title: "Front Page",
-    link: "/frontpage",
-    icon: <BiNews />,
-  },
-  {
-    id: "members",
-    title: "Members",
-    link: "/members",
-    icon: <BsPerson />,
-  },
-  {
-    id: "communications",
-    title: "Communications",
-    link: "/communications",
-    icon: <VscMegaphone />,
-  },
-  {
-    id: "metrics",
-    title: "Metrics",
-    link: "/metrics",
-    icon: <VscGraph />,
-  },
-  {
-    id: "resources",
-    title: "Resources",
-    link: "/resources",
-    icon: <VscFolderLibrary />,
-  },
-  {
-    id: "emergency",
-    title: "Emergency",
-    link: "/emergency",
-    icon: <VscWarning />,
-  },
-];
-
 // Permissions config
 export const permissionsList = {
   notifications: {
@@ -141,6 +76,20 @@ export const permissionsList = {
       "statistic.feedback.update_feedback",
       "statistic.feedback.delete_feedback",
     ],
+  },
+  admin: {
+    register_list: {
+      page: ["auth.authorize_user", "auth.reject_user"],
+    },
+    user_list: {
+      page: ["*"],
+    },
+    perm_list: {
+      page: ["user.add_permissions", "user.delete_permissions"],
+    },
+    unit_handling: {
+      page: ["unit.create_unit", "unit.delete_unit"],
+    },
   },
   unit: {
     frontpage: {
@@ -183,6 +132,7 @@ export const endPointsList = {
       ],
     },
   },
+  admin: {},
   unit: {
     metrics: {
       add: ["/statistic/pfa/create_pfa/", "/statistic/warrior/create_warrior/"],
@@ -206,3 +156,100 @@ export const endPointsList = {
     },
   },
 };
+
+// Main Sidebar config
+export const regularSidebarContents = [
+  {
+    title: "Home Page",
+    link: "/dashboard/homepage",
+    icon: <VscHome />,
+  },
+  {
+    title: "Notifications",
+    link: "/dashboard/notifications",
+    icon: <VscBell />,
+  },
+  {
+    title: "Events",
+    link: "/dashboard/events",
+    icon: <VscCalendar />,
+  },
+  {
+    title: "Feedback",
+    link: "/dashboard/feedback",
+    icon: <VscComment />,
+  },
+  {
+    title: "Metrics",
+    link: "/dashboard/metrics",
+    icon: <VscGraph />,
+  },
+];
+
+// Admin sidebar config
+export const adminSidebarContext = [
+  {
+    id: "register_list",
+    title: "Register List",
+    link: "register_list",
+    icon: <VscPerson />,
+  },
+  {
+    id: "user_list",
+    title: "Users List",
+    link: "user_List",
+    icon: <VscListFlat />,
+  },
+  {
+    id: "perm_list",
+    title: "Permissions Editing",
+    link: "permissions_editing",
+    icon: <VscKey />,
+  },
+  {
+    id: "unit_handling",
+    title: "Unit Handling",
+    link: "unit_handling",
+    icon: <VscOrganization />,
+  },
+];
+
+// Unit sidebar config
+export const unitSidebarConfig = [
+  {
+    id: "frontpage",
+    title: "Front Page",
+    link: "/frontpage",
+    icon: <BiNews />,
+  },
+  {
+    id: "members",
+    title: "Members",
+    link: "/members",
+    icon: <BsPerson />,
+  },
+  {
+    id: "communications",
+    title: "Communications",
+    link: "/communications",
+    icon: <VscMegaphone />,
+  },
+  {
+    id: "metrics",
+    title: "Metrics",
+    link: "/metrics",
+    icon: <VscGraph />,
+  },
+  {
+    id: "resources",
+    title: "Resources",
+    link: "/resources",
+    icon: <VscFolderLibrary />,
+  },
+  {
+    id: "emergency",
+    title: "Emergency",
+    link: "/emergency",
+    icon: <VscWarning />,
+  },
+];

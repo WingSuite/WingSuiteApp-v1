@@ -6,7 +6,7 @@ export function AppProvider({ children }) {
   const [variable, setVariable] = useState(0);
 
   useEffect(() => {
-    console.log("!!!!!!!");
+    var a = 0;
   }, []);
 
   const data = {

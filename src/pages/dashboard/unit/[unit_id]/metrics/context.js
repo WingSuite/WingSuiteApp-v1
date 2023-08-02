@@ -32,6 +32,7 @@ export function UnitMetricsAppProvider({ children }) {
   const [unitPersonnel, setUnitPersonnel] = useState({});
   const [unitPersonnelReverse, setUnitPersonnelReverse] = useState({});
   const [editItem, setEditItem] = useState({});
+  const [user, setUser] = useState({});
   const [data, setData] = useState([]);
 
   // Selection based and tracking useStates
@@ -93,6 +94,9 @@ export function UnitMetricsAppProvider({ children }) {
   useEffect(() => {
     // Check for correct user auth
     if (!authCheck()) return;
+
+    // Save user info
+    setUser(JSON.parse(localStorage.getItem("whoami")));
 
     // Set useStates
     setMetricToolbarSelect(0);
@@ -273,6 +277,8 @@ export function UnitMetricsAppProvider({ children }) {
         setUnitPersonnelReverse,
         editItem,
         setEditItem,
+        user,
+        setUser,
         data,
         setData,
         metricToolbarSelect,

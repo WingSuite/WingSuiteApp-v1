@@ -9,6 +9,12 @@ import React from "react";
 // Custom components imports
 import { BottomDropDown } from "@/components/dropdown";
 
+// Config imports
+import { permissionsList } from "@/config/config";
+
+// Util imports
+import { permissionsCheck } from "@/utils/permissionCheck";
+
 // Import unit metric context
 import { UnitMetricsAppContext } from "./context";
 
@@ -32,49 +38,58 @@ export function MetricToolBar() {
             />
           </div>
         )}
-        {(c.viewSelect == 0 && Object.keys(c.format).length != 0) ?
-          c.format.scoring_formatted.map((item, index) => (
-            <button
-              key={`toolbarItems-${item}`}
-              className={`h-full w-fit rounded-lg border px-2 py-1 text-base
+        {c.viewSelect == 0 && Object.keys(c.format).length != 0
+          ? c.format.scoring_formatted.map((item, index) => (
+              <button
+                key={`toolbarItems-${item}`}
+                className={`h-full w-fit rounded-lg border px-2 py-1 text-base
               transition duration-200 ease-in hover:-translate-y-[0.1rem]
               hover:shadow-lg ${
                 c.metricToolbarSelect == index
                   ? `border-sky text-sky hover:border-sky`
                   : `border-silver hover:border-sky hover:text-sky`
               }`}
-              onClick={() => c.setMetricToolbarSelect(index)}
-            >
-              {item}
-            </button>
-          )) : null}
+                onClick={() => c.setMetricToolbarSelect(index)}
+              >
+                {item}
+              </button>
+            ))
+          : null}
       </div>
       <div className="flex flex-row gap-4">
         <button
           className={`rounded-lg border border-silver px-2 pb-1 pt-2
           transition duration-200 ease-in hover:-translate-y-[0.1rem]
           hover:border-sky hover:text-sky hover:shadow-lg ${
-             c.viewSelect == 0 && `border-sky text-sky`
-           }`}
+            c.viewSelect == 0 && `border-sky text-sky`
+          }`}
           onClick={() => c.setViewSelect(0)}
         >
           <IconContext.Provider value={{ size: "1.5em" }}>
             <VscGraphScatter />
           </IconContext.Provider>
         </button>
-        <button
-          className={`rounded-lg border border-silver p-2 pr-1.5 transition
+        {permissionsCheck(
+          permissionsList.unit.metrics.edit,
+          c.user.permissions
+        ) && (
+          <button
+            className={`rounded-lg border border-silver p-2 pr-1.5 transition
           duration-200 ease-in hover:-translate-y-[0.1rem] hover:border-sky
           hover:text-sky hover:shadow-lg ${
             c.viewSelect == 1 && `border-sky text-sky`
           }`}
-          onClick={() => c.setViewSelect(1)}
-        >
-          <IconContext.Provider value={{ size: "1.5em" }}>
-            <VscTable />
-          </IconContext.Provider>
-        </button>
-        <button
+            onClick={() => c.setViewSelect(1)}
+          >
+            <IconContext.Provider value={{ size: "1.5em" }}>
+              <VscTable />
+            </IconContext.Provider>
+          </button>
+        )}
+        {permissionsCheck(
+          permissionsList.unit.metrics.add,
+          c.user.permissions
+        ) && (<button
           className={`rounded-lg border border-silver p-2 transition
           duration-200 ease-in hover:-translate-y-[0.1rem] hover:border-sky
           hover:text-sky hover:shadow-lg ${
@@ -85,7 +100,7 @@ export function MetricToolBar() {
           <IconContext.Provider value={{ size: "1.5em" }}>
             <VscNewFile />
           </IconContext.Provider>
-        </button>
+        </button>)}
       </div>
     </div>
   );

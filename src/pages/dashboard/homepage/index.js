@@ -166,8 +166,6 @@ export default function HomePage() {
         Cookies.get("access")
       );
 
-      console.log(res.message);
-
       // Set lastPFAScore to "N/A" if there is no PFA data
       if (res.message.length == 0) setLastPFAScore("N/A");
       else setLastPFAScore(res.message[0].composite_score);

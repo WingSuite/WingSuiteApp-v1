@@ -83,31 +83,37 @@ export const regularSidebarContents = [
 // Unit sidebar config
 export const unitSidebarConfig = [
   {
+    id: "frontpage",
     title: "Front Page",
     link: "/frontpage",
     icon: <BiNews />,
   },
   {
+    id: "members",
     title: "Members",
     link: "/members",
     icon: <BsPerson />,
   },
   {
+    id: "communications",
     title: "Communications",
     link: "/communications",
     icon: <VscMegaphone />,
   },
   {
+    id: "metrics",
     title: "Metrics",
     link: "/metrics",
     icon: <VscGraph />,
   },
   {
+    id: "resources",
     title: "Resources",
     link: "/resources",
     icon: <VscFolderLibrary />,
   },
   {
+    id: "emergency",
     title: "Emergency",
     link: "/emergency",
     icon: <VscWarning />,
@@ -145,5 +151,25 @@ export const permissionsList = {
         "unit.delete_officers",
       ],
     },
+    metrics: {
+      page: [
+        "unit.get_all_pfa_data",
+        "unit.get_all_warrior_data",
+        "statistic.pfa.get_pfa_format_info",
+        "statistic.warrior.get_warrior_format_info",
+      ],
+      edit: [
+        "statistic.pfa.update_pfa",
+        "statistic.warrior.update_warrior",
+        "statistic.pfa.delete_pfa",
+        "statistic.warrior.delete_warrior",
+      ],
+      add: ["statistic.pfa.create_pfa", "statistic.warrior.create_warrior"],
+    },
+    // emergency: {
+    //   page: [
+    //     "unit.emergency"
+    //   ]
+    // }
   },
 };

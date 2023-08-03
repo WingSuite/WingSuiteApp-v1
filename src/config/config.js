@@ -86,6 +86,7 @@ export const permissionsList = {
     },
     permissions_editing: {
       page: [
+        "user.update_rank",
         "user.get_permissions_list",
         "user.everyone.permission_view",
         "user.update_permissions",
@@ -143,8 +144,11 @@ export const endPointsList = {
       delete: "/auth/reject_user/",
     },
     permissions_editing: {
-      data: ["/user/everyone/", "/user/get_permissions_list/"],
-      update: "/user/update_permissions/",
+      data: [
+        "/user/everyone/",
+        "/user/get_permissions_list/",
+      ],
+      update: ["/user/update_permissions/", "/user/update_rank/"],
     },
   },
   unit: {

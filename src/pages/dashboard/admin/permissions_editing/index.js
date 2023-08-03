@@ -67,7 +67,7 @@ export default function UnitResourcesPage() {
       var processed = res.message.map((obj) => {
         return {
           ...obj,
-          multipurpose: `${obj.rank != undefined ? obj.rank + ` ` : ``}${
+          multipurpose: `${obj.rank != undefined ? obj.rank + ` ` : "N/R "}${
             obj.full_name
           }`,
         };
@@ -119,15 +119,29 @@ export default function UnitResourcesPage() {
     (async () => {
       // Get the user's feedback information
       var res = await post(
-        endPointsList.admin.permissions_editing.update,
+        endPointsList.admin.permissions_editing.update[0],
         { id: id, permissions: perms.split("\n") },
         Cookies.get("access")
       );
 
       // If the call was successful, send a success toaster
-      if (res.status == "success") successToaster(res.message);
-      if (res.status == "error")
-        errorToaster(`Permissions for ${title} updated`);
+      if (res.status == "success") successToaster(`User's permissions updated`);
+      if (res.status == "error") errorToaster(res.message);
+
+      // Update the user's rank if it was changed
+      if (title != "N/R") {
+        // Call API to change rank
+        res = await post(
+          endPointsList.admin.permissions_editing.update[1],
+          { id: id, rank: title },
+          Cookies.get("access")
+        );
+
+        // If the call was successful, send a success toaster
+        if (res.status == "success")
+          successToaster(`User's rank updated`);
+        if (res.status == "error") errorToaster(res.message);
+      }
 
       // Trigger action
       setActionTrigger(!actionTrigger);
@@ -166,10 +180,12 @@ export default function UnitResourcesPage() {
                   <CollapsableInfoCard
                     id={item._id}
                     key={`Member-${item._id}`}
-                    title={item.multipurpose}
+                    title={`${item.rank != undefined ? item.rank : "N/R"}`}
+                    titleAppendix={
+                      <div className="-ml-1">{item.full_name} </div>
+                    }
                     mainText={item.permissions.join("\n")}
                     updateFunc={updateFeedback}
-                    titleUpdateDisable={true}
                   />
                 ))}
               </div>

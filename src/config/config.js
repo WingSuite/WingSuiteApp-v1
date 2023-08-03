@@ -132,7 +132,13 @@ export const endPointsList = {
       ],
     },
   },
-  admin: {},
+  admin: {
+    register_list: {
+      data: "/auth/get_register_requests/",
+      add: "/auth/authorize_user/",
+      delete: "/auth/reject_user/"
+    },
+  },
   unit: {
     metrics: {
       add: ["/statistic/pfa/create_pfa/", "/statistic/warrior/create_warrior/"],

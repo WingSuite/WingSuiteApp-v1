@@ -6,6 +6,11 @@ import {
   VscTrash,
   VscCheck,
   VscChromeClose,
+  VscPass,
+  VscMail,
+  VscPerson,
+  VscCallIncoming,
+  VscVerifiedFilled,
 } from "react-icons/vsc";
 import { MdLogout } from "react-icons/md";
 import { IconContext } from "react-icons";
@@ -233,9 +238,18 @@ export function CollapsableInfoCard({
 }
 
 // User Card definition
-export function UserCard({ id, name, rank, email, phone, deleteFunc = null }) {
+export function UserCard({
+  id,
+  name,
+  rank,
+  email,
+  phone,
+  deleteFunc = null,
+  addFunc = null,
+}) {
   // Define useStates
-  const [confirm, setConfirm] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [addConfirm, setAddConfirm] = useState(false);
 
   // Render card
   return (
@@ -248,13 +262,13 @@ export function UserCard({ id, name, rank, email, phone, deleteFunc = null }) {
       <div className="relative h-[170px] w-full">
         <Image src="/logobw.png" objectFit="contain" alt="Logo" layout="fill" />
       </div>
-      {deleteFunc && (
+      {(deleteFunc || addFunc) && (
         <div className="absolute right-0 top-0 flex flex-col gap-1 p-2">
-          {!confirm && (
+          {!deleteConfirm && !addConfirm && deleteFunc && (
             <button
               className="transition duration-200 ease-in hover:text-scarlet"
               onClick={() => {
-                setConfirm(true);
+                setDeleteConfirm(true);
               }}
             >
               <IconContext.Provider value={{ size: "1.2em" }}>
@@ -262,11 +276,24 @@ export function UserCard({ id, name, rank, email, phone, deleteFunc = null }) {
               </IconContext.Provider>
             </button>
           )}
-          {confirm && (
+          {!deleteConfirm && !addConfirm && addFunc && (
+            <button
+              className="mt-1 transition duration-200 ease-in
+              hover:text-scarlet"
+              onClick={() => {
+                setAddConfirm(true);
+              }}
+            >
+              <IconContext.Provider value={{ size: "1.2em" }}>
+                <VscPass />
+              </IconContext.Provider>
+            </button>
+          )}
+          {deleteConfirm && (
             <button
               className="transition duration-200 ease-in hover:text-scarlet"
               onClick={() => {
-                setConfirm(false);
+                setDeleteConfirm(false);
               }}
             >
               <IconContext.Provider value={{ size: "1.2em" }}>
@@ -274,7 +301,7 @@ export function UserCard({ id, name, rank, email, phone, deleteFunc = null }) {
               </IconContext.Provider>
             </button>
           )}
-          {confirm && (
+          {deleteConfirm && (
             <button
               className="transition duration-200 ease-in hover:text-scarlet"
               onClick={() => {
@@ -286,13 +313,66 @@ export function UserCard({ id, name, rank, email, phone, deleteFunc = null }) {
               </IconContext.Provider>
             </button>
           )}
+          {addConfirm && (
+            <button
+              className="transition duration-200 ease-in hover:text-scarlet"
+              onClick={() => {
+                addFunc(id, name);
+              }}
+            >
+              <IconContext.Provider value={{ size: "1.2em" }}>
+                <VscCheck />
+              </IconContext.Provider>
+            </button>
+          )}
+          {addConfirm && (
+            <button
+              className="transition duration-200 ease-in hover:text-scarlet"
+              onClick={() => {
+                setAddConfirm(false);
+              }}
+            >
+              <IconContext.Provider value={{ size: "1.2em" }}>
+                <VscChromeClose />
+              </IconContext.Provider>
+            </button>
+          )}
         </div>
       )}
       <div className="w-full text-left text-base">
-        <div className="truncate font-bold">{name}</div>
-        <div>{rank}</div>
-        <div>{email}</div>
-        <div>{phone}</div>
+        <div className="flex items-center gap-3">
+          <div className="w-1/12">
+            <IconContext.Provider value={{ size: "1.1em" }}>
+              <VscPerson />
+            </IconContext.Provider>
+          </div>
+          <div className="w-11/12 truncate font-bold">{name}</div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="w-1/12">
+            <IconContext.Provider value={{ size: "1.1em" }}>
+              <VscVerifiedFilled />
+            </IconContext.Provider>
+          </div>
+          <div className="word-break w-11/12 break-all">{rank}</div>
+        </div>
+        <div className="flex gap-3">
+          <div className="w-1/12 mt-[3px]">
+            <IconContext.Provider value={{ size: "1.1em" }}>
+              <VscMail />
+            </IconContext.Provider>
+          </div>
+
+          <div className="word-break w-11/12 break-all">{email}</div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="w-1/12">
+            <IconContext.Provider value={{ size: "1.1em" }}>
+              <VscCallIncoming />
+            </IconContext.Provider>
+          </div>
+          <div className="word-break w-11/12 break-all">{phone}</div>
+        </div>
       </div>
     </div>
   );

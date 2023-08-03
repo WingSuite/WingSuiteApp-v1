@@ -15,13 +15,13 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 // Config imports
-import { permissionsList } from "@/config/config";
+import { permissionsList, endPointsList } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
 import { formatMilDate } from "@/utils/time";
-import { post } from "@/utils/call";
+import { get, post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";

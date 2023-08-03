@@ -1,5 +1,5 @@
 // React Icons
-import { VscCloseAll, VscEdit } from "react-icons/vsc";
+import { VscSearch } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import React from "react";
 
 // Toaster Components and CSS
-import { ToastContainer, useToast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // JS Cookies import
@@ -18,14 +18,11 @@ import Cookies from "js-cookie";
 import { permissionsList, endPointsList } from "@/config/config";
 
 // Util imports
-import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
-import { formatMilDate } from "@/utils/time";
 import { get, post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { BottomDropDown } from "@/components/dropdown";
 import { CollapsableInfoCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
@@ -138,8 +135,7 @@ export default function UnitResourcesPage() {
         );
 
         // If the call was successful, send a success toaster
-        if (res.status == "success")
-          successToaster(`User's rank updated`);
+        if (res.status == "success") successToaster(`User's rank updated`);
         if (res.status == "error") errorToaster(res.message);
       }
 
@@ -165,13 +161,22 @@ export default function UnitResourcesPage() {
         ) : (
           <div className="flex h-full flex-row gap-2 overflow-y-auto">
             <div className="flex h-full w-8/12 flex-col gap-1 overflow-y-auto">
-              <input
-                className="rounded-lg border border-silver p-2 shadow-inner"
-                placeholder="Search"
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                }}
-              ></input>
+              <div
+                className="flex flex-row items-center gap-2 rounded-lg border
+                border-silver p-2 shadow-inner"
+              >
+                <IconContext.Provider value={{ size: "1.5em" }}>
+                  <VscSearch />
+                </IconContext.Provider>
+                <input
+                  className=""
+                  placeholder="Search"
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                  }}
+                />
+              </div>
+
               <div
                 className="flex h-full w-full flex-col gap-2 overflow-y-auto
                 pt-2"

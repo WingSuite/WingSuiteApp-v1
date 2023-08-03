@@ -119,7 +119,7 @@ export function CollapsableInfoCard({
           <div className="flex w-full flex-row items-center gap-0.5">
             {date && <div className={`mr-3 text-base`}>{date}</div>}
             <AutosizeInput
-              className={`${(!titleUpdateDisable && editMode) && `text-sky`}`}
+              className={`${!titleUpdateDisable && editMode && `text-sky`}`}
               inputStyle={{ background: "transparent" }}
               value={titleContent}
               disabled={titleUpdateDisable || !editMode}
@@ -282,7 +282,7 @@ export function UserCard({
           {!deleteConfirm && !addConfirm && addFunc && (
             <button
               className="mt-1 transition duration-200 ease-in
-              hover:text-scarlet"
+              hover:text-bermuda"
               onClick={() => {
                 setAddConfirm(true);
               }}
@@ -318,7 +318,7 @@ export function UserCard({
           )}
           {addConfirm && (
             <button
-              className="transition duration-200 ease-in hover:text-scarlet"
+              className="transition duration-200 ease-in hover:text-bermuda"
               onClick={() => {
                 addFunc(id, name);
               }}
@@ -330,7 +330,7 @@ export function UserCard({
           )}
           {addConfirm && (
             <button
-              className="transition duration-200 ease-in hover:text-scarlet"
+              className="transition duration-200 ease-in hover:text-bermuda"
               onClick={() => {
                 setAddConfirm(false);
               }}
@@ -343,16 +343,16 @@ export function UserCard({
         </div>
       )}
       <div className="w-full text-left text-base">
-        <div className="flex items-center gap-3">
-          <div className="w-1/12">
+        <div className="flex gap-3">
+          <div className="mt-[3px] w-1/12">
             <IconContext.Provider value={{ size: "1.1em" }}>
               <VscPerson />
             </IconContext.Provider>
           </div>
-          <div className="w-11/12 truncate font-bold">{name}</div>
+          <div className="word-break w-11/12  break-all font-bold">{name}</div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="w-1/12">
+        <div className="flex gap-3">
+          <div className="mt-[3px] w-1/12">
             <IconContext.Provider value={{ size: "1.1em" }}>
               <VscVerifiedFilled />
             </IconContext.Provider>
@@ -368,8 +368,8 @@ export function UserCard({
 
           <div className="word-break w-11/12 break-all">{email}</div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="w-1/12">
+        <div className="flex gap-3">
+          <div className="mt-[3px] w-1/12">
             <IconContext.Provider value={{ size: "1.1em" }}>
               <VscCallIncoming />
             </IconContext.Provider>

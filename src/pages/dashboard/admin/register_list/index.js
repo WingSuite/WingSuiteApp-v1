@@ -63,8 +63,8 @@ export default function UnitResourcesPage() {
       );
 
       // Show toast messages depending on state
-      if (res.status == "error") errorToaster(error.message);
-      if (res.status == "success") successToaster(error.message);
+      if (res.status == "error") errorToaster(res.message);
+      if (res.status == "success") successToaster(res.message);
 
       // Trigger action trigger
       setActionTrigger(!actionTrigger);

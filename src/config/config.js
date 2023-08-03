@@ -82,7 +82,7 @@ export const permissionsList = {
       page: ["auth.authorize_user", "auth.reject_user"],
     },
     user_list: {
-      page: ["*"],
+      page: ["user.everyone.phone_number_view"],
     },
     permissions_editing: {
       page: [
@@ -144,11 +144,12 @@ export const endPointsList = {
       delete: "/auth/reject_user/",
     },
     permissions_editing: {
-      data: [
-        "/user/everyone/",
-        "/user/get_permissions_list/",
-      ],
+      data: ["/user/everyone/", "/user/get_permissions_list/"],
       update: ["/user/update_permissions/", "/user/update_rank/"],
+    },
+    user_list: {
+      data: "/user/everyone/",
+      delete: "/auth/kick_user/"
     },
   },
   unit: {
@@ -214,7 +215,7 @@ export const adminSidebarContext = [
   },
   {
     id: "user_list",
-    title: "Users List",
+    title: "User List",
     link: "user_list",
     icon: <VscListFlat />,
   },

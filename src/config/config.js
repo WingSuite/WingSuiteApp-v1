@@ -85,7 +85,11 @@ export const permissionsList = {
       page: ["*"],
     },
     permissions_editing: {
-      page: ["user.add_permissions", "user.delete_permissions"],
+      page: [
+        "user.get_permissions_list",
+        "user.everyone.permission_view",
+        "user.update_permissions",
+      ],
     },
     unit_handling: {
       page: ["unit.create_unit", "unit.delete_unit"],
@@ -136,7 +140,11 @@ export const endPointsList = {
     register_list: {
       data: "/auth/get_register_requests/",
       add: "/auth/authorize_user/",
-      delete: "/auth/reject_user/"
+      delete: "/auth/reject_user/",
+    },
+    permissions_editing: {
+      data: ["/user/everyone/", "/user/get_permissions_list/"],
+      update: "/user/update_permissions/",
     },
   },
   unit: {

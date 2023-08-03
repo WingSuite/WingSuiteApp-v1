@@ -1,7 +1,3 @@
-// React Icons
-import { VscCloseAll, VscEdit } from "react-icons/vsc";
-import { IconContext } from "react-icons";
-
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -18,15 +14,11 @@ import Cookies from "js-cookie";
 import { permissionsList, endPointsList } from "@/config/config";
 
 // Util imports
-import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
-import { formatMilDate } from "@/utils/time";
 import { get, post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { BottomDropDown } from "@/components/dropdown";
-import { CollapsableInfoCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
 import { UserCard } from "@/components/cards";

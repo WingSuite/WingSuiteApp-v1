@@ -87,13 +87,14 @@ export function ButtonCard({
 // Collapsable Card definition
 export function CollapsableInfoCard({
   id,
-  date,
+  date = null,
   title,
-  titleAppendix,
+  titleAppendix = null,
   mainText,
   updateFunc = null,
   deleteFunc = null,
   startState = false,
+  titleUpdateDisable = false,
 }) {
   // Define useState
   const [titleContent, setTitleContent] = useState(title);
@@ -116,20 +117,22 @@ export function CollapsableInfoCard({
           }}
         >
           <div className="flex w-full flex-row items-center gap-0.5">
-            <div className="mr-3 text-base">{date}</div>
+            {date && <div className={`mr-3 text-base`}>{date}</div>}
             <AutosizeInput
-              className={`${editMode && `text-sky`}`}
+              className={`${(!titleUpdateDisable && editMode) && `text-sky`}`}
               inputStyle={{ background: "transparent" }}
               value={titleContent}
-              disabled={!editMode}
+              disabled={titleUpdateDisable || !editMode}
               onChange={(e) => setTitleContent(e.target.value)}
             />
-            <div
-              className={`ml-2 flex flex-col text-left
-              ${delMode ? `text-scarlet` : `text-darkSilver`}`}
-            >
-              {titleAppendix}
-            </div>
+            {titleAppendix && (
+              <div
+                className={`ml-2 flex flex-col text-left
+                ${delMode ? `text-scarlet` : `text-darkSilver`}`}
+              >
+                {titleAppendix}
+              </div>
+            )}
           </div>
         </div>
         <div className="flex flex-row items-center gap-2">
@@ -357,7 +360,7 @@ export function UserCard({
           <div className="word-break w-11/12 break-all">{rank}</div>
         </div>
         <div className="flex gap-3">
-          <div className="w-1/12 mt-[3px]">
+          <div className="mt-[3px] w-1/12">
             <IconContext.Provider value={{ size: "1.1em" }}>
               <VscMail />
             </IconContext.Provider>

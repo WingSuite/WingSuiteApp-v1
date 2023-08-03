@@ -18,15 +18,11 @@ import Cookies from "js-cookie";
 import { permissionsList, endPointsList } from "@/config/config";
 
 // Util imports
-import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
-import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { BottomDropDown } from "@/components/dropdown";
-import { CollapsableInfoCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
 import { UserCard } from "@/components/cards";
@@ -34,9 +30,6 @@ import Sidebar from "@/components/sidebar";
 
 // Unit member page definition
 export default function UnitResourcesPage() {
-  // Define router and get unit ID from URL
-  const router = useRouter();
-
   // Define useStates
   const [filterUserList, setFilteredUserList] = useState([]);
   const [actionTrigger, setActionTrigger] = useState(false);

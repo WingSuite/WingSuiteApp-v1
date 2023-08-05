@@ -8,6 +8,10 @@ import {
   VscMegaphone,
   VscCalendar,
   VscFolderLibrary,
+  VscPerson,
+  VscListFlat,
+  VscKey,
+  VscOrganization,
 } from "react-icons/vsc";
 import { BsPerson } from "react-icons/bs";
 import { BiNews } from "react-icons/bi";
@@ -49,76 +53,10 @@ export const config = {
     "#FC056C",
     "#00CF07",
   ],
+  phoneRegex: /^\(\d{3}\) \d{3}-\d{4}$/,
+  passwordRegex:
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
 };
-
-// Main Sidebar config
-export const regularSidebarContents = [
-  {
-    title: "Home Page",
-    link: "/dashboard/homepage",
-    icon: <VscHome />,
-  },
-  {
-    title: "Notifications",
-    link: "/dashboard/notifications",
-    icon: <VscBell />,
-  },
-  {
-    title: "Events",
-    link: "/dashboard/events",
-    icon: <VscCalendar />,
-  },
-  {
-    title: "Feedback",
-    link: "/dashboard/feedback",
-    icon: <VscComment />,
-  },
-  {
-    title: "Metrics",
-    link: "/dashboard/metrics",
-    icon: <VscGraph />,
-  },
-];
-
-// Unit sidebar config
-export const unitSidebarConfig = [
-  {
-    id: "frontpage",
-    title: "Front Page",
-    link: "/frontpage",
-    icon: <BiNews />,
-  },
-  {
-    id: "members",
-    title: "Members",
-    link: "/members",
-    icon: <BsPerson />,
-  },
-  {
-    id: "communications",
-    title: "Communications",
-    link: "/communications",
-    icon: <VscMegaphone />,
-  },
-  {
-    id: "metrics",
-    title: "Metrics",
-    link: "/metrics",
-    icon: <VscGraph />,
-  },
-  {
-    id: "resources",
-    title: "Resources",
-    link: "/resources",
-    icon: <VscFolderLibrary />,
-  },
-  {
-    id: "emergency",
-    title: "Emergency",
-    link: "/emergency",
-    icon: <VscWarning />,
-  },
-];
 
 // Permissions config
 export const permissionsList = {
@@ -138,6 +76,25 @@ export const permissionsList = {
       "statistic.feedback.update_feedback",
       "statistic.feedback.delete_feedback",
     ],
+  },
+  admin: {
+    register_list: {
+      page: ["auth.authorize_user", "auth.reject_user"],
+    },
+    user_list: {
+      page: ["user.everyone.phone_number_view"],
+    },
+    permissions_editing: {
+      page: [
+        "user.update_rank",
+        "user.get_permissions_list",
+        "user.everyone.permission_view",
+        "user.update_permissions",
+      ],
+    },
+    unit_handling: {
+      page: ["unit.create_unit", "unit.delete_unit", "unit.update_unit"],
+    },
   },
   unit: {
     frontpage: {
@@ -180,6 +137,33 @@ export const endPointsList = {
       ],
     },
   },
+  admin: {
+    register_list: {
+      data: "/auth/get_register_requests/",
+      add: "/auth/authorize_user/",
+      delete: "/auth/reject_user/",
+    },
+    permissions_editing: {
+      data: ["/user/everyone/", "/user/get_permissions_list/"],
+      update: ["/user/update_permissions/", "/user/update_rank/"],
+    },
+    user_list: {
+      data: "/user/everyone/",
+      delete: "/auth/kick_user/",
+    },
+    unit_handling: {
+      data: [
+        "/unit/get_all_units/",
+        "/unit/get_unit_types/",
+        "/unit/get_unit_info/",
+        "/unit/get_all_officers/",
+        "/unit/get_all_members/",
+      ],
+      add: "/unit/create_unit/",
+      delete: "/unit/delete_unit/",
+      update: "/unit/update_unit/"
+    },
+  },
   unit: {
     metrics: {
       add: ["/statistic/pfa/create_pfa/", "/statistic/warrior/create_warrior/"],
@@ -203,3 +187,100 @@ export const endPointsList = {
     },
   },
 };
+
+// Main Sidebar config
+export const regularSidebarContents = [
+  {
+    title: "Home Page",
+    link: "/dashboard/homepage",
+    icon: <VscHome />,
+  },
+  {
+    title: "Notifications",
+    link: "/dashboard/notifications",
+    icon: <VscBell />,
+  },
+  {
+    title: "Events",
+    link: "/dashboard/events",
+    icon: <VscCalendar />,
+  },
+  {
+    title: "Feedback",
+    link: "/dashboard/feedback",
+    icon: <VscComment />,
+  },
+  {
+    title: "Metrics",
+    link: "/dashboard/metrics",
+    icon: <VscGraph />,
+  },
+];
+
+// Admin sidebar config
+export const adminSidebarContext = [
+  {
+    id: "register_list",
+    title: "Register List",
+    link: "register_list",
+    icon: <VscPerson />,
+  },
+  {
+    id: "user_list",
+    title: "User List",
+    link: "user_list",
+    icon: <VscListFlat />,
+  },
+  {
+    id: "permissions_editing",
+    title: "Permissions Editing",
+    link: "permissions_editing",
+    icon: <VscKey />,
+  },
+  {
+    id: "unit_handling",
+    title: "Unit Handling",
+    link: "unit_handling",
+    icon: <VscOrganization />,
+  },
+];
+
+// Unit sidebar config
+export const unitSidebarConfig = [
+  {
+    id: "frontpage",
+    title: "Front Page",
+    link: "/frontpage",
+    icon: <BiNews />,
+  },
+  {
+    id: "members",
+    title: "Members",
+    link: "/members",
+    icon: <BsPerson />,
+  },
+  {
+    id: "communications",
+    title: "Communications",
+    link: "/communications",
+    icon: <VscMegaphone />,
+  },
+  {
+    id: "metrics",
+    title: "Metrics",
+    link: "/metrics",
+    icon: <VscGraph />,
+  },
+  {
+    id: "resources",
+    title: "Resources",
+    link: "/resources",
+    icon: <VscFolderLibrary />,
+  },
+  {
+    id: "emergency",
+    title: "Emergency",
+    link: "/emergency",
+    icon: <VscWarning />,
+  },
+];

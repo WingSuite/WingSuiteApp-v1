@@ -6,6 +6,11 @@ import {
   VscTrash,
   VscCheck,
   VscChromeClose,
+  VscPass,
+  VscMail,
+  VscPerson,
+  VscCallIncoming,
+  VscVerifiedFilled,
 } from "react-icons/vsc";
 import { MdLogout } from "react-icons/md";
 import { IconContext } from "react-icons";
@@ -82,13 +87,14 @@ export function ButtonCard({
 // Collapsable Card definition
 export function CollapsableInfoCard({
   id,
-  date,
+  date = null,
   title,
-  titleAppendix,
+  titleAppendix = null,
   mainText,
   updateFunc = null,
   deleteFunc = null,
   startState = false,
+  titleUpdateDisable = false,
 }) {
   // Define useState
   const [titleContent, setTitleContent] = useState(title);
@@ -111,20 +117,22 @@ export function CollapsableInfoCard({
           }}
         >
           <div className="flex w-full flex-row items-center gap-0.5">
-            <div className="mr-3 text-base">{date}</div>
+            {date && <div className={`mr-3 text-base`}>{date}</div>}
             <AutosizeInput
-              className={`${editMode && `text-sky`}`}
+              className={`${!titleUpdateDisable && editMode && `text-sky`}`}
               inputStyle={{ background: "transparent" }}
               value={titleContent}
-              disabled={!editMode}
+              disabled={titleUpdateDisable || !editMode}
               onChange={(e) => setTitleContent(e.target.value)}
             />
-            <div
-              className={`ml-2 flex flex-col text-left
-              ${delMode ? `text-scarlet` : `text-darkSilver`}`}
-            >
-              {titleAppendix}
-            </div>
+            {titleAppendix && (
+              <div
+                className={`ml-2 flex flex-col text-left
+                ${delMode ? `text-scarlet` : `text-darkSilver`}`}
+              >
+                {titleAppendix}
+              </div>
+            )}
           </div>
         </div>
         <div className="flex flex-row items-center gap-2">
@@ -233,9 +241,18 @@ export function CollapsableInfoCard({
 }
 
 // User Card definition
-export function UserCard({ id, name, rank, email, phone, deleteFunc = null }) {
+export function UserCard({
+  id,
+  name,
+  rank,
+  email,
+  phone,
+  deleteFunc = null,
+  addFunc = null,
+}) {
   // Define useStates
-  const [confirm, setConfirm] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [addConfirm, setAddConfirm] = useState(false);
 
   // Render card
   return (
@@ -248,13 +265,13 @@ export function UserCard({ id, name, rank, email, phone, deleteFunc = null }) {
       <div className="relative h-[170px] w-full">
         <Image src="/logobw.png" objectFit="contain" alt="Logo" layout="fill" />
       </div>
-      {deleteFunc && (
+      {(deleteFunc || addFunc) && (
         <div className="absolute right-0 top-0 flex flex-col gap-1 p-2">
-          {!confirm && (
+          {!deleteConfirm && !addConfirm && deleteFunc && (
             <button
               className="transition duration-200 ease-in hover:text-scarlet"
               onClick={() => {
-                setConfirm(true);
+                setDeleteConfirm(true);
               }}
             >
               <IconContext.Provider value={{ size: "1.2em" }}>
@@ -262,11 +279,24 @@ export function UserCard({ id, name, rank, email, phone, deleteFunc = null }) {
               </IconContext.Provider>
             </button>
           )}
-          {confirm && (
+          {!deleteConfirm && !addConfirm && addFunc && (
+            <button
+              className="mt-1 transition duration-200 ease-in
+              hover:text-bermuda"
+              onClick={() => {
+                setAddConfirm(true);
+              }}
+            >
+              <IconContext.Provider value={{ size: "1.2em" }}>
+                <VscPass />
+              </IconContext.Provider>
+            </button>
+          )}
+          {deleteConfirm && (
             <button
               className="transition duration-200 ease-in hover:text-scarlet"
               onClick={() => {
-                setConfirm(false);
+                setDeleteConfirm(false);
               }}
             >
               <IconContext.Provider value={{ size: "1.2em" }}>
@@ -274,7 +304,7 @@ export function UserCard({ id, name, rank, email, phone, deleteFunc = null }) {
               </IconContext.Provider>
             </button>
           )}
-          {confirm && (
+          {deleteConfirm && (
             <button
               className="transition duration-200 ease-in hover:text-scarlet"
               onClick={() => {
@@ -286,13 +316,66 @@ export function UserCard({ id, name, rank, email, phone, deleteFunc = null }) {
               </IconContext.Provider>
             </button>
           )}
+          {addConfirm && (
+            <button
+              className="transition duration-200 ease-in hover:text-bermuda"
+              onClick={() => {
+                addFunc(id, name);
+              }}
+            >
+              <IconContext.Provider value={{ size: "1.2em" }}>
+                <VscCheck />
+              </IconContext.Provider>
+            </button>
+          )}
+          {addConfirm && (
+            <button
+              className="transition duration-200 ease-in hover:text-bermuda"
+              onClick={() => {
+                setAddConfirm(false);
+              }}
+            >
+              <IconContext.Provider value={{ size: "1.2em" }}>
+                <VscChromeClose />
+              </IconContext.Provider>
+            </button>
+          )}
         </div>
       )}
       <div className="w-full text-left text-base">
-        <div className="truncate font-bold">{name}</div>
-        <div>{rank}</div>
-        <div>{email}</div>
-        <div>{phone}</div>
+        <div className="flex gap-3">
+          <div className="mt-[3px] w-1/12">
+            <IconContext.Provider value={{ size: "1.1em" }}>
+              <VscPerson />
+            </IconContext.Provider>
+          </div>
+          <div className="word-break w-11/12  break-all font-bold">{name}</div>
+        </div>
+        <div className="flex gap-3">
+          <div className="mt-[3px] w-1/12">
+            <IconContext.Provider value={{ size: "1.1em" }}>
+              <VscVerifiedFilled />
+            </IconContext.Provider>
+          </div>
+          <div className="word-break w-11/12 break-all">{rank}</div>
+        </div>
+        <div className="flex gap-3">
+          <div className="mt-[3px] w-1/12">
+            <IconContext.Provider value={{ size: "1.1em" }}>
+              <VscMail />
+            </IconContext.Provider>
+          </div>
+
+          <div className="word-break w-11/12 break-all">{email}</div>
+        </div>
+        <div className="flex gap-3">
+          <div className="mt-[3px] w-1/12">
+            <IconContext.Provider value={{ size: "1.1em" }}>
+              <VscCallIncoming />
+            </IconContext.Provider>
+          </div>
+          <div className="word-break w-11/12 break-all">{phone}</div>
+        </div>
       </div>
     </div>
   );

@@ -1,8 +1,5 @@
 // React Icons
-import {
-  VscCloseAll,
-  VscEdit,
-} from "react-icons/vsc";
+import { VscCloseAll, VscEdit } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
@@ -184,10 +181,10 @@ export default function FeedbackPage() {
       // If the call was successful, send a success toaster
       if (res.status == "success") successToaster(res.message);
       if (res.status == "error") errorToaster(res.message);
-    })();
 
-    // Trigger action
-    setActionTrigger(!actionTrigger);
+      // Trigger action
+      setActionTrigger(!actionTrigger);
+    })();
   };
 
   // Function definition for deleting a feedback

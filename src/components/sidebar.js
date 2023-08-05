@@ -1,5 +1,10 @@
 // React Icons
-import { VscOrganization, VscChevronDown, VscChevronUp } from "react-icons/vsc";
+import {
+  VscOrganization,
+  VscChevronDown,
+  VscChevronUp,
+  VscSymbolProperty,
+} from "react-icons/vsc";
 import { MdLogout } from "react-icons/md";
 import { IconContext } from "react-icons";
 
@@ -18,6 +23,7 @@ import {
   regularSidebarContents,
   unitSidebarConfig,
   permissionsList,
+  adminSidebarContext,
 } from "@/config/config";
 
 // Util imports
@@ -25,12 +31,14 @@ import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
 import { post, get } from "@/utils/call";
 
-// Image
+// Image import
 import logo from "../../public/logo.png";
 
 // Login Page definitions
 const Sidebar = () => {
   // Define useStates
+  const [adminAccess, setAdminAccess] = useState(false);
+  const [adminCollapse, setAdminCollapse] = useState(false);
   const [unitCollapse, setUnitCollapse] = useState({});
   const [userInfo, setUserInfo] = useState({});
   const [units, setUnits] = useState([]);
@@ -49,6 +57,16 @@ const Sidebar = () => {
 
     // Save the info of the user
     setUserInfo(user);
+
+    // Iterate through the admin permissions requirements
+    for (var item of Object.keys(permissionsList.admin)) {
+      if (
+        permissionsCheck(permissionsList.admin[item].page, user.permissions)
+      ) {
+        setAdminAccess(true);
+        break;
+      }
+    }
 
     // Get the user's units
     (async () => {
@@ -153,6 +171,111 @@ const Sidebar = () => {
       </div>
     </button>
   ));
+
+  // Render the admin access list
+  const adminList = adminAccess && (
+    <div className="flex w-10/12 flex-col gap-2">
+      <button
+        className={`${
+          currentPath.includes(encodeURIComponent("admin"))
+            ? `bg-white hover:-translate-y-[0.1rem] hover:shadow-md
+            hover:shadow-white`
+            : `border border-transparent hover:-translate-y-[0.1rem]
+            hover:border-white hover:shadow-lg hover:shadow-sky`
+        }
+        flex w-full items-center justify-start
+        rounded-lg px-2 py-1 transition duration-200 ease-in`}
+        onClick={() => setAdminCollapse(!adminCollapse)}
+      >
+        <div className="flex w-full flex-row truncate pr-1">
+          <IconContext.Provider
+            value={{
+              color: currentPath.includes(encodeURIComponent("admin"))
+                ? "#000000"
+                : "#FFFFFF",
+              size: "1.2em",
+              className: "mr-2",
+            }}
+          >
+            <VscSymbolProperty />
+          </IconContext.Provider>
+          <div
+            className={`text-${
+              currentPath.includes(encodeURIComponent("admin"))
+                ? "black"
+                : "white"
+            } truncate text-left text-sm`}
+          >
+            Admin Controls
+          </div>
+        </div>
+        <IconContext.Provider
+          value={{
+            size: "1.2em",
+            color: currentPath.includes(encodeURIComponent("admin"))
+              ? "#000000"
+              : "#FFFFFF",
+          }}
+        >
+          {adminCollapse ? <VscChevronDown /> : <VscChevronUp />}
+        </IconContext.Provider>
+      </button>
+      {(adminCollapse || currentPath.includes(encodeURIComponent("admin"))) && (
+        <div className="ml-6 flex flex-col gap-2">
+          {adminSidebarContext.map((sidebarItem) => {
+            const hasAccess = permissionsCheck(
+              permissionsList.admin[sidebarItem.id].page,
+              userInfo.permissions
+            );
+            if (hasAccess) {
+              return (
+                <button
+                  key={`admin-${sidebarItem.title}`}
+                  className={`${
+                    currentPath.includes(encodeURIComponent("admin")) &&
+                    currentPath.includes(sidebarItem.link)
+                      ? `bg-white hover:-translate-y-[0.1rem] hover:shadow-md
+                      hover:shadow-white`
+                      : `border border-transparent hover:-translate-y-[0.1rem]
+                      hover:border-white hover:shadow-lg hover:shadow-sky`
+                  }
+                  flex w-full items-center justify-start rounded-lg px-2 py-1
+                  transition duration-200 ease-in`}
+                  onClick={() =>
+                    router.push(`/dashboard/admin/${sidebarItem.link}`)
+                  }
+                >
+                  <IconContext.Provider
+                    value={{
+                      color:
+                        currentPath.includes(encodeURIComponent("admin")) &&
+                        currentPath.includes(sidebarItem.link)
+                          ? "#000000"
+                          : "#FFFFFF",
+                      size: "1.2em",
+                      className: "mr-2",
+                    }}
+                  >
+                    {sidebarItem.icon}
+                  </IconContext.Provider>
+                  <div
+                    className={`text-${
+                      currentPath.includes(encodeURIComponent("admin")) &&
+                      currentPath.includes(sidebarItem.link)
+                        ? "black"
+                        : "white"
+                    } text-sm`}
+                  >
+                    {sidebarItem.title}
+                  </div>
+                </button>
+              );
+            }
+          })}
+        </div>
+      )}
+    </div>
+  );
 
   // Render the units list
   const unitList = Object.keys(units).map((item) => (
@@ -306,6 +429,7 @@ const Sidebar = () => {
             gap-2 overflow-y-auto pb-4 pt-2"
           >
             {menuList}
+            {adminList}
             {unitList}
           </div>
         </div>

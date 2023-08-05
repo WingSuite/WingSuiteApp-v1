@@ -189,7 +189,11 @@ export default function UnitResourcesPage() {
                     titleAppendix={
                       <div className="-ml-1">{item.full_name} </div>
                     }
-                    mainText={item.permissions.join("\n")}
+                    mainText={
+                      item.permissions.length == 0
+                        ? ""
+                        : item.permissions.join("\n")
+                    }
                     updateFunc={updateFeedback}
                   />
                 ))}

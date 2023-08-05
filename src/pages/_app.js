@@ -47,10 +47,16 @@ export default function App({ Component, pageProps }) {
 
       // Process the unit info and store it
       var unitIDMap = {};
+      var reverseUnitIDMap = {};
       for (let item of res.message) {
         unitIDMap[item._id] = item.name;
+        reverseUnitIDMap[item.name] = item._id;
       }
       localStorage.setItem("unitIDMap", JSON.stringify(unitIDMap));
+      localStorage.setItem(
+        "reverseUnitIDMap",
+        JSON.stringify(reverseUnitIDMap)
+      );
     }
   })();
 

@@ -149,7 +149,19 @@ export const endPointsList = {
     },
     user_list: {
       data: "/user/everyone/",
-      delete: "/auth/kick_user/"
+      delete: "/auth/kick_user/",
+    },
+    unit_handling: {
+      data: [
+        "/unit/get_all_units/",
+        "/unit/get_unit_types/",
+        "/unit/get_unit_info/",
+        "/unit/get_all_officers/",
+        "/unit/get_all_members/",
+      ],
+      add: "/unit/create_unit/",
+      delete: "/unit/delete_unit/",
+      update: "/unit/update_unit/"
     },
   },
   unit: {

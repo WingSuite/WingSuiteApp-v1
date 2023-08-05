@@ -1,15 +1,163 @@
-import { useContext } from "react";
-import { AppProvider, AppContext } from "./context";
-import { ItemList } from "./ItemList";
-import React, { Fragment, ScrollContainer } from "react";
+// React Icons
+import { VscEyeClosed, VscEye } from "react-icons/vsc";
+import { IconContext } from "react-icons";
 
-export default function TestPage() {
+// React import
+import { useRef, useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import React from "react";
+
+// Tree import
+import { TreeChart } from "@/components/treeGraph";
+
+export default function MyTree() {
+  const treeData = [
+    {
+      name: "25th Cadet Wing",
+      children: [
+        {
+          name: "Mission Support Group",
+          children: [
+            {
+              name: "Add Unit",
+              attributes: {
+                test: "Test"
+              }
+            },
+          ],
+        },
+        {
+          name: "Wing Staff",
+          children: [
+            {
+              name: "Team 1",
+              children: [
+                {
+                  name: "Add Unit",
+                },
+              ],
+            },
+            {
+              name: "Team 2",
+              children: [
+                {
+                  name: "Add Unit",
+                },
+              ],
+            },
+            {
+              name: "Add Unit",
+            },
+          ],
+        },
+        {
+          name: "Operations Training Group",
+          children: [
+            {
+              name: "POC Squadron",
+              children: [
+                {
+                  name: "Add Unit",
+                },
+              ],
+            },
+            {
+              name: "FTP Squadron",
+              children: [
+                {
+                  name: "Echo Flight",
+                  children: [
+                    {
+                      name: "Add Unit",
+                    },
+                  ],
+                },
+                {
+                  name: "Foxtrot Flight",
+                  children: [
+                    {
+                      name: "Add Unit",
+                    },
+                  ],
+                },
+                {
+                  name: "Golf Flight",
+                  children: [
+                    {
+                      name: "Add Unit",
+                    },
+                  ],
+                },
+                {
+                  name: "Hotel Flight",
+                  children: [
+                    {
+                      name: "Add Unit",
+                    },
+                  ],
+                },
+                {
+                  name: "Add Unit",
+                },
+              ],
+            },
+            {
+              name: "IMT Squadron",
+              children: [
+                {
+                  name: "Alpha Flight",
+                  children: [
+                    {
+                      name: "Add Unit",
+                    },
+                  ],
+                },
+                {
+                  name: "Bravo Flight",
+                  children: [
+                    {
+                      name: "Add Unit",
+                    },
+                  ],
+                },
+                {
+                  name: "Charlie Flight",
+                  children: [
+                    {
+                      name: "Add Unit",
+                    },
+                  ],
+                },
+                {
+                  name: "Delta Flight",
+                  children: [
+                    {
+                      name: "Add Unit",
+                    },
+                  ],
+                },
+                {
+                  name: "Add Unit",
+                },
+              ],
+            },
+            {
+              name: "Add Unit",
+            },
+          ],
+        },
+        {
+          name: "Add Unit",
+        },
+      ],
+    },
+  ];
 
   return (
-    <Fragment>
-      <ScrollContainer>
-        <h1>This is a scrolling text</h1>
-      </ScrollContainer>
-    </Fragment>
+    <div className="">
+      <div className="tree-container">
+        <TreeChart treeData={treeData} addUnitFunc={(e) => console.log(e)} />
+      </div>
+    </div>
   );
 }

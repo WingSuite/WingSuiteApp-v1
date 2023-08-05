@@ -93,7 +93,7 @@ export const permissionsList = {
       ],
     },
     unit_handling: {
-      page: ["unit.create_unit", "unit.delete_unit"],
+      page: ["unit.create_unit", "unit.delete_unit", "unit.update_unit"],
     },
   },
   unit: {

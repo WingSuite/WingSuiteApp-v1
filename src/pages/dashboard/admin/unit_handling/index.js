@@ -14,8 +14,8 @@ import { endPointsList, permissionsList } from "@/config/config";
 
 // Modal imports
 import Modal from "react-modal";
-import AddUnitModal from "./addModal";
-import UpdateUnitModal from "./updateModal";
+import AddUnitModal from "../../../../helper/dashboard/admin/unit_handling/addModal";
+import UpdateUnitModal from "../../../../helper/dashboard/admin/unit_handling/updateModal";
 
 // Util imports
 import { authCheck } from "@/utils/authCheck";

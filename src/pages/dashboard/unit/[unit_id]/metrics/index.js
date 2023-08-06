@@ -7,10 +7,10 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Custom components imports
-import { UnitMetricsAppProvider } from "./context";
+import { UnitMetricsAppProvider } from "../../../../../helper/dashboard/unit/metrics/context";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
-import { Renderer } from "./renderer";
+import { Renderer } from "../../../../../helper/dashboard/unit/metrics/renderer";
 
 // Unit member page definition
 export default function UnitMetricsPage() {

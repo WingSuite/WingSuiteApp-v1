@@ -35,7 +35,7 @@ import { BottomDropDown } from "@/components/dropdown";
 import { TimeInput } from "@/components/input";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
-import EventModal from "./modal";
+import { EventModal } from "../../../helper/dashboard/event/modal";
 
 // replace '#root' with '#__next' for Next.js
 Modal.setAppElement("#__next");

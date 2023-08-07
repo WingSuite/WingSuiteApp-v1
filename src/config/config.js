@@ -30,7 +30,7 @@ export const config = {
     "Sunday",
   ],
   quickLinks: [
-    { name: "CIP", link: "https://sites.google.com/view/detachment025/" },
+    { name: "DET 025 Page", link: "https://afrotc.asu.edu/" },
     { name: "Wings", link: "https://wings.holmcenter.com/" },
     { name: "ASU Canvas", link: "https://canvas.asu.edu/" },
     { name: "DoDMERB", link: "https://dodmerb.tricare.osd.mil/" },
@@ -79,10 +79,14 @@ export const permissionsList = {
   },
   admin: {
     register_list: {
-      page: ["auth.authorize_user", "auth.reject_user"],
+      page: [
+        "auth.authorize_user",
+        "auth.reject_user",
+        "auth.get_register_requests",
+      ],
     },
     user_list: {
-      page: ["user.everyone.phone_number_view"],
+      page: ["user.everyone.phone_number_view", "auth.kick_user"],
     },
     permissions_editing: {
       page: [
@@ -118,11 +122,6 @@ export const permissionsList = {
       ],
       add: ["statistic.pfa.create_pfa", "statistic.warrior.create_warrior"],
     },
-    // emergency: {
-    //   page: [
-    //     "unit.emergency"
-    //   ]
-    // }
   },
 };
 
@@ -135,33 +134,6 @@ export const endPointsList = {
         "/statistic/pfa/get_pfa_format_info/",
         "/statistic/warrior/get_warrior_format_info/",
       ],
-    },
-  },
-  admin: {
-    register_list: {
-      data: "/auth/get_register_requests/",
-      add: "/auth/authorize_user/",
-      delete: "/auth/reject_user/",
-    },
-    permissions_editing: {
-      data: ["/user/everyone/", "/user/get_permissions_list/"],
-      update: ["/user/update_permissions/", "/user/update_rank/"],
-    },
-    user_list: {
-      data: "/user/everyone/",
-      delete: "/auth/kick_user/",
-    },
-    unit_handling: {
-      data: [
-        "/unit/get_all_units/",
-        "/unit/get_unit_types/",
-        "/unit/get_unit_info/",
-        "/unit/get_all_officers/",
-        "/unit/get_all_members/",
-      ],
-      add: "/unit/create_unit/",
-      delete: "/unit/delete_unit/",
-      update: "/unit/update_unit/"
     },
   },
   unit: {
@@ -259,28 +231,28 @@ export const unitSidebarConfig = [
     link: "/members",
     icon: <BsPerson />,
   },
-  {
-    id: "communications",
-    title: "Communications",
-    link: "/communications",
-    icon: <VscMegaphone />,
-  },
+  // {
+  //   id: "communications",
+  //   title: "Communications",
+  //   link: "/communications",
+  //   icon: <VscMegaphone />,
+  // },
   {
     id: "metrics",
     title: "Metrics",
     link: "/metrics",
     icon: <VscGraph />,
   },
-  {
-    id: "resources",
-    title: "Resources",
-    link: "/resources",
-    icon: <VscFolderLibrary />,
-  },
-  {
-    id: "emergency",
-    title: "Emergency",
-    link: "/emergency",
-    icon: <VscWarning />,
-  },
+  // {
+  //   id: "resources",
+  //   title: "Resources",
+  //   link: "/resources",
+  //   icon: <VscFolderLibrary />,
+  // },
+  // {
+  //   id: "emergency",
+  //   title: "Emergency",
+  //   link: "/emergency",
+  //   icon: <VscWarning />,
+  // },
 ];

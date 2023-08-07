@@ -15,9 +15,6 @@ import AutosizeInput from "react-input-autosize";
 import { BottomDropDown } from "@/components/dropdown";
 import { Nothing } from "@/components/nothing";
 
-// Config imports
-import { endPointsList } from "@/config/config";
-
 // Util imports
 import { title } from "@/utils/stringUtils";
 import { post } from "@/utils/call";
@@ -50,7 +47,7 @@ export default function UpdateUnitModal({
       // Call API endpoint
       // #region
       var res = await post(
-        endPointsList.admin.unit_handling.data[2],
+        "/unit/get_unit_info/",
         { id: selection._id },
         Cookies.get("access")
       );
@@ -62,7 +59,7 @@ export default function UpdateUnitModal({
       if (res.message.parent != "") {
         // Call API endpoint to get parent information
         res = await post(
-          endPointsList.admin.unit_handling.data[2],
+          "/unit/get_unit_info/",
           { id: res.message.parent },
           Cookies.get("access")
         );
@@ -73,7 +70,7 @@ export default function UpdateUnitModal({
       // Get all the officers of the unit
       // #region
       var res = await post(
-        endPointsList.admin.unit_handling.data[3],
+        "/unit/get_all_officers/",
         { id: selection._id },
         Cookies.get("access")
       );
@@ -83,7 +80,7 @@ export default function UpdateUnitModal({
       // Get all the members of the unit
       // #region
       var res = await post(
-        endPointsList.admin.unit_handling.data[4],
+        "/unit/get_all_members/",
         { id: selection._id },
         Cookies.get("access")
       );
@@ -95,7 +92,7 @@ export default function UpdateUnitModal({
 
       // Call API to get unit list data
       var res = await post(
-        endPointsList.admin.unit_handling.data[0],
+        "/unit/get_all_units/",
         { page_size: 2000, page_index: 0 },
         Cookies.get("access")
       );

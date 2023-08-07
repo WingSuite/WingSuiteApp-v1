@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 // Config imports
-import { endPointsList, permissionsList } from "@/config/config";
+import { permissionsList } from "@/config/config";
 
 // Modal imports
 import Modal from "react-modal";
@@ -58,7 +58,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Call API endpoint to get unit data
       var res = await post(
-        endPointsList.admin.unit_handling.data[0],
+        "/unit/get_all_units/",
         {
           page_size: 2000,
           page_index: 0,
@@ -87,7 +87,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Call API endpoint to get unit type data
       var res = await get(
-        endPointsList.admin.unit_handling.data[1],
+        "/unit/get_unit_types/",
         Cookies.get("access")
       );
 
@@ -153,7 +153,7 @@ export default function UnitResourcesPage() {
 
       // Call API endpoint to get unit type data
       var res = await post(
-        endPointsList.admin.unit_handling.add,
+        "/unit/create_unit/",
         copy,
         Cookies.get("access")
       );
@@ -175,7 +175,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Call API endpoint to get unit type data
       var res = await post(
-        endPointsList.admin.unit_handling.delete,
+        "/unit/delete_unit/",
         { id: selection._id },
         Cookies.get("access")
       );
@@ -197,7 +197,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Call API endpoint to get unit type data
       var res = await post(
-        endPointsList.admin.unit_handling.update,
+        "/unit/update_unit/",
         editOptions,
         Cookies.get("access")
       );

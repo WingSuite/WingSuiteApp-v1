@@ -158,16 +158,17 @@ export default function DataTableView() {
         >
           Unit
         </th>
-        {c.format.scoring_formatted.map((item, index) => (
-          <th
-            className="bg-gray-50 text-gray-500 cursor-pointer px-6 py-3
-            text-left text-xs font-medium uppercase leading-4 tracking-wider"
-            key={`table-${item}`}
-            onClick={() => c.setMetricToolbarSelect(index)}
-          >
-            {item}
-          </th>
-        ))}
+        {c.format.scoring_formatted != undefined &&
+          c.format.scoring_formatted.map((item, index) => (
+            <th
+              className="bg-gray-50 text-gray-500 cursor-pointer px-6 py-3
+              text-left text-xs font-medium uppercase leading-4 tracking-wider"
+              key={`table-${item}`}
+              onClick={() => c.setMetricToolbarSelect(index)}
+            >
+              {item}
+            </th>
+          ))}
         <th className="bg-gray-50 px-6 py-3"></th>
       </tr>
     </thead>

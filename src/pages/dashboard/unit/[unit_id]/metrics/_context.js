@@ -23,7 +23,49 @@ import AddDataView from "./_addDataPoint";
 import DataTableView from "./_dataTable";
 
 // Develop app context for page
-export const UnitMetricsAppContext = createContext();
+export const UnitMetricsAppContext = createContext({
+  unitPersonnel: {},
+  setUnitPersonnel: () => {},
+  unitPersonnelReverse: {},
+  setUnitPersonnelReverse: () => {},
+  editItem: {},
+  setEditItem: () => {},
+  user: {},
+  setUser: () => {},
+  data: [],
+  setData: () => {},
+  metricToolbarSelect: 0,
+  setMetricToolbarSelect: () => {},
+  xAxisSelection: 0,
+  setXAxisSelection: () => {},
+  toolbarSelect: 0,
+  setToolbarSelect: () => {},
+  isDeleting: {},
+  setIsDeleting: () => {},
+  isUpdating: {},
+  setIsUpdating: () => {},
+  viewSelect: 0,
+  setViewSelect: () => {},
+  nameMappings: [[], []],
+  setNameMappings: () => {},
+  unitMappings: [[], []],
+  setUnitMappings: () => {},
+  dataStats: [],
+  setDataStats: () => {},
+  format: {},
+  setFormat: () => {},
+  actionTrigger: false,
+  setActionTrigger: () => {},
+  viewList: [],
+  toolbarItems: [],
+  specialProcess: {},
+  metricAddEndPoints: {},
+  metricFetchFormatEndpoints: {},
+  metricFetchEndPoints: {},
+  metricGetTestEndpoints: {},
+  metricEditEndPoints: {},
+  metricDeleteEndPoints: {},
+});
 
 // Define page app provider
 export default function UnitMetricsAppProvider({ children }) {

@@ -24,14 +24,14 @@ import { post } from "@/utils/call";
 
 // Define add unit modal
 export default function UpdateUnitModal({
-  selection,
-  unitTypes,
-  unitTypesR,
-  options,
-  updateOptions,
-  updateFunc,
-  deleteFunc,
-  closeModal,
+  selection = {},
+  unitTypes = {},
+  unitTypesR = {},
+  options = {},
+  updateOptions = () => {},
+  updateFunc = () => {},
+  deleteFunc = () => {},
+  closeModal = () => {},
 }) {
   // Define UseStates
   const [deleteMode, setDeleteMode] = useState(false);

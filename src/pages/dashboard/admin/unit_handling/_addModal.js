@@ -10,12 +10,12 @@ import { BottomDropDown } from "@/components/dropdown";
 
 // Define add unit modal
 export default function AddUnitModal({
-  selection,
-  unitTypes,
-  options,
-  updateOptions,
-  addFunc,
-  closeModal,
+  selection = {},
+  unitTypes = [],
+  options = {},
+  updateOptions = {},
+  addFunc = () => {},
+  closeModal = () => {},
 }) {
   // Define UseStates
   const [confirm, setConfirm] = useState(false);

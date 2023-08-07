@@ -16,10 +16,10 @@ import { permissionsList } from "@/config/config";
 import { permissionsCheck } from "@/utils/permissionCheck";
 
 // Import unit metric context
-import { UnitMetricsAppContext } from "./context";
+import { UnitMetricsAppContext } from "./_context";
 
 // Define the scatter plot view
-export function MetricToolBar() {
+export default function MetricToolBar() {
   // Define the context for the unit metrics page
   const c = useContext(UnitMetricsAppContext);
 

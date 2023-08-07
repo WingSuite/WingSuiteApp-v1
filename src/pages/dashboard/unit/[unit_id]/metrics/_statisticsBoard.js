@@ -6,10 +6,10 @@ import { StatCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 
 // Import unit metric context
-import { UnitMetricsAppContext } from "./context";
+import { UnitMetricsAppContext } from "./_context";
 
 // Define the add data view
-export function StatisticsBoard() {
+export default function StatisticsBoard() {
   // Define the context for the unit metrics page
   const c = useContext(UnitMetricsAppContext);
 

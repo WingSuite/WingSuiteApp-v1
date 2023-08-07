@@ -19,11 +19,10 @@ import { post } from "@/utils/call";
 import { errorToaster, successToaster } from "@/components/toasters";
 import { AutoCompleteInput, TimeInput } from "@/components/input";
 import { BottomDropDown } from "@/components/dropdown";
-import { MetricToolBar } from "./metricToolbar";
-import { Nothing } from "@/components/nothing";
+import MetricToolBar from "./_metricToolbar";
 
 // Import unit metric context
-import { UnitMetricsAppContext } from "./context";
+import { UnitMetricsAppContext } from "./_context";
 
 // Define customized time input component with special update features
 function TimeComponent({ item, onChange }) {
@@ -48,7 +47,7 @@ function TimeComponent({ item, onChange }) {
 }
 
 // Define the add data view
-export function AddDataView() {
+export default function AddDataView() {
   // Define the context for the unit metrics page
   const c = useContext(UnitMetricsAppContext);
 

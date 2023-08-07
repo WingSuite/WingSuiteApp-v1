@@ -17,16 +17,16 @@ import { get, post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster } from "@/components/toasters";
+import ScatterPlotView from "./_scatterPlotView";
 import { getFormattedTime } from "@/utils/time";
-import { DataTableView } from "./dataTable";
-import { ScatterPlotView } from "./scatterPlotView";
-import { AddDataView } from "./addDataPoint";
+import AddDataView from "./_addDataPoint";
+import DataTableView from "./_dataTable";
 
 // Develop app context for page
 export const UnitMetricsAppContext = createContext();
 
 // Define page app provider
-export function UnitMetricsAppProvider({ children }) {
+export default function UnitMetricsAppProvider({ children }) {
   // Define router and get unit ID from URL
   const router = useRouter();
   const { unit_id } = router.query;

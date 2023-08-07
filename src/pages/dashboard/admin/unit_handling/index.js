@@ -14,8 +14,8 @@ import { endPointsList, permissionsList } from "@/config/config";
 
 // Modal imports
 import Modal from "react-modal";
-import AddUnitModal from "../../../../helper/dashboard/admin/unit_handling/addModal";
-import UpdateUnitModal from "../../../../helper/dashboard/admin/unit_handling/updateModal";
+import AddUnitModal from "./_addModal";
+import UpdateUnitModal from "./_updateModal";
 
 // Util imports
 import { authCheck } from "@/utils/authCheck";
@@ -27,6 +27,9 @@ import { errorToaster, successToaster } from "@/components/toasters";
 import { TreeChart } from "@/components/treeGraph";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
+
+// replace '#root' with '#__next' for Next.js
+Modal.setAppElement("#__next");
 
 // Unit member page definition
 export default function UnitResourcesPage() {

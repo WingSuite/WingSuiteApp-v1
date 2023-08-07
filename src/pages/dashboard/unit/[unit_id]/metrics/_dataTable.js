@@ -18,13 +18,13 @@ import { post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { MetricToolBar } from "./metricToolbar";
+import MetricToolBar from "./_metricToolbar";
 
 // Import unit metric context
-import { UnitMetricsAppContext } from "./context";
+import { UnitMetricsAppContext } from "./_context";
 
 // Define the data table view
-export function DataTableView() {
+export default function DataTableView() {
   // Define the context for the unit metrics page
   const c = useContext(UnitMetricsAppContext);
 

@@ -22,7 +22,7 @@ import { BottomDropDown } from "@/components/dropdown";
 import { TimeInput } from "@/components/input";
 
 // Subcomponent to define the contents of the event modal
-export function EventModal({
+export default function EventModal({
   selectedEvent,
   units,
   setModalIsOpen,
@@ -163,7 +163,7 @@ export function EventModal({
 
     // Return true if good
     return true;
-  }
+  };
 
   // Render content
   return (

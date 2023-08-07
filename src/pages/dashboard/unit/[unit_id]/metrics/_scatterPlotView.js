@@ -22,14 +22,14 @@ import { config } from "@/config/config";
 import { getFormattedTime } from "@/utils/time";
 
 // Custom components imports
-import { MetricToolBar } from "./metricToolbar";
 import { Nothing } from "@/components/nothing";
+import MetricToolBar from "./_metricToolbar";
 
 // Import unit metric context
-import { UnitMetricsAppContext } from "./context";
+import { UnitMetricsAppContext } from "./_context";
 
 // Define the scatter plot view
-export function ScatterPlotView() {
+export default function ScatterPlotView() {
   // Define the context for the unit metrics page
   const c = useContext(UnitMetricsAppContext);
 

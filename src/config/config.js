@@ -16,7 +16,7 @@ import { BiNews } from "react-icons/bi";
 // Export config
 export const config = {
   orgName: "Detachment 025",
-  apiBase: "http://127.0.0.1:5000/",
+  apiBase: "https://api.det025.us/",
   allAccessPermission: "*",
   daysOfTheWeek: [
     "Monday",

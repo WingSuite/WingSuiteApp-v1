@@ -24,7 +24,7 @@ import {
   unitSidebarConfig,
   permissionsList,
   adminSidebarContext,
-  config
+  config,
 } from "@/config/config";
 
 // Util imports
@@ -56,6 +56,9 @@ const Sidebar = () => {
 
     // Fetch the first and last name of the user from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
+
+    // Save admin collapse state
+    setAdminCollapse(currentPath.includes(encodeURIComponent("admin")));
 
     // Save the info of the user
     setUserInfo(user);
@@ -187,7 +190,8 @@ const Sidebar = () => {
         }
         flex w-full items-center justify-start
         rounded-lg px-2 py-1 transition duration-200 ease-in`}
-        onClick={() => setAdminCollapse(!adminCollapse)}
+        onClick={() => {setAdminCollapse(true);
+        }}
       >
         <div className="flex w-full flex-row truncate pr-1">
           <IconContext.Provider

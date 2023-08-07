@@ -305,4 +305,4 @@ const Register = () => {
 };
 
 // Export the Login page
-export default Login;
+export default Register;

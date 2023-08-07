@@ -27,7 +27,7 @@ import Cookies from "js-cookie";
 import logo from "../../public/logo.png";
 
 // Login Page definitions
-const Login = () => {
+const Register = () => {
   // Variable declaration and initialization
   const [success, setSuccess] = useState(false);
   const router = useRouter();

@@ -9,6 +9,9 @@ import { errorToaster } from "@/components/toasters";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Config imports
+import { config } from "@/config/config";
+
 // Util imports
 import { post, get } from "@/utils/call";
 
@@ -73,7 +76,7 @@ const Login = () => {
         </div>
         <div className="flex flex-col">
           <div className="text-5xl font-thin">WingSuite</div>
-          <div className="text-2xl font-thin">Detachment 025</div>
+          <div className="text-2xl font-thin">{config.orgName}</div>
         </div>
       </div>
       <div

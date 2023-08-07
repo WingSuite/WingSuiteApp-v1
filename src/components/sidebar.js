@@ -24,6 +24,7 @@ import {
   unitSidebarConfig,
   permissionsList,
   adminSidebarContext,
+  config
 } from "@/config/config";
 
 // Util imports
@@ -133,7 +134,7 @@ const Sidebar = () => {
       </div>
       <div className="flex flex-col">
         <div className="text-3xl font-thin">WingSuite</div>
-        <div className="text-sm font-thin">Detachment 025</div>
+        <div className="text-sm font-thin">{config.orgName}</div>
       </div>
     </div>
   );

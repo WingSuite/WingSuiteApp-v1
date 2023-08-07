@@ -22,6 +22,9 @@ import { authCheck } from "@/utils/authCheck";
 import { processUnits } from "@/utils/tree";
 import { get, post } from "@/utils/call";
 
+// Config import
+import { config } from "@/config/config";
+
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
 import { TreeChart } from "@/components/treeGraph";
@@ -34,7 +37,7 @@ Modal.setAppElement("#__next");
 // Unit member page definition
 export default function UnitResourcesPage() {
   // Data useStates
-  const [unitList, setUnitList] = useState([{ name: "Detachment 025" }]);
+  const [unitList, setUnitList] = useState([{ name: config.orgName }]);
 
   // Tracking and state useStates
   const [actionTrigger, setActionTrigger] = useState(false);
@@ -77,7 +80,7 @@ export default function UnitResourcesPage() {
       var units = res.message;
       for (const item of units) processUnits(item);
       units.push({ name: "Add Unit" });
-      units = [{ name: "Detachment 025", children: units }];
+      units = [{ name: config.orgName, children: units }];
 
       // Save data
       setUnitList(units);

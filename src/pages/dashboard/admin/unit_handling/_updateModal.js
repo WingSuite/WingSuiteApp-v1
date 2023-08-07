@@ -8,6 +8,9 @@ import { useEffect, useState } from "react";
 // JS Cookies import
 import Cookies from "js-cookie";
 
+// Config import
+import { config } from "@/config/config";
+
 // Autosize inputs import
 import AutosizeInput from "react-input-autosize";
 
@@ -100,6 +103,8 @@ export default function UpdateUnitModal({
       // Calculate mappings
       var unitIDMap = {};
       var reverseUnitIDMap = {};
+      unitIDMap[""] = config.orgName;
+      reverseUnitIDMap[config.orgName] = "";
       for (let item of res.message) {
         unitIDMap[item._id] = item.name;
         reverseUnitIDMap[item.name] = item._id;
@@ -139,7 +144,7 @@ export default function UpdateUnitModal({
         {!editMode && (
           <>
             {parent == "" ? (
-              <div className="text-base">Detachment 025</div>
+              <div className="text-base">{config.orgName}</div>
             ) : (
               <div className="text-base">{parent}</div>
             )}

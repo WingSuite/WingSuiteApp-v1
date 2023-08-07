@@ -180,7 +180,7 @@ export default function UpdateUnitModal({
         )}
       </div>
       <div className="flex w-full flex-row justify-between gap-4">
-        <div className="h-fit w-1/2">
+        <div className="flex h-fit w-1/2 flex-col gap-2">
           <div className="w-full text-2xl">Officers</div>
           {officersList.length == 0 ? (
             <Nothing mainText={"No Officers"} marginFlag={false} />
@@ -197,7 +197,7 @@ export default function UpdateUnitModal({
             </>
           )}
         </div>
-        <div className="h-fit w-1/2">
+        <div className="flex h-fit w-1/2 flex-col gap-2">
           <div className="w-full text-2xl">Members</div>
           {membersList.length == 0 ? (
             <Nothing mainText={"No Members"} marginFlag={false} />

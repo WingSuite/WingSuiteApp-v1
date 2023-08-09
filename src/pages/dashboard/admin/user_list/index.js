@@ -45,7 +45,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Get the list of users
       var res = await post(
-        endPointsList.admin.user_list.data,
+        "/user/everyone/",
         {
           page_size: 2000,
           page_index: 0,
@@ -100,7 +100,7 @@ export default function UnitResourcesPage() {
       console.log(id)
       // Call API
       var res = await post(
-        endPointsList.admin.user_list.delete,
+        "/auth/kick_user/",
         { id: id },
         Cookies.get("access")
       );

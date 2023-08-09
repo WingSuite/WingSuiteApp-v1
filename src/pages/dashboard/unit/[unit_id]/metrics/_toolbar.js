@@ -3,10 +3,10 @@ import { useContext } from "react";
 import React from "react";
 
 // Import unit metric context
-import { UnitMetricsAppContext } from "./context";
+import { UnitMetricsAppContext } from "./_context";
 
 // Define the toolbar view
-export function Toolbar() {
+export default function Toolbar() {
   // Define the context for the unit metrics page
   const c = useContext(UnitMetricsAppContext);
 

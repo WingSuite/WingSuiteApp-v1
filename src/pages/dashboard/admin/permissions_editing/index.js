@@ -15,7 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 // Config imports
-import { permissionsList, endPointsList } from "@/config/config";
+import { permissionsList } from "@/config/config";
 
 // Util imports
 import { authCheck } from "@/utils/authCheck";
@@ -49,7 +49,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Get the list of users
       var res = await post(
-        endPointsList.admin.permissions_editing.data[0],
+        "/user/everyone/",
         { page_size: 2000, page_index: 0, allow_permissions: true },
         Cookies.get("access")
       );
@@ -79,7 +79,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Get the list of permissions
       var res = await get(
-        endPointsList.admin.permissions_editing.data[1],
+        "/user/get_permissions_list/",
         Cookies.get("access")
       );
 
@@ -116,7 +116,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Get the user's feedback information
       var res = await post(
-        endPointsList.admin.permissions_editing.update[0],
+        "/user/update_permissions/",
         { id: id, permissions: perms.split("\n") },
         Cookies.get("access")
       );
@@ -129,7 +129,7 @@ export default function UnitResourcesPage() {
       if (title != "N/R") {
         // Call API to change rank
         res = await post(
-          endPointsList.admin.permissions_editing.update[1],
+          "/user/update_rank/",
           { id: id, rank: title },
           Cookies.get("access")
         );

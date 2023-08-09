@@ -8,6 +8,9 @@ import { useEffect, useState } from "react";
 // JS Cookies import
 import Cookies from "js-cookie";
 
+// Config import
+import { config } from "@/config/config";
+
 // Autosize inputs import
 import AutosizeInput from "react-input-autosize";
 
@@ -15,23 +18,20 @@ import AutosizeInput from "react-input-autosize";
 import { BottomDropDown } from "@/components/dropdown";
 import { Nothing } from "@/components/nothing";
 
-// Config imports
-import { endPointsList } from "@/config/config";
-
 // Util imports
 import { title } from "@/utils/stringUtils";
 import { post } from "@/utils/call";
 
 // Define add unit modal
 export default function UpdateUnitModal({
-  selection,
-  unitTypes,
-  unitTypesR,
-  options,
-  updateOptions,
-  updateFunc,
-  deleteFunc,
-  closeModal,
+  selection = {},
+  unitTypes = {},
+  unitTypesR = {},
+  options = {},
+  updateOptions = () => {},
+  updateFunc = () => {},
+  deleteFunc = () => {},
+  closeModal = () => {},
 }) {
   // Define UseStates
   const [deleteMode, setDeleteMode] = useState(false);
@@ -50,7 +50,7 @@ export default function UpdateUnitModal({
       // Call API endpoint
       // #region
       var res = await post(
-        endPointsList.admin.unit_handling.data[2],
+        "/unit/get_unit_info/",
         { id: selection._id },
         Cookies.get("access")
       );
@@ -62,7 +62,7 @@ export default function UpdateUnitModal({
       if (res.message.parent != "") {
         // Call API endpoint to get parent information
         res = await post(
-          endPointsList.admin.unit_handling.data[2],
+          "/unit/get_unit_info/",
           { id: res.message.parent },
           Cookies.get("access")
         );
@@ -73,7 +73,7 @@ export default function UpdateUnitModal({
       // Get all the officers of the unit
       // #region
       var res = await post(
-        endPointsList.admin.unit_handling.data[3],
+        "/unit/get_all_officers/",
         { id: selection._id },
         Cookies.get("access")
       );
@@ -83,7 +83,7 @@ export default function UpdateUnitModal({
       // Get all the members of the unit
       // #region
       var res = await post(
-        endPointsList.admin.unit_handling.data[4],
+        "/unit/get_all_members/",
         { id: selection._id },
         Cookies.get("access")
       );
@@ -95,7 +95,7 @@ export default function UpdateUnitModal({
 
       // Call API to get unit list data
       var res = await post(
-        endPointsList.admin.unit_handling.data[0],
+        "/unit/get_all_units/",
         { page_size: 2000, page_index: 0 },
         Cookies.get("access")
       );
@@ -103,6 +103,8 @@ export default function UpdateUnitModal({
       // Calculate mappings
       var unitIDMap = {};
       var reverseUnitIDMap = {};
+      unitIDMap[""] = config.orgName;
+      reverseUnitIDMap[config.orgName] = "";
       for (let item of res.message) {
         unitIDMap[item._id] = item.name;
         reverseUnitIDMap[item.name] = item._id;
@@ -142,7 +144,7 @@ export default function UpdateUnitModal({
         {!editMode && (
           <>
             {parent == "" ? (
-              <div className="text-base">Detachment 025</div>
+              <div className="text-base">{config.orgName}</div>
             ) : (
               <div className="text-base">{parent}</div>
             )}
@@ -178,7 +180,7 @@ export default function UpdateUnitModal({
         )}
       </div>
       <div className="flex w-full flex-row justify-between gap-4">
-        <div className="h-fit w-1/2">
+        <div className="flex h-fit w-1/2 flex-col gap-2">
           <div className="w-full text-2xl">Officers</div>
           {officersList.length == 0 ? (
             <Nothing mainText={"No Officers"} marginFlag={false} />
@@ -195,7 +197,7 @@ export default function UpdateUnitModal({
             </>
           )}
         </div>
-        <div className="h-fit w-1/2">
+        <div className="flex h-fit w-1/2 flex-col gap-2">
           <div className="w-full text-2xl">Members</div>
           {membersList.length == 0 ? (
             <Nothing mainText={"No Members"} marginFlag={false} />

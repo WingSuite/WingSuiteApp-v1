@@ -163,7 +163,7 @@ export default function EventModal({
 
     // Return true if good
     return true;
-  }
+  };
 
   // Render content
   return (

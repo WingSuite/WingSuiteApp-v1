@@ -1,6 +1,5 @@
 // React Icons
 import { VscInfo } from "react-icons/vsc";
-import { MdLogout } from "react-icons/md";
 import { IconContext } from "react-icons";
 
 // React and Next.js imports
@@ -11,7 +10,7 @@ import React from "react";
 
 // Toaster related imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { ToastContainer, useToast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Config import
@@ -27,7 +26,7 @@ import Cookies from "js-cookie";
 import logo from "../../public/logo.png";
 
 // Login Page definitions
-const Login = () => {
+const Register = () => {
   // Variable declaration and initialization
   const [success, setSuccess] = useState(false);
   const router = useRouter();
@@ -130,7 +129,7 @@ const Login = () => {
         </div>
         <div className="flex flex-col">
           <div className="text-5xl font-thin">WingSuite</div>
-          <div className="text-2xl font-thin">Detachment 025</div>
+          <div className="text-2xl font-thin">{config.orgName}</div>
         </div>
       </div>
       <div
@@ -306,4 +305,4 @@ const Login = () => {
 };
 
 // Export the Login page
-export default Login;
+export default Register;

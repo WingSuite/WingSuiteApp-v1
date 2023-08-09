@@ -24,6 +24,7 @@ import {
   unitSidebarConfig,
   permissionsList,
   adminSidebarContext,
+  config,
 } from "@/config/config";
 
 // Util imports
@@ -33,6 +34,7 @@ import { post, get } from "@/utils/call";
 
 // Image import
 import logo from "../../public/logo.png";
+import logobw from "../../public/logobw.png";
 
 // Login Page definitions
 const Sidebar = () => {
@@ -54,6 +56,9 @@ const Sidebar = () => {
 
     // Fetch the first and last name of the user from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
+
+    // Save admin collapse state
+    setAdminCollapse(currentPath.includes(encodeURIComponent("admin")));
 
     // Save the info of the user
     setUserInfo(user);
@@ -133,7 +138,7 @@ const Sidebar = () => {
       </div>
       <div className="flex flex-col">
         <div className="text-3xl font-thin">WingSuite</div>
-        <div className="text-sm font-thin">Detachment 025</div>
+        <div className="text-sm font-thin">{config.orgName}</div>
       </div>
     </div>
   );
@@ -185,7 +190,8 @@ const Sidebar = () => {
         }
         flex w-full items-center justify-start
         rounded-lg px-2 py-1 transition duration-200 ease-in`}
-        onClick={() => setAdminCollapse(!adminCollapse)}
+        onClick={() => {setAdminCollapse(true);
+        }}
       >
         <div className="flex w-full flex-row truncate pr-1">
           <IconContext.Provider
@@ -438,7 +444,7 @@ const Sidebar = () => {
             className="mx-4 mb-4 flex flex-row items-center gap-3
             rounded-xl bg-white py-2 pl-3 pr-1"
           >
-            <div className="h-[2.3rem] w-[2.3rem] rounded-full bg-silver" />
+            <Image alt="Logo" src={logobw} width={37} height={37} />
             <div className="flex-1 truncate text-sm">{userInfo.full_name}</div>
             <button onClick={logoutButton}>
               <IconContext.Provider

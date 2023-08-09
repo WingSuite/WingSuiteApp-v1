@@ -17,16 +17,58 @@ import { get, post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster } from "@/components/toasters";
+import ScatterPlotView from "./_scatterPlotView";
 import { getFormattedTime } from "@/utils/time";
-import { DataTableView } from "./dataTable";
-import { ScatterPlotView } from "./scatterPlotView";
-import { AddDataView } from "./addDataPoint";
+import AddDataView from "./_addDataPoint";
+import DataTableView from "./_dataTable";
 
 // Develop app context for page
-export const UnitMetricsAppContext = createContext();
+export const UnitMetricsAppContext = createContext({
+  unitPersonnel: {},
+  setUnitPersonnel: () => {},
+  unitPersonnelReverse: {},
+  setUnitPersonnelReverse: () => {},
+  editItem: {},
+  setEditItem: () => {},
+  user: {},
+  setUser: () => {},
+  data: [],
+  setData: () => {},
+  metricToolbarSelect: 0,
+  setMetricToolbarSelect: () => {},
+  xAxisSelection: 0,
+  setXAxisSelection: () => {},
+  toolbarSelect: 0,
+  setToolbarSelect: () => {},
+  isDeleting: {},
+  setIsDeleting: () => {},
+  isUpdating: {},
+  setIsUpdating: () => {},
+  viewSelect: 0,
+  setViewSelect: () => {},
+  nameMappings: [[], []],
+  setNameMappings: () => {},
+  unitMappings: [[], []],
+  setUnitMappings: () => {},
+  dataStats: [],
+  setDataStats: () => {},
+  format: {},
+  setFormat: () => {},
+  actionTrigger: false,
+  setActionTrigger: () => {},
+  viewList: [],
+  toolbarItems: [],
+  specialProcess: {},
+  metricAddEndPoints: {},
+  metricFetchFormatEndpoints: {},
+  metricFetchEndPoints: {},
+  metricGetTestEndpoints: {},
+  metricEditEndPoints: {},
+  metricDeleteEndPoints: {},
+});
 
 // Define page app provider
-export function UnitMetricsAppProvider({ children }) {
+export default function UnitMetricsAppProvider({ children }) {
   // Define router and get unit ID from URL
   const router = useRouter();
   const { unit_id } = router.query;

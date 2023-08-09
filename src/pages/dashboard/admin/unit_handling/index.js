@@ -10,17 +10,20 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 // Config imports
-import { endPointsList, permissionsList } from "@/config/config";
+import { permissionsList } from "@/config/config";
 
 // Modal imports
 import Modal from "react-modal";
-import AddUnitModal from "./addModal";
-import UpdateUnitModal from "./updateModal";
+import AddUnitModal from "./_addModal";
+import UpdateUnitModal from "./_updateModal";
 
 // Util imports
 import { authCheck } from "@/utils/authCheck";
 import { processUnits } from "@/utils/tree";
 import { get, post } from "@/utils/call";
+
+// Config import
+import { config } from "@/config/config";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
@@ -28,10 +31,13 @@ import { TreeChart } from "@/components/treeGraph";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
 
+// replace '#root' with '#__next' for Next.js
+Modal.setAppElement("#__next");
+
 // Unit member page definition
 export default function UnitResourcesPage() {
   // Data useStates
-  const [unitList, setUnitList] = useState([{ name: "Detachment 025" }]);
+  const [unitList, setUnitList] = useState([{ name: config.orgName }]);
 
   // Tracking and state useStates
   const [actionTrigger, setActionTrigger] = useState(false);
@@ -55,7 +61,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Call API endpoint to get unit data
       var res = await post(
-        endPointsList.admin.unit_handling.data[0],
+        "/unit/get_all_units/",
         {
           page_size: 2000,
           page_index: 0,
@@ -74,7 +80,7 @@ export default function UnitResourcesPage() {
       var units = res.message;
       for (const item of units) processUnits(item);
       units.push({ name: "Add Unit" });
-      units = [{ name: "Detachment 025", children: units }];
+      units = [{ name: config.orgName, children: units }];
 
       // Save data
       setUnitList(units);
@@ -84,7 +90,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Call API endpoint to get unit type data
       var res = await get(
-        endPointsList.admin.unit_handling.data[1],
+        "/unit/get_unit_types/",
         Cookies.get("access")
       );
 
@@ -150,7 +156,7 @@ export default function UnitResourcesPage() {
 
       // Call API endpoint to get unit type data
       var res = await post(
-        endPointsList.admin.unit_handling.add,
+        "/unit/create_unit/",
         copy,
         Cookies.get("access")
       );
@@ -172,7 +178,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Call API endpoint to get unit type data
       var res = await post(
-        endPointsList.admin.unit_handling.delete,
+        "/unit/delete_unit/",
         { id: selection._id },
         Cookies.get("access")
       );
@@ -194,7 +200,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Call API endpoint to get unit type data
       var res = await post(
-        endPointsList.admin.unit_handling.update,
+        "/unit/update_unit/",
         editOptions,
         Cookies.get("access")
       );

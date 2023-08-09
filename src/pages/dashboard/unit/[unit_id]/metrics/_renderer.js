@@ -3,14 +3,14 @@ import { useContext } from "react";
 import React from "react";
 
 // Custom imports
-import { StatisticsBoard } from "./statisticsBoard";
-import { Toolbar } from "./toolbar";
+import StatisticsBoard from "./_statisticsBoard";
+import Toolbar from "./_toolbar";
 
 // Import unit metric context
-import { UnitMetricsAppContext } from "./context";
+import { UnitMetricsAppContext } from "./_context";
 
 // Define the main component view
-export function Renderer() {
+export default function Renderer() {
   // Define the context for the unit metrics page
   const c = useContext(UnitMetricsAppContext);
 

@@ -8,14 +8,17 @@ import { useEffect, useState } from "react";
 // Custom imports
 import { BottomDropDown } from "@/components/dropdown";
 
+// Config import
+import { config } from "@/config/config";
+
 // Define add unit modal
 export default function AddUnitModal({
-  selection,
-  unitTypes,
-  options,
-  updateOptions,
-  addFunc,
-  closeModal,
+  selection = {},
+  unitTypes = [],
+  options = {},
+  updateOptions = {},
+  addFunc = () => {},
+  closeModal = () => {},
 }) {
   // Define UseStates
   const [confirm, setConfirm] = useState(false);
@@ -42,7 +45,7 @@ export default function AddUnitModal({
       <div className="flex flex-col gap-1">
         <div className="text-2xl">Parent Unit</div>
         {selection.attributes == undefined ? (
-          <div className="text-base">Detachment 025</div>
+          <div className="text-base">{config.orgName}</div>
         ) : (
           <div className="text-base">{selection.attributes.parent_name}</div>
         )}

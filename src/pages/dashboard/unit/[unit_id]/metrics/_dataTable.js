@@ -18,13 +18,13 @@ import { post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { MetricToolBar } from "./metricToolbar";
+import MetricToolBar from "./_metricToolbar";
 
 // Import unit metric context
-import { UnitMetricsAppContext } from "./context";
+import { UnitMetricsAppContext } from "./_context";
 
 // Define the data table view
-export function DataTableView() {
+export default function DataTableView() {
   // Define the context for the unit metrics page
   const c = useContext(UnitMetricsAppContext);
 
@@ -158,16 +158,17 @@ export function DataTableView() {
         >
           Unit
         </th>
-        {c.format.scoring_formatted.map((item, index) => (
-          <th
-            className="bg-gray-50 text-gray-500 cursor-pointer px-6 py-3
-            text-left text-xs font-medium uppercase leading-4 tracking-wider"
-            key={`table-${item}`}
-            onClick={() => c.setMetricToolbarSelect(index)}
-          >
-            {item}
-          </th>
-        ))}
+        {c.format.scoring_formatted != undefined &&
+          c.format.scoring_formatted.map((item, index) => (
+            <th
+              className="bg-gray-50 text-gray-500 cursor-pointer px-6 py-3
+              text-left text-xs font-medium uppercase leading-4 tracking-wider"
+              key={`table-${item}`}
+              onClick={() => c.setMetricToolbarSelect(index)}
+            >
+              {item}
+            </th>
+          ))}
         <th className="bg-gray-50 px-6 py-3"></th>
       </tr>
     </thead>

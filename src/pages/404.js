@@ -5,7 +5,7 @@ import { config } from "@/config/config";
 import { useState, useEffect } from "react";
 
 // Home page definitions
-export default function FeedbackPage() {
+export default function PageNotFoundPage() {
   // Set useState for subtext
   const [subText, setSubText] = useState("...");
 

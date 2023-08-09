@@ -1,5 +1,5 @@
 // React.js & Next.js libraries
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, use } from "react";
 import React from "react";
 
 // Toaster Components and CSS
@@ -19,11 +19,10 @@ import { post } from "@/utils/call";
 import { errorToaster, successToaster } from "@/components/toasters";
 import { AutoCompleteInput, TimeInput } from "@/components/input";
 import { BottomDropDown } from "@/components/dropdown";
-import { MetricToolBar } from "./metricToolbar";
-import { Nothing } from "@/components/nothing";
+import MetricToolBar from "./_metricToolbar";
 
 // Import unit metric context
-import { UnitMetricsAppContext } from "./context";
+import { UnitMetricsAppContext } from "./_context";
 
 // Define customized time input component with special update features
 function TimeComponent({ item, onChange }) {
@@ -48,7 +47,7 @@ function TimeComponent({ item, onChange }) {
 }
 
 // Define the add data view
-export function AddDataView() {
+export default function AddDataView() {
   // Define the context for the unit metrics page
   const c = useContext(UnitMetricsAppContext);
 
@@ -56,12 +55,15 @@ export function AddDataView() {
   const [insert, setInsert] = useState({});
   const [actionTrigger, setActionTrigger] = useState(false);
   const [result, setResult] = useState(0);
-  const split = c.format.scoring_ids.length == 1 ? 0 : 1;
+  const [split, setSplit] = useState(0);
 
   // On change of the toolbar, change the schema of the the insert useState
   useEffect(() => {
     // Build the first parts of the query
     var query = { to_user: "", name: "", datetime_taken: 0 };
+
+    // Set split
+    setSplit(c.format.scoring_ids.length == 1 ? 0 : 1);
 
     // Set input tracker and query string
     setInsert(query);
@@ -312,55 +314,62 @@ export function AddDataView() {
           <div className="flex w-1/4 flex-col gap-5 p-2">
             <div
               className={`flex flex-col gap-4 ${
-                c.format.info_ids.length == 0 ? "hidden" : ""
+                c.format.info_ids == undefined
+                  ? "hidden"
+                  : c.format.info_ids.length == 0
+                  ? "hidden"
+                  : ""
               }`}
             >
               <div className="text-5xl">User Info</div>
-              {c.format.info_ids.map((item, index) => (
-                <div className="flex flex-col gap-1" key={`info-${index}`}>
-                  <div className="text-2xl">
-                    {c.format.info_formatted[index]}
+              {c.format.info_ids != undefined &&
+                c.format.info_ids.map((item, index) => (
+                  <div className="flex flex-col gap-1" key={`info-${index}`}>
+                    <div className="text-2xl">
+                      {c.format.info_formatted[index]}
+                    </div>
+                    {c.format.info_type[index] == "selection" && (
+                      <SelectionComponent type={0} item={item} />
+                    )}
+                    {c.format.info_type[index] == "number" && (
+                      <input
+                        className="rounded-lg border border-silver p-2"
+                        onChange={() => setActionTrigger(!actionTrigger)}
+                        type="number"
+                        id={item}
+                      />
+                    )}
                   </div>
-                  {c.format.info_type[index] == "selection" && (
-                    <SelectionComponent type={0} item={item} />
-                  )}
-                  {c.format.info_type[index] == "number" && (
-                    <input
-                      className="rounded-lg border border-silver p-2"
-                      onChange={() => setActionTrigger(!actionTrigger)}
-                      type="number"
-                      id={item}
-                    />
-                  )}
-                </div>
-              ))}
+                ))}
             </div>
             <div className="flex flex-col gap-4">
               <div className="text-5xl">Scoring</div>
-              {c.format.scoring_ids.slice(split).map((item, index) => (
-                <div className="flex flex-col gap-1" key={`score-${index}`}>
-                  <div className="text-2xl">
-                    {c.format.scoring_formatted.slice(split)[index]}
+              {c.format.scoring_ids != undefined &&
+                c.format.scoring_ids.slice(split).map((item, index) => (
+                  <div className="flex flex-col gap-1" key={`score-${index}`}>
+                    <div className="text-2xl">
+                      {c.format.scoring_formatted.slice(split)[index]}
+                    </div>
+                    {c.format.scoring_type.slice(split)[index] ==
+                      "selection" && (
+                      <SelectionComponent type={0} item={item} />
+                    )}
+                    {c.format.scoring_type.slice(split)[index] == "number" && (
+                      <input
+                        className="rounded-lg border border-silver p-2"
+                        onChange={() => setActionTrigger(!actionTrigger)}
+                        type="number"
+                        id={item}
+                      />
+                    )}
+                    {c.format.scoring_type.slice(split)[index] == "time" && (
+                      <TimeComponent
+                        item={item}
+                        onChange={() => setActionTrigger(!actionTrigger)}
+                      />
+                    )}
                   </div>
-                  {c.format.scoring_type.slice(split)[index] == "selection" && (
-                    <SelectionComponent type={0} item={item} />
-                  )}
-                  {c.format.scoring_type.slice(split)[index] == "number" && (
-                    <input
-                      className="rounded-lg border border-silver p-2"
-                      onChange={() => setActionTrigger(!actionTrigger)}
-                      type="number"
-                      id={item}
-                    />
-                  )}
-                  {c.format.scoring_type.slice(split)[index] == "time" && (
-                    <TimeComponent
-                      item={item}
-                      onChange={() => setActionTrigger(!actionTrigger)}
-                    />
-                  )}
-                </div>
-              ))}
+                ))}
             </div>
           </div>
           <div className="flex h-full w-1/4 flex-col p-2">

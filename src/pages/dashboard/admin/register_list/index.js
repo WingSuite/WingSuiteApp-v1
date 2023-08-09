@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 // Config imports
-import { permissionsList, endPointsList } from "@/config/config";
+import { permissionsList } from "@/config/config";
 
 // Util imports
 import { authCheck } from "@/utils/authCheck";
@@ -26,9 +26,6 @@ import Sidebar from "@/components/sidebar";
 
 // Unit member page definition
 export default function UnitResourcesPage() {
-  // Define router and get unit ID from URL
-  const router = useRouter();
-
   // Define useStates
   const [registerList, setRegisterList] = useState([]);
   const [actionTrigger, setActionTrigger] = useState(false);
@@ -36,13 +33,13 @@ export default function UnitResourcesPage() {
   // Execute function on mount
   useEffect(() => {
     // Check for correct user auth
-    if (!authCheck(permissionsList.admin.permissions_editing.page)) return;
+    if (!authCheck(permissionsList.admin.register_list.page)) return;
 
     // Save the list of users who are registering to the organization
     (async () => {
       // Call end point to get the register list
       var res = await get(
-        endPointsList.admin.register_list.data,
+        "/auth/get_register_requests/",
         Cookies.get("access")
       );
 
@@ -57,7 +54,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Call API
       var res = await post(
-        endPointsList.admin.register_list.add,
+        "/auth/authorize_user/",
         { id: id },
         Cookies.get("access")
       );
@@ -77,7 +74,7 @@ export default function UnitResourcesPage() {
     (async () => {
       // Call API
       var res = await post(
-        endPointsList.admin.register_list.delete,
+        "/auth/reject_user/",
         { id: id },
         Cookies.get("access")
       );

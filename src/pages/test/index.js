@@ -156,7 +156,7 @@ export default function MyTree() {
   return (
     <div className="">
       <div className="tree-container">
-        <TreeChart treeData={treeData} addUnitFunc={(e) => console.log(e)} />
+        <TreeChart treeData={treeData} addUnitFunc={(e) => e} />
       </div>
     </div>
   );

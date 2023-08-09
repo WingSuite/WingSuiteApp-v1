@@ -143,7 +143,6 @@ export default function ScatterPlotView() {
                 }
                 dataKey={c.format.scoring_ids[c.metricToolbarSelect]}
                 name="Score Value"
-                domain={[0, 100]}
                 padding={{ bottom: 40 }}
               />
               <Tooltip content={<DefaultToolTip />} />

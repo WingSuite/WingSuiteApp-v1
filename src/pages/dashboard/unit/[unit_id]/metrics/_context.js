@@ -99,7 +99,7 @@ export default function UnitMetricsAppProvider({ children }) {
 
   // View mappings
   const viewList = [<ScatterPlotView />, <DataTableView />, <AddDataView />];
-  const toolbarItems = ["PFA", "Warrior Knowledge"];
+  const toolbarItems = ["5 Point Evaluation", "PFA", "Warrior Knowledge"];
 
   // Special Process mapping
   const specialProcess = {
@@ -107,6 +107,7 @@ export default function UnitMetricsAppProvider({ children }) {
     number: (e) => {
       return Number(e);
     },
+    selection: (e) => {return e;}
   };
 
   // Endpoint mappings

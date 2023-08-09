@@ -32,7 +32,6 @@ export default function StatisticsBoard() {
             </div>
           </div>
           <div className="flex max-h-full flex-col gap-5 overflow-y-auto p-2">
-            {}
             <StatCard
               keyContent={`Number of Datapoints`}
               valueContent={c.dataStats.length != 0 && c.dataStats[0]}

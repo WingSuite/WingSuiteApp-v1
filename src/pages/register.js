@@ -77,7 +77,7 @@ const Register = () => {
     }
     if (!config.passwordRegex.test(password1)) {
       errorToaster(
-        "Password is not string enough. Check the password criteria."
+        "Password is not strong enough. Check the password criteria."
       );
       return;
     }

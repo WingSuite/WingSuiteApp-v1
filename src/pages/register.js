@@ -67,6 +67,13 @@ const Register = () => {
       errorToaster("Email input not filled");
       return;
     }
+    if (!config.emailRegex.test(email)) {
+      errorToaster(
+        "Email either not an email or is not an associated school email " +
+          "(i.e. asu.edu, gcu.edu, or maricopa.edu)"
+      );
+      return;
+    }
     if (!config.phoneRegex.test(phone)) {
       errorToaster("Phone input not properly filled or is empty");
       return;

@@ -57,6 +57,7 @@ export const config = {
   phoneRegex: /^\(\d{3}\) \d{3}-\d{4}$/,
   passwordRegex:
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+  emailRegex: /^[a-zA-Z0-9._%+-]+@(asu|gcu|maricopa)\.edu$/
 };
 
 // Permissions config

@@ -190,7 +190,8 @@ const Sidebar = () => {
         }
         flex w-full items-center justify-start
         rounded-lg px-2 py-1 transition duration-200 ease-in`}
-        onClick={() => {setAdminCollapse(true);
+        onClick={() => {
+          setAdminCollapse(!adminCollapse);
         }}
       >
         <div className="flex w-full flex-row truncate pr-1">
@@ -223,7 +224,12 @@ const Sidebar = () => {
               : "#FFFFFF",
           }}
         >
-          {adminCollapse ? <VscChevronDown /> : <VscChevronUp />}
+          {currentPath.includes(encodeURIComponent("admin")) ||
+          adminCollapse ? (
+            <VscChevronDown />
+          ) : (
+            <VscChevronUp />
+          )}
         </IconContext.Provider>
       </button>
       {(adminCollapse || currentPath.includes(encodeURIComponent("admin"))) && (
@@ -358,9 +364,9 @@ const Sidebar = () => {
                     currentPath.includes(encodeURIComponent(item)) &&
                     currentPath.includes(sidebarItem.link)
                       ? `bg-white hover:-translate-y-[0.1rem] hover:shadow-md
-                    hover:shadow-white`
+                      hover:shadow-white`
                       : `border border-transparent hover:-translate-y-[0.1rem]
-                    hover:border-white hover:shadow-lg hover:shadow-sky`
+                      hover:border-white hover:shadow-lg hover:shadow-sky`
                   }
                 flex w-full items-center justify-start rounded-lg px-2 py-1
                 transition duration-200 ease-in`}

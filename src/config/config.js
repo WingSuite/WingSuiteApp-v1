@@ -254,6 +254,7 @@ export const unitSidebarConfig = [
     id: "metrics",
     title: "Metrics",
     link: "/metrics",
+    all_perms: false,
     icon: <VscGraph />,
   },
   // {

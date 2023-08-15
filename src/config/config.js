@@ -57,6 +57,7 @@ export const config = {
   phoneRegex: /^\(\d{3}\) \d{3}-\d{4}$/,
   passwordRegex:
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+  emailRegex: /^[a-zA-Z0-9._%+-]+@(asu|gcu|maricopa)\.edu$/
 };
 
 // Permissions config
@@ -139,21 +140,33 @@ export const endPointsList = {
   },
   unit: {
     metrics: {
-      add: ["/statistic/pfa/create_pfa/", "/statistic/warrior/create_warrior/"],
+      add: [
+        "/statistic/five_point/create_five_point/",
+        "/statistic/pfa/create_pfa/",
+        "/statistic/warrior/create_warrior/",
+      ],
       format: [
+        "/statistic/five_point/get_five_point_format_info/",
         "/statistic/pfa/get_pfa_format_info/",
         "/statistic/warrior/get_warrior_format_info/",
       ],
-      data: ["/unit/get_all_pfa_data/", "/unit/get_all_warrior_data/"],
+      data: [
+        "/unit/get_all_five_point_data/",
+        "/unit/get_all_pfa_data/",
+        "/unit/get_all_warrior_data/",
+      ],
       testing: [
+        "/statistic/five_point/get_test_five_point_score/",
         "/statistic/pfa/get_test_pfa_score/",
         "/statistic/warrior/get_test_warrior_score/",
       ],
       edit: [
+        "/statistic/five_point/update_five_point/",
         "/statistic/pfa/update_pfa/",
         "/statistic/warrior/update_warrior/",
       ],
       delete: [
+        "/statistic/five_point/delete_five_point/",
         "/statistic/pfa/delete_pfa/",
         "/statistic/warrior/delete_warrior/",
       ],
@@ -242,6 +255,7 @@ export const unitSidebarConfig = [
     id: "metrics",
     title: "Metrics",
     link: "/metrics",
+    all_perms: false,
     icon: <VscGraph />,
   },
   // {

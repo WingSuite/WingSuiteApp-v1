@@ -1,9 +1,9 @@
 // Import
 import { config } from "@/config/config";
 
-// POST Call definition
-export function permissionsCheck(required, permissions) {
-  // Make a set from the given config
+// permission check definition
+export function permissionsCheck(required, permissions, disjunction = false) {
+  // Make a set from the given permissions
   const compareSet = new Set(permissions);
 
   // If the iterated item is the all access token, return true
@@ -12,12 +12,15 @@ export function permissionsCheck(required, permissions) {
   // If the required parameter is an empty list, then return false;
   if (required.length === 0) return false;
 
-  // Iterate through the user's permissions
-  for (let item of required) {
-    // If the iterated item is not in the user's permissions, return false
-    if (!compareSet.has(item)) return false;
+  // If disjunction is true, return true if any required permission is found
+  if (disjunction) {
+    for (let item of required) if (compareSet.has(item)) return true;
+    return false;
   }
 
-  // Return true if all else worked
-  return true;
+  // If not, check if the user has all of the required permissions
+  else {
+    for (let item of required) if (!compareSet.has(item)) return false;
+    return true;
+  }
 }

@@ -97,7 +97,6 @@ export default function UnitResourcesPage() {
   const kickUser = (id) => {
     // Run async call to process kick
     (async () => {
-      console.log(id)
       // Call API
       var res = await post(
         "/auth/kick_user/",

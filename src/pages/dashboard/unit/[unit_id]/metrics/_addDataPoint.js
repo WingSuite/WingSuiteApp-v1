@@ -1,5 +1,5 @@
 // React.js & Next.js libraries
-import { useState, useEffect, useContext, use } from "react";
+import { useState, useEffect, useContext } from "react";
 import React from "react";
 
 // Toaster Components and CSS
@@ -352,7 +352,7 @@ export default function AddDataView() {
                     </div>
                     {c.format.scoring_type.slice(split)[index] ==
                       "selection" && (
-                      <SelectionComponent type={0} item={item} />
+                      <SelectionComponent type={1} item={item} />
                     )}
                     {c.format.scoring_type.slice(split)[index] == "number" && (
                       <input

@@ -8,6 +8,7 @@ import React from "react";
 
 // Toaster components and CSS
 import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Date Picker imports
@@ -29,10 +30,14 @@ import { authCheck } from "@/utils/authCheck";
 import { post, get } from "@/utils/call";
 
 // Custom components imports
-import { errorToaster, successToaster } from "@/components/toasters";
+import {
+  errorToaster,
+  successToaster,
+  infoToaster,
+} from "@/components/toasters";
+import { TimeInput, ToggleSwitch } from "@/components/input";
 import { CalendarComponent } from "@/components/calendar";
 import { BottomDropDown } from "@/components/dropdown";
-import { TimeInput } from "@/components/input";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
 import EventModal from "./_modal";
@@ -63,6 +68,7 @@ export default function EventsPage() {
     endMinute: "",
   });
   const [eventDays, setEventDays] = useState([]);
+  const [eventNotify, setEventNotify] = useState(false);
 
   // Define useStates for getting event data
   const [queryRange, setQueryRange] = useState({});
@@ -174,6 +180,7 @@ export default function EventsPage() {
     /*
         INPUT CHECKERS
     */
+    // #region
 
     // Get the target user's ID
     const targetUnit = availableUnits[eventRecipient];
@@ -219,15 +226,19 @@ export default function EventsPage() {
       errorToaster("Select one or more days for the event");
       return;
     }
+    // #endregion
 
     /*
         EVENT CREATION
     */
 
-    // Iterate through every day selected
-    for (let item of eventDays) {
-      // Call API for creating the event
-      (async () => {
+    // Start a loading toast
+    const toastId = infoToaster("Loading...", "top-right", false);
+
+    // Call API for creating the event
+    (async () => {
+      // Iterate through every day selected
+      for (let item of eventDays) {
         // Variable declaration
         var start_datetime = new Date(item.getTime());
         var end_datetime = null;
@@ -256,15 +267,21 @@ export default function EventsPage() {
             start_datetime: start_datetime,
             end_datetime: end_datetime,
             description: eventDescription,
+            notify: eventNotify,
           },
           Cookies.get("access")
         );
 
-        // If the call was successful, send a success toaster
-        if (res.status == "success") successToaster(res.message);
-        if (res.status == "error") errorToaster(res.message);
-      })();
-    }
+        // If the call was successful, send a success toaster and trigger
+        // if (res.status == "success") successToaster(res.message);
+        // if (res.status == "error") errorToaster(res.message);
+      }
+      setActionTrigger(!actionTrigger);
+    })();
+
+    // Close the loading toast and display success
+    toast.dismiss(toastId);
+    successToaster("All events created successfully!");
 
     // Clear inputs
     setEventRecipient("");
@@ -278,9 +295,7 @@ export default function EventsPage() {
       endMinute: "",
     });
     setEventDays([]);
-
-    // Trigger action
-    setActionTrigger(!actionTrigger);
+    setEventNotify(false);
   };
 
   // Function to update the event
@@ -302,13 +317,13 @@ export default function EventsPage() {
         Cookies.get("access")
       );
 
-      // If the call was successful, send a success toaster
+      // If the call was successful, send a success toaster and trigger
       if (res.status == "success") successToaster(res.message);
       if (res.status == "error") errorToaster(res.message);
+      setActionTrigger(!actionTrigger);
     })();
 
-    // Exit out of view and set trigger
-    setActionTrigger(!actionTrigger);
+    // Exit out of view
     setSelectedEvent({});
     setModalIsOpen(false);
   };
@@ -326,13 +341,13 @@ export default function EventsPage() {
         Cookies.get("access")
       );
 
-      // If the call was successful, send a success toaster
+      // If the call was successful, send a success toaster and trigger
       if (res.status == "success") successToaster(res.message);
       if (res.status == "error") errorToaster(res.message);
+      setActionTrigger(!actionTrigger);
     })();
 
     // Exit out of view and set trigger
-    setActionTrigger(!actionTrigger);
     setSelectedEvent({});
     setModalIsOpen(false);
   };
@@ -446,6 +461,10 @@ export default function EventsPage() {
           selected={eventDays}
           onSelect={setEventDays}
         />
+      </div>
+      <div className="flex flex-row items-center gap-4">
+        <div className="text-2xl">Notify Units?</div>
+        <ToggleSwitch onToggle={setEventNotify} initialState={eventNotify} />
       </div>
       <button
         onClick={createEvent}

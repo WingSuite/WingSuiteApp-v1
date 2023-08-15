@@ -36,13 +36,6 @@ export function TreeChart({
   const xTranslate = dimensions.width / 2;
   const yTranslate = dimensions.height / 3;
 
-  // On click of a leaf, execute a given function
-  const handleNodeClick = (nodeData) => {
-    if (!nodeData.children) {
-      console.log(nodeData.data.name);
-    }
-  };
-
   // Render custom object on the graph
   const renderForeignObjectNode = ({ nodeDatum, toggleNode }) => {
     return (
@@ -118,7 +111,6 @@ export function TreeChart({
     <div className="tree-wrapper" ref={containerRef}>
       <Tree
         instanceId={"TREE"}
-        onNodeClick={handleNodeClick}
         data={treeData}
         separation={{ nonSiblings: 1, siblings: 1 }}
         translate={{ x: xTranslate, y: yTranslate }}

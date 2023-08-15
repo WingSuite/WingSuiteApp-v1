@@ -119,8 +119,9 @@ const Login = () => {
         <div>Need Access?</div>
         <button
           className="rounded-lg border border-transparent px-2 py-1 text-white
-          transition duration-200 ease-in hover:-translate-y-[0.1rem]
-          hover:border-white hover:shadow-md hover:shadow-sky"
+          underline underline-offset-2 transition duration-200 ease-in
+          hover:-translate-y-[0.1rem] hover:border-white hover:shadow-md
+          hover:shadow-sky"
           onClick={() => router.push("/register")}
         >
           Register

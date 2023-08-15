@@ -112,3 +112,49 @@ export function TimeInput({ hour, setHour, minute, setMinute, id = null }) {
     </div>
   );
 }
+
+// Toggle switch input field
+export function ToggleSwitch({ initialState = false, onToggle }) {
+  // Define useStates for the component
+  const [isOn, setIsOn] = useState(initialState);
+
+  // useEffect to synchronize internal state with external prop
+  useEffect(() => {
+    setIsOn(initialState);
+  }, [initialState]);
+
+  // Function to track the toggling of the switch
+  const toggle = () => {
+    setIsOn(!isOn);
+    onToggle(!isOn);
+  };
+
+  // Render the toggle switch
+  return (
+    <div
+      className="relative mr-2 inline-block w-[3.5rem] select-none rounded-full
+      border border-silver align-middle transition duration-200 ease-in"
+    >
+      <input
+        type="checkbox"
+        name="toggle"
+        id="toggle"
+        checked={isOn}
+        onChange={toggle}
+        className="hidden"
+      />
+      <label
+        htmlFor="toggle"
+        className="bg-gray-300 block h-7 cursor-pointer overflow-hidden
+        rounded-full"
+      >
+        <span
+          className={`block h-7 w-7 transform rounded-full shadow-lg transition
+          duration-200 ease-in ${
+            isOn ? "translate-x-[1.6rem] bg-sky" : "translate-x-0 bg-silver"
+          }`}
+        ></span>
+      </label>
+    </div>
+  );
+}

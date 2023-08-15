@@ -18,14 +18,15 @@ import { permissionsList, config } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
+import { ToggleSwitch } from "@/components/input";
 import { authCheck } from "@/utils/authCheck";
 import { formatMilDate } from "@/utils/time";
 import { post, get } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { BottomDropDown } from "@/components/dropdown";
 import { CollapsableInfoCard } from "@/components/cards";
+import { BottomDropDown } from "@/components/dropdown";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
@@ -40,6 +41,7 @@ export default function NotificationsPage() {
   const [notificationRecipient, setNotificationRecipient] = useState("");
   const [notificationName, setNotificationName] = useState("");
   const [notificationText, setNotificationText] = useState("");
+  const [notificationNotify, setNotificationNotify] = useState(false);
   const [actionTrigger, setActionTrigger] = useState(true);
   const required = permissionsList.notifications;
 
@@ -150,22 +152,22 @@ export default function NotificationsPage() {
           unit: targetUnit,
           name: notificationName,
           notification: notificationText,
+          notify: notificationNotify,
         },
         Cookies.get("access")
       );
 
-      // If the call was successful, send a success toaster
+      // If the call was successful, send a success toaster and trigger
       if (res.status == "success") successToaster(res.message);
       if (res.status == "error") errorToaster(res.message);
+      setActionTrigger(!actionTrigger);
     })();
 
     // Clear inputs
     setNotificationRecipient("");
     setNotificationName("");
     setNotificationText("");
-
-    // Trigger action
-    setActionTrigger(!actionTrigger);
+    setNotificationNotify(false);
   };
 
   // Function definition for updating a notification
@@ -183,13 +185,11 @@ export default function NotificationsPage() {
         Cookies.get("access")
       );
 
-      // If the call was successful, send a success toaster
+      // If the call was successful, send a success toaster and trigger
       if (res.status == "success") successToaster(res.message);
       if (res.status == "error") errorToaster(res.message);
+      setActionTrigger(!actionTrigger);
     })();
-
-    // Trigger action
-    setActionTrigger(!actionTrigger);
   };
 
   // Function definition for deleting a notification
@@ -205,13 +205,11 @@ export default function NotificationsPage() {
         Cookies.get("access")
       );
 
-      // If the call was successful, send a success toaster
+      // If the call was successful, send a success toaster and trigger
       if (res.status == "success") successToaster(res.message);
       if (res.status == "error") errorToaster(res.message);
+      setActionTrigger(!actionTrigger);
     })();
-
-    // Trigger action
-    setActionTrigger(!actionTrigger);
   };
 
   // Component for toolbar
@@ -302,6 +300,13 @@ export default function NotificationsPage() {
           onChange={(event) => setNotificationText(event.target.value)}
           value={notificationText}
           id="feedback"
+        />
+      </div>
+      <div className="flex flex-row items-center gap-4">
+        <div className="text-2xl">Notify Units?</div>
+        <ToggleSwitch
+          onToggle={setNotificationNotify}
+          initialState={notificationNotify}
         />
       </div>
       <button

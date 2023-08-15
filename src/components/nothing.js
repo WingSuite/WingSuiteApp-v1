@@ -12,7 +12,7 @@ export function Nothing({
   return (
     <div
       className="flex h-full w-full flex-col items-center justify-center
-      rounded-lg border-2 border-dashed text-deepOcean p-3"
+      rounded-lg border-2 border-dashed text-sky p-3"
     >
       <IconContext.Provider
         value={{ size: "5em", className: `${marginFlag ? `mb-3` : ``}` }}

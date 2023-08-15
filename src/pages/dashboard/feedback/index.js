@@ -24,7 +24,7 @@ import { post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { AutoCompleteInput } from "@/components/input";
+import { AutoCompleteInput, ToggleSwitch } from "@/components/input";
 import { CollapsableInfoCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
@@ -41,6 +41,7 @@ export default function FeedbackPage() {
   const [feedbackTo, setFeedbackTo] = useState("");
   const [feedbackName, setFeedbackName] = useState("");
   const [feedbackText, setFeedbackText] = useState("");
+  const [feedbackNotify, setFeedbackNotify] = useState(false);
   const [actionTrigger, setActionTrigger] = useState(true);
   const required = permissionsList.feedback;
   const toolbarItems = ["Received", "Sent"];
@@ -148,19 +149,22 @@ export default function FeedbackPage() {
           to_user: target_user,
           name: feedbackName,
           feedback: feedbackText,
+          notify: feedbackNotify,
         },
         Cookies.get("access")
       );
 
-      // If the call was successful, send a success toaster
+      // If the call was successful, send a success toaster and trigger
       if (res.status == "success") successToaster(res.message);
       if (res.status == "error") errorToaster(res.message);
+      setActionTrigger(!actionTrigger);
     })();
 
     // Clear inputs
     setFeedbackTo("");
     setFeedbackName("");
     setFeedbackText("");
+    setFeedbackNotify(false);
   };
 
   // Function definition for updating a feedback
@@ -317,6 +321,13 @@ export default function FeedbackPage() {
           onChange={(event) => setFeedbackText(event.target.value)}
           value={feedbackText}
           id="feedback"
+        />
+      </div>
+      <div className="flex flex-row items-center gap-4">
+        <div className="text-2xl">Notify User?</div>
+        <ToggleSwitch
+          onToggle={setFeedbackNotify}
+          initialState={feedbackNotify}
         />
       </div>
       <button

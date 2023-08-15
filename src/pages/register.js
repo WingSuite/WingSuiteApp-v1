@@ -251,8 +251,8 @@ const Register = () => {
               </div>
               <input
                 className="text-gray-700 focus:shadow-outline w-full rounded-lg
-              border border-silver bg-white/[0.3] p-1
-              shadow-lg focus:outline-none"
+                border border-silver bg-white/[0.3] p-1
+                shadow-lg focus:outline-none"
                 id="password1"
                 type="password"
               />
@@ -261,16 +261,16 @@ const Register = () => {
               <div className="">Confirm Password</div>
               <input
                 className="text-gray-700 focus:shadow-outline w-full rounded-lg
-              border border-silver bg-white/[0.3] p-1
-              shadow-lg focus:outline-none"
+                border border-silver bg-white/[0.3] p-1
+                shadow-lg focus:outline-none"
                 id="password2"
                 type="password"
               />
             </div>
             <button
               className="w-fit rounded-md bg-sky/[0.8] px-3 py-1 text-lg
-            drop-shadow-lg transition duration-200 ease-in
-            hover:-translate-y-[0.1rem] hover:text-white hover:shadow-xl"
+              drop-shadow-lg transition duration-200 ease-in
+              hover:-translate-y-[0.1rem] hover:text-white hover:shadow-xl"
               onClick={registerPress}
             >
               Register
@@ -288,8 +288,9 @@ const Register = () => {
         <div>Already Have Access?</div>
         <button
           className="rounded-lg border border-transparent px-2 py-1 text-white
-          transition duration-200 ease-in hover:-translate-y-[0.1rem]
-          hover:border-white hover:shadow-md hover:shadow-sky"
+          underline underline-offset-2 transition duration-200 ease-in
+          hover:-translate-y-[0.1rem] hover:border-white hover:shadow-md
+          hover:shadow-sky "
           onClick={() => router.push("/login")}
         >
           Login

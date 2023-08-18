@@ -55,15 +55,17 @@ export default function AddDataView() {
   const [insert, setInsert] = useState({});
   const [actionTrigger, setActionTrigger] = useState(false);
   const [result, setResult] = useState(0);
-  const [split, setSplit] = useState(0);
+  var split =
+    c.format.scoring_ids != undefined
+      ? c.format.scoring_ids.length == 1
+        ? 0
+        : 1
+      : 0;
 
   // On change of the toolbar, change the schema of the the insert useState
   useEffect(() => {
     // Build the first parts of the query
     var query = { to_user: "", name: "", datetime_taken: 0 };
-
-    // Set split
-    setSplit(c.format.scoring_ids.length == 1 ? 0 : 1);
 
     // Set input tracker and query string
     setInsert(query);

@@ -115,17 +115,31 @@ const Login = () => {
           </button>
         </div>
       </div>
-      <div className="flex flex-row items-center gap-1 text-white">
-        <div>Need Access?</div>
-        <button
-          className="rounded-lg border border-transparent px-2 py-1 text-white
+      <div className="flex flex-col items-center gap-0.5">
+        <div className="flex flex-row items-center gap-1 text-white">
+          <div>Need Access?</div>
+          <button
+            className="rounded-lg border border-transparent px-2 py-1 text-white
           underline underline-offset-2 transition duration-200 ease-in
           hover:-translate-y-[0.1rem] hover:border-white hover:shadow-md
           hover:shadow-sky"
-          onClick={() => router.push("/register")}
-        >
-          Register
-        </button>
+            onClick={() => router.push("/register")}
+          >
+            Register
+          </button>
+        </div>
+        <div className="flex flex-row items-center gap-1 text-white">
+          <div>Forgot Password?</div>
+          <button
+            className="rounded-lg border border-transparent px-2 py-1 text-white
+          underline underline-offset-2 transition duration-200 ease-in
+          hover:-translate-y-[0.1rem] hover:border-white hover:shadow-md
+          hover:shadow-sky"
+            onClick={() => router.push("/reset_request")}
+          >
+            Reset
+          </button>
+        </div>
       </div>
 
       <ToastContainer

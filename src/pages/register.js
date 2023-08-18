@@ -28,6 +28,7 @@ import logo from "../../public/logo.png";
 // Login Page definitions
 const Register = () => {
   // Variable declaration and initialization
+  const [passwordReq, setPasswordReq] = useState(false);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
 
@@ -230,12 +231,18 @@ const Register = () => {
                       size: "0.9em",
                     }}
                   >
-                    <VscInfo />
+                    <button
+                      onClick={() => {
+                        setPasswordReq(!passwordReq);
+                      }}
+                    >
+                      <VscInfo />
+                    </button>
                   </IconContext.Provider>
                   <div
-                    className="bg-gray-800 absolute -top-0.5 right-5 z-10
-                    whitespace-nowrap rounded-md bg-white p-2 text-xs
-                    opacity-0 group-hover:opacity-100"
+                    className={`bg-gray-800 absolute z-10
+                     whitespace-nowrap rounded-md bg-white p-2 text-xs
+                     ${!passwordReq ? `hidden` : ``}`}
                   >
                     Password requirements:
                     <ul className="list-inside list-disc">
@@ -296,6 +303,7 @@ const Register = () => {
           Login
         </button>
       </div>
+      
       <ToastContainer
         position="top-right"
         autoClose={5000}

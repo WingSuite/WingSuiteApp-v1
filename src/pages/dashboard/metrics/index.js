@@ -202,7 +202,7 @@ export default function MetricsPage() {
   return (
     <div className="relative flex h-screen flex-row">
       <Sidebar />
-      <div className="f-full m-10 flex w-full flex-col overflow-y-auto">
+      <div className="m-10 flex w-full flex-col overflow-y-auto">
         <PageTitle className="flex-none" />
         {toolbar}
         <div className="h-full overflow-y-auto">

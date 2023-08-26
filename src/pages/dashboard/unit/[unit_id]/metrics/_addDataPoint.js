@@ -211,6 +211,15 @@ export default function AddDataView() {
         // Track the information
         copy[item] = `${formattedHour}:${formattedMinute}`;
       }
+
+      // Retrieve values if the iterated scoring info is selection
+      else if (iterTypes[index] == "selection") {
+        // If the input is empty, send an error
+        if (!(item in insert)) {
+          errorToaster(`${iterFormatted[index]} field is empty`);
+          return;
+        }
+      }
     }
 
     // Send API call to make new metric
@@ -263,7 +272,7 @@ export default function AddDataView() {
         updateInsert(item, e);
         setActionTrigger(!actionTrigger);
       }}
-      defaultValue={insert[item]}
+      defaultValue={item in insert ? insert[item]: "Select Value"}
     />
   );
 
@@ -273,10 +282,10 @@ export default function AddDataView() {
       <div className="flex w-9/12 flex-col gap-8">
         <MetricToolBar />
         <div
-          className="flex w-full flex-row justify-center gap-10
+          className="flex w-full flex-row justify-between gap-10
             overflow-auto"
         >
-          <div className="flex w-1/4 flex-col p-2">
+          <div className="flex w-full flex-col p-2">
             <div className="flex flex-col gap-4">
               <div className="text-5xl">Basic Info</div>
               <div className="flex flex-col gap-1">
@@ -313,7 +322,7 @@ export default function AddDataView() {
               </div>
             </div>
           </div>
-          <div className="flex w-1/4 flex-col gap-5 p-2">
+          <div className="flex w-full flex-col gap-5 p-2">
             <div
               className={`flex flex-col gap-4 ${
                 c.format.info_ids == undefined
@@ -374,7 +383,7 @@ export default function AddDataView() {
                 ))}
             </div>
           </div>
-          <div className="flex h-full w-1/4 flex-col p-2">
+          <div className="flex h-full w-full flex-col p-2">
             <div className="flex flex-col gap-4">
               <div className="text-5xl">Result</div>
               <div

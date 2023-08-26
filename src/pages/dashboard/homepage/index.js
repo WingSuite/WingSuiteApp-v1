@@ -210,7 +210,7 @@ export default function HomePage() {
           >
             <div className="text-lg">{item}</div>
             <div
-              className="flex w-full flex-col gap-2 overflow-y-auto pr-1
+              className="flex w-full flex-col gap-2 pr-1
               pt-1.5"
             >
               {weekViewData[item].map((event, index) => (
@@ -239,8 +239,7 @@ export default function HomePage() {
     <div className="flex flex-col gap-4">
       <div className="text-4xl">Quick Links</div>
       <div
-        className="flex h-full flex-col gap-4 overflow-auto
-        p-1 pb-4"
+        className="flex h-full flex-col gap-4 p-1 pb-4"
       >
         {config.quickLinks.map((item, index) => (
           <ButtonCard
@@ -264,7 +263,7 @@ export default function HomePage() {
     <div className="flex h-full flex-1 flex-col gap-4">
       <div className="text-4xl">Stats</div>
       <div
-        className="flex h-full flex-col gap-4 overflow-auto px-1
+        className="flex h-full flex-col gap-4 px-1
         pb-4"
       >
         <StatCard keyContent="Last PFA Score" valueContent={lastPFAScore} />
@@ -278,7 +277,7 @@ export default function HomePage() {
     <div className="flex h-full w-1/4 flex-col gap-4">
       <div className="text-4xl">Feedback</div>
       <div
-        className="flex h-full flex-col gap-4 overflow-auto rounded-lg
+        className="flex h-full flex-col gap-4 rounded-lg
         px-1 pb-4 pr-2"
       >
         {feedbackData.length === 0 ? (
@@ -308,7 +307,7 @@ export default function HomePage() {
     <div className="flex w-1/3 flex-col gap-4">
       <div className="text-4xl">Notifications</div>
       <div
-        className="flex h-full flex-col gap-4 overflow-auto rounded-lg px-1
+        className="flex h-full flex-col gap-4 rounded-lg px-1
         pb-4 pr-2"
       >
         {notifications.length === 0 ? (
@@ -337,12 +336,12 @@ export default function HomePage() {
   return (
     <div className="relative flex h-screen flex-row">
       <Sidebar />
-      <div className="m-10 flex max-h-full w-full flex-col">
+      <div className="m-10 flex w-full flex-col overflow-y-auto">
         <PageTitle className="flex-none" customName="Home Page" />
-        <div className="flex h-full flex-col gap-14 overflow-auto">
+        <div className="flex h-full flex-col gap-14 overflow-y-auto pr-4">
           <div className="pt-2 text-7xl">{greeting}</div>
           {weekView}
-          <div className="flex h-full flex-row gap-14 overflow-hidden">
+          <div className="flex h-full flex-row gap-14">
             {statsView}
             {feedbackView}
             {notificationsView}

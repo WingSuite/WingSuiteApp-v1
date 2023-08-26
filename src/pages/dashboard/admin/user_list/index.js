@@ -4,7 +4,6 @@ import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import React from "react";
 
 // Toaster Components and CSS
@@ -15,7 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 // Config imports
-import { permissionsList, endPointsList } from "@/config/config";
+import { permissionsList } from "@/config/config";
 
 // Util imports
 import { authCheck } from "@/utils/authCheck";
@@ -70,6 +69,13 @@ export default function UnitResourcesPage() {
           }`,
         };
       });
+      processed = [
+        ...processed,
+        ...processed,
+        ...processed,
+        ...processed,
+        ...processed,
+      ];
 
       // Save the information to the userList useState
       setFilteredUserList(processed);
@@ -125,7 +131,7 @@ export default function UnitResourcesPage() {
             subText={"A tree falls in a forest, does it make a sound?"}
           />
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 overflow-y-auto">
             <div
               className="flex w-1/2 flex-row items-center gap-2 rounded-lg
               border border-silver p-2 shadow-inner"

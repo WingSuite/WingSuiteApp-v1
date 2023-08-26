@@ -257,16 +257,16 @@ export function UserCard({
   // Render card
   return (
     <div
-      className="relative flex h-[320px] w-[14%] flex-col gap-5 rounded-lg
+      className="relative flex h-[320px] w-[290px] flex-col gap-5 rounded-lg
       border-2 border-silver bg-white px-4 pb-4 pt-4 shadow-md transition
       duration-200 ease-in hover:-translate-y-[0.1rem] hover:border-2
       hover:border-sky hover:shadow-sky"
     >
-      <div className="relative h-[170px] w-full">
+      <div className="relative h-[200px] w-full">
         <Image src="/logobw.png" objectFit="contain" alt="Logo" layout="fill" />
       </div>
       {(deleteFunc || addFunc) && (
-        <div className="absolute right-0 top-0 flex flex-col gap-1 p-2">
+        <div className="absolute right-0 top-0 flex flex-col gap-1 p-3">
           {!deleteConfirm && !addConfirm && deleteFunc && (
             <button
               className="transition duration-200 ease-in hover:text-scarlet"
@@ -342,16 +342,16 @@ export function UserCard({
           )}
         </div>
       )}
-      <div className="w-full text-left text-base">
-        <div className="flex gap-3">
+      <div className="w-full text-left text-xs">
+        <div className="flex">
           <div className="mt-[3px] w-1/12">
             <IconContext.Provider value={{ size: "1.1em" }}>
               <VscPerson />
             </IconContext.Provider>
           </div>
-          <div className="word-break w-11/12  break-all font-bold">{name}</div>
+          <div className="word-break w-11/12 break-all font-bold">{name}</div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex">
           <div className="mt-[3px] w-1/12">
             <IconContext.Provider value={{ size: "1.1em" }}>
               <VscVerifiedFilled />
@@ -359,7 +359,7 @@ export function UserCard({
           </div>
           <div className="word-break w-11/12 break-all">{rank}</div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex">
           <div className="mt-[3px] w-1/12">
             <IconContext.Provider value={{ size: "1.1em" }}>
               <VscMail />
@@ -368,7 +368,7 @@ export function UserCard({
 
           <div className="word-break w-11/12 break-all">{email}</div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex">
           <div className="mt-[3px] w-1/12">
             <IconContext.Provider value={{ size: "1.1em" }}>
               <VscCallIncoming />

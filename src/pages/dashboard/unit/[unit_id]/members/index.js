@@ -259,7 +259,7 @@ export default function UnitMembersPage() {
         {selectedAdd == 1 && addUserCard}
         {doesUserHasAccess && !(selectedAdd == 1) && (
           <button
-            className="relative flex h-[320px] w-[14%] flex-col items-center
+            className="relative flex h-[320px] w-[290px] flex-col items-center
             justify-center gap-5 rounded-lg border-2 border-dashed
             border-silver p-4 text-silver transition duration-200 ease-in
             hover:border-2 hover:border-sky hover:text-sky"
@@ -304,7 +304,7 @@ export default function UnitMembersPage() {
         {selectedAdd == 2 && addUserCard}
         {doesUserHasAccess && !(selectedAdd == 2) && (
           <button
-            className="relative flex h-[320px] w-[14%] flex-col items-center
+            className="relative flex h-[320px] w-[290px] flex-col items-center
             justify-center gap-5 rounded-lg border-2 border-dashed
             border-silver p-4 text-silver transition duration-200 ease-in
             hover:border-2 hover:border-sky hover:text-sky"

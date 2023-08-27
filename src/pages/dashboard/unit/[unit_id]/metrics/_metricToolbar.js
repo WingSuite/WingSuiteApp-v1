@@ -26,7 +26,7 @@ export default function MetricToolBar() {
   // Render component
   return (
     <div className="flex flex-row justify-between">
-      <div className="flex w-fit flex-row items-center  gap-4">
+      <div className="flex w-fit flex-row items-center mr-4 gap-4">
         {c.viewSelect == 1 && (
           <div>
             <BottomDropDown
@@ -89,18 +89,20 @@ export default function MetricToolBar() {
         {permissionsCheck(
           permissionsList.unit.metrics.add,
           c.user.permissions
-        ) && (<button
-          className={`rounded-lg border border-silver p-2 transition
+        ) && (
+          <button
+            className={`rounded-lg border border-silver p-2 transition
           duration-200 ease-in hover:-translate-y-[0.1rem] hover:border-sky
           hover:text-sky hover:shadow-lg ${
             c.viewSelect == 2 && `border-sky text-sky`
           }`}
-          onClick={() => c.setViewSelect(2)}
-        >
-          <IconContext.Provider value={{ size: "1.5em" }}>
-            <VscNewFile />
-          </IconContext.Provider>
-        </button>)}
+            onClick={() => c.setViewSelect(2)}
+          >
+            <IconContext.Provider value={{ size: "1.5em" }}>
+              <VscNewFile />
+            </IconContext.Provider>
+          </button>
+        )}
       </div>
     </div>
   );

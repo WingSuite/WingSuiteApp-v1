@@ -3,7 +3,7 @@ import { VscEdit, VscTrash, VscCheck, VscChromeClose } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 import React from "react";
 
 // JS Cookies import
@@ -13,11 +13,14 @@ import Cookies from "js-cookie";
 import AutosizeInput from "react-input-autosize";
 
 // Util imports
+import { parseTime, updateTimeString } from "@/utils/time";
 import { Nothing } from "@/components/nothing";
 import { post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
+import { BottomDropDown } from "@/components/dropdown";
+import { TimeInput } from "@/components/input";
 import MetricToolBar from "./_metricToolbar";
 
 // Import unit metric context
@@ -27,11 +30,6 @@ import { UnitMetricsAppContext } from "./_context";
 export default function DataTableView() {
   // Define the context for the unit metrics page
   const c = useContext(UnitMetricsAppContext);
-
-  // Update handler for table view
-  const handleUpdate = (id, value) => {
-    c.setEditItem((prevState) => ({ ...prevState, [id]: value }));
-  };
 
   // Update selected metric
   const updateSelected = () => {
@@ -106,6 +104,9 @@ export default function DataTableView() {
       // Ensure that number formats are in integer value
       else if (c.format.scoring_type[temp_map[item]] == "number")
         body.subscores[item] = Number(copy[item]);
+      // Ensure that selection info is tracked
+      else if (c.format.scoring_type[temp_map[item]] == "selection")
+        body.subscores[item] = copy[item];
     }
 
     // Send and process API
@@ -142,80 +143,102 @@ export default function DataTableView() {
     })();
   };
 
-  // Render table head
-  const tableHead = (
-    <thead>
-      <tr>
-        <th
-          className="bg-gray-50 text-gray-500 px-6 py-3 text-left text-xs
-          font-medium uppercase leading-4 tracking-wider"
-        >
-          Name
-        </th>
-        <th
-          className="bg-gray-50 text-gray-500 px-6 py-3 text-left text-xs
-          font-medium uppercase leading-4 tracking-wider"
-        >
-          Unit
-        </th>
-        {c.format.scoring_formatted != undefined &&
-          c.format.scoring_formatted.map((item, index) => (
-            <th
-              className="bg-gray-50 text-gray-500 cursor-pointer px-6 py-3
-              text-left text-xs font-medium uppercase leading-4 tracking-wider"
-              key={`table-${item}`}
-              onClick={() => c.setMetricToolbarSelect(index)}
-            >
-              {item}
-            </th>
-          ))}
-        <th className="bg-gray-50 px-6 py-3"></th>
-      </tr>
-    </thead>
-  );
-
   // Render the table body row for the metric values
-  const TableBodyRowMetricValues = ({ item }) => (
-    <>
-      {c.format.scoring_formatted.map((metric, index) => (
-        <td
-          className="bg-gray-50 text-gray-500 px-6 py-3 text-left text-xs
-          font-medium uppercase leading-4 tracking-wider"
-          key={`table-${metric}`}
-        >
-          {c.isUpdating[item.id] &&
-          (index != 0 || c.format.scoring_formatted.length == 1) ? (
-            <AutosizeInput
-              placeholder="00"
-              id="hour"
-              pattern="[0-9]*"
-              maxLength={c.format.scoring_type[index] == "time" ? "5" : "2"}
-              value={c.editItem[c.format.scoring_ids[index]]}
-              className="text-sky"
-              onKeyDown={(event) =>
-                (c.format.scoring_type[index] == "time"
-                  ? !/[0-9:]/.test(event.key)
-                  : !/[0-9.]/.test(event.key)) &&
-                !(event.key === "Backspace") &&
-                !(event.key === "Delete") &&
-                !(event.key === "Tab") &&
-                !(event.key === "ArrowLeft") &&
-                !(event.key === "ArrowRight") &&
-                event.preventDefault()
-              }
-              onChange={(e) =>
-                handleUpdate(c.format.scoring_ids[index], e.target.value)
-              }
-            />
-          ) : (
-            c.specialProcess[c.format.scoring_type[index]](
+  const TableBodyRowMetricValues = ({ item }) => {
+    // Local useState definitions
+    const [localValues, setLocalValues] = useState(item);
+
+    // Local change function
+    const handleInputChange = useCallback((id, value) => {
+      setLocalValues((prevValues) => ({ ...prevValues, [id]: value }));
+    }, []);
+
+    // Global change function
+    const handleUpdate = useCallback((id) => {
+      c.setEditItem((prevState) => ({ ...prevState, [id]: localValues[id] }));
+    }, []);
+
+    // Straightforward change function
+    const straightForward = useCallback((id, value) => {
+      c.setEditItem((prevState) => ({ ...prevState, [id]: value }));
+    }, []);
+
+    // For TimeInput hour and minute changes
+    const handleTimeChange = useCallback(
+      (index, e, part) => {
+        const newTime = updateTimeString(
+          c.editItem[c.format.scoring_ids[index]],
+          part,
+          e
+        );
+        straightForward(c.format.scoring_ids[index], newTime);
+      },
+      [c.editItem, c.format.scoring_ids]
+    );
+
+    return c.format.scoring_formatted.map((metric, index) => (
+      <td
+        className="h-auto px-3 py-3 text-left text-xs "
+        key={`table-${metric}`}
+      >
+        {c.isUpdating[item.id] &&
+        (index != 0 || c.format.scoring_formatted.length == 1)
+          ? (c.format.scoring_type[index] == "number" && (
+              <AutosizeInput
+                placeholder="###"
+                id={`intake-hold-${index}`}
+                pattern="[0-9]*"
+                maxLength={"3"}
+                value={localValues[c.format.scoring_ids[index]]}
+                className="text-sky"
+                onKeyDown={(event) =>
+                  !/[0-9.]/.test(event.key) &&
+                  !(event.key === "Backspace") &&
+                  !(event.key === "Delete") &&
+                  !(event.key === "Tab") &&
+                  !(event.key === "ArrowLeft") &&
+                  !(event.key === "ArrowRight") &&
+                  event.preventDefault()
+                }
+                onChange={(e) =>
+                  handleInputChange(
+                    c.format.scoring_ids[index],
+                    Number(e.target.value)
+                  )
+                }
+                onBlur={() => handleUpdate(c.format.scoring_ids[index])}
+              />
+            )) ||
+            (c.format.scoring_type[index] == "selection" && (
+              <BottomDropDown
+                editColor={true}
+                listOfItems={
+                  c.format[`scoring_options`][c.format.scoring_ids[index]]
+                }
+                setSelected={(e) => {
+                  straightForward(c.format.scoring_ids[index], e);
+                }}
+                defaultValue={c.editItem[c.format.scoring_ids[index]]}
+              />
+            )) ||
+            (c.format.scoring_type[index] == "time" && (
+              <div className="text-sky">
+                <TimeInput
+                  hour={parseTime(c.editItem[c.format.scoring_ids[index]])[0]}
+                  setHour={(e) => handleTimeChange(index, e, "mm")}
+                  minute={parseTime(c.editItem[c.format.scoring_ids[index]])[1]}
+                  setMinute={(e) => handleTimeChange(index, e, "ss")}
+                  textSize="text-xsm"
+                  id={`${index}`}
+                />
+              </div>
+            ))
+          : c.specialProcess[c.format.scoring_type[index]](
               item[c.format.scoring_ids[index]]
-            )
-          )}
-        </td>
-      ))}
-    </>
-  );
+            )}
+      </td>
+    ));
+  };
 
   // Render table body
   const tableBody = (
@@ -224,23 +247,10 @@ export default function DataTableView() {
         .filter((item) => item.name == c.xAxisSelection)
         .map((item) => (
           <tr key={item.id}>
-            <td
-              className="whitespace-no-wrap text-gray-500 px-6 py-2 text-sm
-            leading-5"
-            >
-              {item.user}
-            </td>
-            <td
-              className="whitespace-no-wrap text-gray-500 px-6 py-2 text-sm
-            leading-5"
-            >
-              {item.unit}
-            </td>
+            <td className="px-1 py-2 text-sm">{item.user}</td>
+            <td className="px-1 py-2 text-sm">{item.unit}</td>
             <TableBodyRowMetricValues item={item} />
-            <td
-              className="whitespace-no-wrap px-6 py-2 text-right text-sm
-            font-medium leading-5"
-            >
+            <td className="w-20 px-1 py-2 text-right text-sm">
               {c.isDeleting[item.id] ? (
                 <>
                   <button
@@ -365,9 +375,25 @@ export default function DataTableView() {
           <Nothing mainText="No Data Recorded" subText="* Cricket Chirps *" />
         </div>
       ) : (
-        <div className="flex flex-col overflow-y-auto">
-          <table className="divide-gray-200 min-w-full divide-y">
-            {tableHead}
+        <div className="z-[999] h-full overflow-y-auto pr-1">
+          <table className=" min-w-full divide-y">
+            <thead>
+              <tr>
+                <th className="px-1 py-3 text-left text-xs">Name</th>
+                <th className="px-1 py-3 text-left text-xs">Unit</th>
+                {c.format.scoring_formatted != undefined &&
+                  c.format.scoring_formatted.map((item, index) => (
+                    <th
+                      className="cursor-pointer px-3 py-3 text-left text-xs"
+                      key={`table-${item}`}
+                      onClick={() => c.setMetricToolbarSelect(index)}
+                    >
+                      {item}
+                    </th>
+                  ))}
+                <th className="bg-gray-50 px-1 py-3"></th>
+              </tr>
+            </thead>
             {tableBody}
           </table>
         </div>

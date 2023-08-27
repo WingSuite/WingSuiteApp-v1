@@ -63,7 +63,14 @@ export function AutoCompleteInput({ possibleItems, value, onChange }) {
 }
 
 // Time input field
-export function TimeInput({ hour, setHour, minute, setMinute, id = null }) {
+export function TimeInput({
+  hour,
+  setHour,
+  minute,
+  setMinute,
+  id = null,
+  textSize = "text-xl",
+}) {
   // Render component
   return (
     <div
@@ -76,7 +83,7 @@ export function TimeInput({ hour, setHour, minute, setMinute, id = null }) {
         pattern="[0-9]*"
         maxLength="2"
         value={hour}
-        className="rounded-lg px-1 text-xl"
+        className={`rounded-lg px-1 ${textSize}`}
         onKeyDown={(event) =>
           !/[0-9]/.test(event.key) &&
           !(event.key === "Backspace") &&
@@ -96,7 +103,7 @@ export function TimeInput({ hour, setHour, minute, setMinute, id = null }) {
         pattern="[0-9]*"
         maxLength="2"
         value={minute}
-        className="rounded-lg px-1 text-xl"
+        className={`rounded-lg px-1 ${textSize}`}
         onKeyDown={(event) =>
           !/[0-9]/.test(event.key) &&
           !(event.key === "Backspace") &&

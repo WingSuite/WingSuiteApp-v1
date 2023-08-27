@@ -60,7 +60,7 @@ export function formatMilDate(unixTimestamp) {
   // Process time information
   const dateObject = new Date(unixTimestamp * 1000);
   const day = dateObject.getDate();
-  const month = dateObject.toLocaleString('default', { month: 'short' });
+  const month = dateObject.toLocaleString("default", { month: "short" });
   const year = dateObject.getFullYear();
 
   // Return formatted date
@@ -70,22 +70,52 @@ export function formatMilDate(unixTimestamp) {
 // Function to get amount of seconds from "mm:ss" format
 export function getSeconds(minuteSecondString) {
   // Calculate the string into minutes and seconds
-  const [minutes, seconds] = minuteSecondString.split(':').map(Number);
+  const [minutes, seconds] = minuteSecondString.split(":").map(Number);
 
   // Return the count
   return minutes * 60 + seconds;
 }
 
+// Function to get amount of minutes from "mm:ss" format
+export function parseTime(minuteSecondString) {
+  // Calculate the string into minutes and seconds
+  const [minutes, seconds] = minuteSecondString.split(":").map(Number);
+
+  console.log(seconds)
+
+  // Return the total in minutes
+  return [
+    minutes < 10 ? `0${minutes}` : `${minutes}`,
+    seconds < 10 ? `0${seconds}` : `${seconds}`,
+  ];
+}
+
 // Function to get "mm:ss" from seconds values format
 export function getFormattedTime(minuteSecondString) {
-    // Get calculations
-    const seconds = minuteSecondString;
-    const m = Math.floor(seconds / 60);
-    const s = Math.floor(seconds % 60);
-    const formattedTime = `${m.toString().padStart(2, "0")}:${s
-      .toString()
-      .padStart(2, "0")}`;
+  // Get calculations
+  const seconds = minuteSecondString;
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  const formattedTime = `${m.toString().padStart(2, "0")}:${s
+    .toString()
+    .padStart(2, "0")}`;
 
   // Return the formatted information
   return formattedTime;
+}
+
+// Function to update time string
+export function updateTimeString(original, part, newValue) {
+  // Split the original "mm:ss" string into minutes and seconds
+  const [minutes, seconds] = original.split(":");
+
+  // Check which part needs to be updated
+  switch (part) {
+    case "mm":
+      return `${newValue.padStart(2, "0")}:${seconds}`;
+    case "ss":
+      return `${minutes}:${newValue.padStart(2, "0")}`;
+    default:
+      return original;
+  }
 }

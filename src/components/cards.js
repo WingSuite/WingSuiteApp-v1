@@ -15,12 +15,26 @@ import {
 import { MdLogout } from "react-icons/md";
 import { IconContext } from "react-icons";
 
+// Quill editor and HTML import
+const QuillNoSSRWrapper = dynamic(import("react-quill"), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
+import "quill/dist/quill.snow.css";
+import ReactMarkdown from "react-markdown";
+import DOMPurify from "dompurify";
+import rehypeRaw from "rehype-raw";
+
+// Config imports
+import { quillConfigs } from "@/config/config";
+
 // Autosize inputs import
 import TextareaAutosize from "react-textarea-autosize";
 import AutosizeInput from "react-input-autosize";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 
 // Regular Card definition
@@ -95,6 +109,7 @@ export function CollapsableInfoCard({
   deleteFunc = null,
   startState = false,
   titleUpdateDisable = false,
+  simpleEditor = false,
 }) {
   // Define useState
   const [titleContent, setTitleContent] = useState(title);
@@ -102,6 +117,9 @@ export function CollapsableInfoCard({
   const [collapsed, setCollapsed] = useState(startState);
   const [editMode, setEditMode] = useState(false);
   const [delMode, setDelMode] = useState(false);
+
+  // Sanitize mainText
+  const sanitizedHTML = DOMPurify.sanitize(mainTextContent);
 
   // Render component
   return (
@@ -228,7 +246,27 @@ export function CollapsableInfoCard({
           </button>
         </div>
       </div>
-      {collapsed && (
+      {!simpleEditor &&
+        collapsed &&
+        (!editMode ? (
+          <ReactMarkdown
+            className="custom-prose prose pb-1.5"
+            rehypePlugins={[rehypeRaw]}
+          >
+            {sanitizedHTML}
+          </ReactMarkdown>
+        ) : (
+          <div className="flex-1">
+            <QuillNoSSRWrapper
+              value={mainTextContent}
+              modules={quillConfigs.modules}
+              formats={quillConfigs.formats}
+              theme="snow"
+              onChange={(e) => setMainTextContent(DOMPurify.sanitize(e))}
+            />
+          </div>
+        ))}
+      {simpleEditor && collapsed && (
         <TextareaAutosize
           className={`resize-none bg-transparent ${editMode && `text-sky`}`}
           value={mainTextContent}
@@ -257,16 +295,16 @@ export function UserCard({
   // Render card
   return (
     <div
-      className="relative flex h-[320px] w-[14%] flex-col gap-5 rounded-lg
+      className="relative flex h-[320px] w-[290px] flex-col gap-5 rounded-lg
       border-2 border-silver bg-white px-4 pb-4 pt-4 shadow-md transition
       duration-200 ease-in hover:-translate-y-[0.1rem] hover:border-2
       hover:border-sky hover:shadow-sky"
     >
-      <div className="relative h-[170px] w-full">
+      <div className="relative h-[200px] w-full">
         <Image src="/logobw.png" objectFit="contain" alt="Logo" layout="fill" />
       </div>
       {(deleteFunc || addFunc) && (
-        <div className="absolute right-0 top-0 flex flex-col gap-1 p-2">
+        <div className="absolute right-0 top-0 flex flex-col gap-1 p-3">
           {!deleteConfirm && !addConfirm && deleteFunc && (
             <button
               className="transition duration-200 ease-in hover:text-scarlet"
@@ -342,16 +380,16 @@ export function UserCard({
           )}
         </div>
       )}
-      <div className="w-full text-left text-base">
-        <div className="flex gap-3">
+      <div className="w-full text-left text-xs">
+        <div className="flex">
           <div className="mt-[3px] w-1/12">
             <IconContext.Provider value={{ size: "1.1em" }}>
               <VscPerson />
             </IconContext.Provider>
           </div>
-          <div className="word-break w-11/12  break-all font-bold">{name}</div>
+          <div className="word-break w-11/12 break-all font-bold">{name}</div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex">
           <div className="mt-[3px] w-1/12">
             <IconContext.Provider value={{ size: "1.1em" }}>
               <VscVerifiedFilled />
@@ -359,7 +397,7 @@ export function UserCard({
           </div>
           <div className="word-break w-11/12 break-all">{rank}</div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex">
           <div className="mt-[3px] w-1/12">
             <IconContext.Provider value={{ size: "1.1em" }}>
               <VscMail />
@@ -368,7 +406,7 @@ export function UserCard({
 
           <div className="word-break w-11/12 break-all">{email}</div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex">
           <div className="mt-[3px] w-1/12">
             <IconContext.Provider value={{ size: "1.1em" }}>
               <VscCallIncoming />

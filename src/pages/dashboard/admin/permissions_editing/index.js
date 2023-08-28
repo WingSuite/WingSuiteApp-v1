@@ -195,6 +195,7 @@ export default function UnitResourcesPage() {
                         : item.permissions.join("\n")
                     }
                     updateFunc={updateFeedback}
+                    simpleEditor={true}
                   />
                 ))}
               </div>

@@ -3,11 +3,25 @@ import { VscCheck, VscChromeClose } from "react-icons/vsc";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import React from "react";
 
 // Autosize inputs import
 import TextareaAutosize from "react-textarea-autosize";
 import AutosizeInput from "react-input-autosize";
+
+// Quill editor and HTML import
+const QuillNoSSRWrapper = dynamic(import("react-quill"), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
+import "quill/dist/quill.snow.css";
+import ReactMarkdown from "react-markdown";
+import DOMPurify from "dompurify";
+import rehypeRaw from "rehype-raw";
+
+// Config imports
+import { quillConfigs } from "@/config/config";
 
 // Date Picker imports
 import { DayPicker } from "react-day-picker";
@@ -241,15 +255,28 @@ export default function EventModal({
         </div>
         <div className="flex flex-col">
           <div className="text-3xl font-bold">Description</div>
-          <TextareaAutosize
-            className={`resize-none bg-transparent ${editMode && `text-sky`}`}
-            value={!event.description ? `N/A` : event.description}
-            onKeyDown={handleKeyDown}
-            disabled={!editMode}
-            onChange={(e) => {
-              updateEventInfo("description", e.target.value);
-            }}
-          />
+          {!editMode ? (
+            <div className="h-[25rem] overflow-y-auto pr-1">
+              <ReactMarkdown
+                className="custom-prose prose pb-1.5"
+                rehypePlugins={[rehypeRaw]}
+              >
+                {!event.description ? `N/A` : event.description}
+              </ReactMarkdown>
+            </div>
+          ) : (
+            <div className="max-h-[25rem]">
+              <QuillNoSSRWrapper
+                className="h-full pb-[1.3rem]"
+                value={!event.description ? `N/A` : event.description}
+                modules={quillConfigs.modules}
+                formats={quillConfigs.formats}
+                onKeyDown={handleKeyDown}
+                theme="snow"
+                onChange={(e) => updateEventInfo("description", e)}
+              />
+            </div>
+          )}
         </div>
         <div className="flex flex-row gap-5">
           <button

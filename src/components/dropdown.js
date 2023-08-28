@@ -9,6 +9,7 @@ export function BottomDropDown({
   listOfItems,
   setSelected,
   defaultValue = null,
+  editColor = false,
 }) {
   // Define variables
   const [innerElem, setInnerElem] = useState(listOfItems[0]);
@@ -16,7 +17,7 @@ export function BottomDropDown({
 
   // Return definition of the dropdown subcomponent
   return (
-    <div className={`relative w-full`}>
+    <div className={`relative w-full ${editColor ? 'text-sky' : ''}`}>
       <button
         className={`flex w-full justify-between rounded-lg border
         border-silver p-2 text-left shadow-inner`}

@@ -4,17 +4,25 @@ import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import React from "react";
 
 // Toaster Components and CSS
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Quill editor and HTML import
+const QuillNoSSRWrapper = dynamic(import("react-quill"), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
+import "quill/dist/quill.snow.css";
+
 // JS Cookies import
 import Cookies from "js-cookie";
 
 // Config imports
-import { permissionsList, config } from "@/config/config";
+import { permissionsList, config, quillConfigs } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
@@ -293,14 +301,18 @@ export default function NotificationsPage() {
           id="feedbackTitle"
         />
       </div>
-      <div className="flex h-full flex-col gap-1">
+      <div className="flex flex-grow flex-col gap-1">
         <div className="text-2xl">Notification</div>
-        <textarea
-          className="flex-1 rounded-lg border border-silver p-2 shadow-inner"
-          onChange={(event) => setNotificationText(event.target.value)}
-          value={notificationText}
-          id="feedback"
-        />
+        <div className="flex-1">
+          <QuillNoSSRWrapper
+            className="h-full pb-[4.2rem]"
+            modules={quillConfigs.modules}
+            formats={quillConfigs.formats}
+            theme="snow"
+            value={notificationText}
+            onChange={setNotificationText}
+          />
+        </div>
       </div>
       <div className="flex flex-row items-center gap-4">
         <div className="text-2xl">Notify Units?</div>

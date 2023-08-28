@@ -35,14 +35,10 @@ import { permissionsList } from "@/config/config";
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
-import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { BottomDropDown } from "@/components/dropdown";
-import { CollapsableInfoCard } from "@/components/cards";
-import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
 

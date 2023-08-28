@@ -4,6 +4,7 @@ import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import React from "react";
 
 // Toaster components and CSS
@@ -21,8 +22,15 @@ import Modal from "react-modal";
 // JS Cookies import
 import Cookies from "js-cookie";
 
+// Quill editor and HTML import
+const QuillNoSSRWrapper = dynamic(import("react-quill"), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
+import "quill/dist/quill.snow.css";
+
 // Config imports
-import { permissionsList, config } from "@/config/config";
+import { permissionsList, config, quillConfigs } from "@/config/config";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
@@ -401,12 +409,22 @@ export default function EventsPage() {
       </div>
       <div className="flex h-full flex-col gap-1">
         <div className="text-2xl">Event Description</div>
-        <textarea
+        <div className="h-[30rem]">
+          <QuillNoSSRWrapper
+            className="h-full pb-[7.3rem]"
+            modules={quillConfigs.modules}
+            formats={quillConfigs.formats}
+            theme="snow"
+            value={eventDescription}
+            onChange={setEventDescription}
+          />
+        </div>
+        {/* <textarea
           className="rounded-lg border border-silver p-2 shadow-inner"
           onChange={(event) => setEventDescription(event.target.value)}
           value={eventDescription}
           id="feedback"
-        />
+        /> */}
       </div>
       <div className="flex h-full flex-col gap-1">
         <div className="text-2xl">Event Location</div>

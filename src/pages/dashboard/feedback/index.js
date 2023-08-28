@@ -4,6 +4,7 @@ import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import React from "react";
 
 // Toaster Components and CSS
@@ -14,7 +15,14 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 // Config imports
-import { config, permissionsList } from "@/config/config";
+import { config, permissionsList, quillConfigs } from "@/config/config";
+
+// Quill editor and HTML import
+const QuillNoSSRWrapper = dynamic(import("react-quill"), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
+import "quill/dist/quill.snow.css";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
@@ -316,12 +324,16 @@ export default function FeedbackPage() {
       </div>
       <div className="flex h-full flex-col gap-1">
         <div className="text-2xl">Feedback</div>
-        <textarea
-          className="flex-1 rounded-lg border border-silver p-2 shadow-inner"
-          onChange={(event) => setFeedbackText(event.target.value)}
-          value={feedbackText}
-          id="feedback"
-        />
+        <div className="flex-1">
+          <QuillNoSSRWrapper
+            className="h-full pb-[4.2rem]"
+            modules={quillConfigs.modules}
+            formats={quillConfigs.formats}
+            theme="snow"
+            value={feedbackText}
+            onChange={setFeedbackText}
+          />
+        </div>
       </div>
       <div className="flex flex-row items-center gap-4">
         <div className="text-2xl">Notify User?</div>

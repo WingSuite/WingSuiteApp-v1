@@ -15,12 +15,26 @@ import {
 import { MdLogout } from "react-icons/md";
 import { IconContext } from "react-icons";
 
+// Quill editor and HTML import
+const QuillNoSSRWrapper = dynamic(import("react-quill"), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
+import "quill/dist/quill.snow.css";
+import ReactMarkdown from "react-markdown";
+import DOMPurify from "dompurify";
+import rehypeRaw from "rehype-raw";
+
+// Config imports
+import { quillConfigs } from "@/config/config";
+
 // Autosize inputs import
 import TextareaAutosize from "react-textarea-autosize";
 import AutosizeInput from "react-input-autosize";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 
 // Regular Card definition
@@ -95,6 +109,7 @@ export function CollapsableInfoCard({
   deleteFunc = null,
   startState = false,
   titleUpdateDisable = false,
+  simpleEditor = false,
 }) {
   // Define useState
   const [titleContent, setTitleContent] = useState(title);
@@ -102,6 +117,9 @@ export function CollapsableInfoCard({
   const [collapsed, setCollapsed] = useState(startState);
   const [editMode, setEditMode] = useState(false);
   const [delMode, setDelMode] = useState(false);
+
+  // Sanitize mainText
+  const sanitizedHTML = DOMPurify.sanitize(mainTextContent);
 
   // Render component
   return (
@@ -228,7 +246,27 @@ export function CollapsableInfoCard({
           </button>
         </div>
       </div>
-      {collapsed && (
+      {!simpleEditor &&
+        collapsed &&
+        (!editMode ? (
+          <ReactMarkdown
+            className="custom-prose prose pb-1.5"
+            rehypePlugins={[rehypeRaw]}
+          >
+            {sanitizedHTML}
+          </ReactMarkdown>
+        ) : (
+          <div className="flex-1">
+            <QuillNoSSRWrapper
+              value={mainTextContent}
+              modules={quillConfigs.modules}
+              formats={quillConfigs.formats}
+              theme="snow"
+              onChange={(e) => setMainTextContent(DOMPurify.sanitize(e))}
+            />
+          </div>
+        ))}
+      {simpleEditor && collapsed && (
         <TextareaAutosize
           className={`resize-none bg-transparent ${editMode && `text-sky`}`}
           value={mainTextContent}

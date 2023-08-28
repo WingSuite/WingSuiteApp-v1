@@ -57,7 +57,44 @@ export const config = {
   phoneRegex: /^\(\d{3}\) \d{3}-\d{4}$/,
   passwordRegex:
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-  emailRegex: /^[a-zA-Z0-9._%+-]+@(asu|my.gcu|maricopa)\.edu$/
+  emailRegex: /^[a-zA-Z0-9._%+-]+@(asu|my.gcu|maricopa)\.edu$/,
+};
+
+// Quill editor configurations
+export const quillConfigs = {
+  modules: {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }],
+      [{ size: [] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+      ["link", "image", "video"],
+      ["clean"],
+    ],
+    clipboard: {
+      matchVisual: false,
+    },
+  },
+  formats: [
+    "header",
+    "size",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+    "video",
+  ],
 };
 
 // Permissions config

@@ -12,10 +12,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Quill editor and HTML import
-const QuillNoSSRWrapper = dynamic(import("react-quill"), {
-  ssr: false,
-  loading: () => <p>Loading ...</p>,
-});
+import QuillNoSSRWrapper from "@/components/editor";
 import "quill/dist/quill.snow.css";
 
 // JS Cookies import

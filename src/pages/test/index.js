@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-const QuillNoSSRWrapper = dynamic(import("react-quill"), {
-  ssr: false,
-  loading: () => <p>Loading ...</p>,
-});
+import QuillNoSSRWrapper from "@/components/editor";
 import "quill/dist/quill.snow.css";
 import DOMPurify from "dompurify";
 import ReactMarkdown from "react-markdown";

@@ -16,10 +16,7 @@ import { MdLogout } from "react-icons/md";
 import { IconContext } from "react-icons";
 
 // Quill editor and HTML import
-const QuillNoSSRWrapper = dynamic(import("react-quill"), {
-  ssr: false,
-  loading: () => <p>Loading ...</p>,
-});
+import QuillNoSSRWrapper from "./editor";
 import "quill/dist/quill.snow.css";
 import ReactMarkdown from "react-markdown";
 import DOMPurify from "dompurify";

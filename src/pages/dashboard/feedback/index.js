@@ -18,10 +18,7 @@ import Cookies from "js-cookie";
 import { config, permissionsList, quillConfigs } from "@/config/config";
 
 // Quill editor and HTML import
-const QuillNoSSRWrapper = dynamic(import("react-quill"), {
-  ssr: false,
-  loading: () => <p>Loading ...</p>,
-});
+import QuillNoSSRWrapper from "@/components/editor";
 import "quill/dist/quill.snow.css";
 
 // Util imports

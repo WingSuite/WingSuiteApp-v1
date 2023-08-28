@@ -11,13 +11,9 @@ import TextareaAutosize from "react-textarea-autosize";
 import AutosizeInput from "react-input-autosize";
 
 // Quill editor and HTML import
-const QuillNoSSRWrapper = dynamic(import("react-quill"), {
-  ssr: false,
-  loading: () => <p>Loading ...</p>,
-});
+import QuillNoSSRWrapper from "@/components/editor";
 import "quill/dist/quill.snow.css";
 import ReactMarkdown from "react-markdown";
-import DOMPurify from "dompurify";
 import rehypeRaw from "rehype-raw";
 
 // Config imports

@@ -12,6 +12,10 @@ import Cookies from "js-cookie";
 // Config imports
 import { config } from "@/config/config";
 
+// HTML formatting import
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+
 // Util imports
 import { getTimeBounds, formatMilTime, getTodayDay } from "@/utils/time";
 import { authCheck } from "@/utils/authCheck";
@@ -238,9 +242,7 @@ export default function HomePage() {
   const quickLinksView = (
     <div className="flex flex-col gap-4">
       <div className="text-4xl">Quick Links</div>
-      <div
-        className="flex h-full flex-col gap-4 p-1 pb-4"
-      >
+      <div className="flex h-full flex-col gap-4 p-1 pb-4">
         {config.quickLinks.map((item, index) => (
           <ButtonCard
             key={`quickLink-${item.name}-${index}`}
@@ -324,7 +326,12 @@ export default function HomePage() {
               from-deepOcean to-sky px-2 py-1 shadow-lg"
             >
               <div className="text-2xl font-bold text-white">{info[0]}</div>
-              <div className="text-base text-white">{info[1]}</div>
+              <ReactMarkdown
+                className="custom-prose max-w-full text-white"
+                rehypePlugins={[rehypeRaw]}
+              >
+                {info[1]}
+              </ReactMarkdown>
             </div>
           ))
         )}

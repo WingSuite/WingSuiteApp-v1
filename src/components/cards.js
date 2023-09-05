@@ -247,7 +247,7 @@ export function CollapsableInfoCard({
         collapsed &&
         (!editMode ? (
           <ReactMarkdown
-            className="custom-prose prose pb-1.5"
+            className="custom-prose prose max-w-full"
             rehypePlugins={[rehypeRaw]}
           >
             {sanitizedHTML}

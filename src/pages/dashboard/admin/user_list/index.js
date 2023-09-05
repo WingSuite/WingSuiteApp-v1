@@ -69,13 +69,6 @@ export default function UnitResourcesPage() {
           }`,
         };
       });
-      processed = [
-        ...processed,
-        ...processed,
-        ...processed,
-        ...processed,
-        ...processed,
-      ];
 
       // Save the information to the userList useState
       setFilteredUserList(processed);

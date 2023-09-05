@@ -159,5 +159,11 @@
 }
 
 .custom-prose * {
-  margin: -0.3rem 0;
+  margin: -0.2rem 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.custom-prose a {
+  color: #54c0ff;
 }

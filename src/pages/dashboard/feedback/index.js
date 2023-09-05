@@ -46,7 +46,7 @@ export default function FeedbackPage() {
   const [feedbackTo, setFeedbackTo] = useState("");
   const [feedbackName, setFeedbackName] = useState("");
   const [feedbackText, setFeedbackText] = useState("");
-  const [feedbackNotify, setFeedbackNotify] = useState(false);
+  const [feedbackEmailNotify, setFeedbackEmailNotify] = useState(false);
   const [actionTrigger, setActionTrigger] = useState(true);
   const required = permissionsList.feedback;
   const toolbarItems = ["Received", "Sent"];
@@ -154,7 +154,7 @@ export default function FeedbackPage() {
           to_user: target_user,
           name: feedbackName,
           feedback: feedbackText,
-          notify: feedbackNotify,
+          notify_email: feedbackEmailNotify,
         },
         Cookies.get("access")
       );
@@ -169,7 +169,7 @@ export default function FeedbackPage() {
     setFeedbackTo("");
     setFeedbackName("");
     setFeedbackText("");
-    setFeedbackNotify(false);
+    setFeedbackEmailNotify(false);
   };
 
   // Function definition for updating a feedback
@@ -333,10 +333,10 @@ export default function FeedbackPage() {
         </div>
       </div>
       <div className="flex flex-row items-center gap-4">
-        <div className="text-2xl">Notify User?</div>
+        <div className="text-2xl">Notify via Email?</div>
         <ToggleSwitch
-          onToggle={setFeedbackNotify}
-          initialState={feedbackNotify}
+          onToggle={setFeedbackEmailNotify}
+          initialState={feedbackEmailNotify}
         />
       </div>
       <button

@@ -252,7 +252,7 @@ export default function EventModal({
         <div className="flex flex-col">
           <div className="text-3xl font-bold">Description</div>
           {!editMode ? (
-            <div className="h-[25rem] overflow-y-auto pr-1">
+            <div className="overflow-y-auto pr-1 h-fit max-h-[26rem]">
               <ReactMarkdown
                 className="custom-prose prose pb-1.5"
                 rehypePlugins={[rehypeRaw]}

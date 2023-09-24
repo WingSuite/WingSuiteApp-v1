@@ -9,6 +9,15 @@ import { permissionsCheck } from "@/utils/permissionCheck";
 
 // Authentication checker
 export function authCheck(permissions = []) {
+  // Check if the whoami located in localStorage exists
+  if (localStorage.getItem("whoami") === null) {
+    // Move to login page
+    Router.push("/login");
+
+    // Return false
+    return false;
+  }
+
   // Get access token nad user's data
   var access = Cookies.get("access");
   const user = JSON.parse(localStorage.getItem("whoami")).permissions;

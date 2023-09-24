@@ -295,7 +295,12 @@ export default function HomePage() {
               className="flex flex-col gap-1 rounded-lg bg-gradient-to-tr
               from-deepOcean to-sky px-2 py-1 shadow-lg"
             >
-              <div className="text-xl italic text-white ">"{info[0]}"</div>
+              <ReactMarkdown
+                className="custom-prose max-w-full text-white"
+                rehypePlugins={[rehypeRaw]}
+              >
+                {info[0]}
+              </ReactMarkdown>
               <div className="font-bold text-white">- {info[1]}</div>
             </div>
           ))

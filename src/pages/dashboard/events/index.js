@@ -23,10 +23,7 @@ import Modal from "react-modal";
 import Cookies from "js-cookie";
 
 // Quill editor and HTML import
-const QuillNoSSRWrapper = dynamic(import("react-quill"), {
-  ssr: false,
-  loading: () => <p>Loading ...</p>,
-});
+import QuillNoSSRWrapper from "@/components/editor";
 import "quill/dist/quill.snow.css";
 
 // Config imports
@@ -76,7 +73,7 @@ export default function EventsPage() {
     endMinute: "",
   });
   const [eventDays, setEventDays] = useState([]);
-  const [eventNotify, setEventNotify] = useState(false);
+  const [eventEmailNotify, setEventEmailNotify] = useState(false);
 
   // Define useStates for getting event data
   const [queryRange, setQueryRange] = useState({});
@@ -275,7 +272,7 @@ export default function EventsPage() {
             start_datetime: start_datetime,
             end_datetime: end_datetime,
             description: eventDescription,
-            notify: eventNotify,
+            notify_email: eventEmailNotify,
           },
           Cookies.get("access")
         );
@@ -303,7 +300,7 @@ export default function EventsPage() {
       endMinute: "",
     });
     setEventDays([]);
-    setEventNotify(false);
+    setEventEmailNotify(false);
   };
 
   // Function to update the event
@@ -481,8 +478,11 @@ export default function EventsPage() {
         />
       </div>
       <div className="flex flex-row items-center gap-4">
-        <div className="text-2xl">Notify Units?</div>
-        <ToggleSwitch onToggle={setEventNotify} initialState={eventNotify} />
+        <div className="text-2xl">Notify via Email?</div>
+        <ToggleSwitch
+          onToggle={setEventEmailNotify}
+          initialState={eventEmailNotify}
+        />
       </div>
       <button
         onClick={createEvent}

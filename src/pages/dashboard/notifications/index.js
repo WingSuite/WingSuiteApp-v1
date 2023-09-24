@@ -12,10 +12,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Quill editor and HTML import
-const QuillNoSSRWrapper = dynamic(import("react-quill"), {
-  ssr: false,
-  loading: () => <p>Loading ...</p>,
-});
+import QuillNoSSRWrapper from "@/components/editor";
 import "quill/dist/quill.snow.css";
 
 // JS Cookies import
@@ -49,7 +46,7 @@ export default function NotificationsPage() {
   const [notificationRecipient, setNotificationRecipient] = useState("");
   const [notificationName, setNotificationName] = useState("");
   const [notificationText, setNotificationText] = useState("");
-  const [notificationNotify, setNotificationNotify] = useState(false);
+  const [notificationEmailNotify, setNotificationEmailNotify] = useState(false);
   const [actionTrigger, setActionTrigger] = useState(true);
   const required = permissionsList.notifications;
 
@@ -160,7 +157,7 @@ export default function NotificationsPage() {
           unit: targetUnit,
           name: notificationName,
           notification: notificationText,
-          notify: notificationNotify,
+          notify_email: notificationEmailNotify,
         },
         Cookies.get("access")
       );
@@ -175,7 +172,7 @@ export default function NotificationsPage() {
     setNotificationRecipient("");
     setNotificationName("");
     setNotificationText("");
-    setNotificationNotify(false);
+    setNotificationEmailNotify(false);
   };
 
   // Function definition for updating a notification
@@ -315,10 +312,10 @@ export default function NotificationsPage() {
         </div>
       </div>
       <div className="flex flex-row items-center gap-4">
-        <div className="text-2xl">Notify Units?</div>
+        <div className="text-2xl">Notify via Email?</div>
         <ToggleSwitch
-          onToggle={setNotificationNotify}
-          initialState={notificationNotify}
+          onToggle={setNotificationEmailNotify}
+          initialState={notificationEmailNotify}
         />
       </div>
       <button

@@ -16,10 +16,7 @@ import { MdLogout } from "react-icons/md";
 import { IconContext } from "react-icons";
 
 // Quill editor and HTML import
-const QuillNoSSRWrapper = dynamic(import("react-quill"), {
-  ssr: false,
-  loading: () => <p>Loading ...</p>,
-});
+import QuillNoSSRWrapper from "./editor";
 import "quill/dist/quill.snow.css";
 import ReactMarkdown from "react-markdown";
 import DOMPurify from "dompurify";
@@ -250,7 +247,7 @@ export function CollapsableInfoCard({
         collapsed &&
         (!editMode ? (
           <ReactMarkdown
-            className="custom-prose prose pb-1.5"
+            className="custom-prose prose max-w-full"
             rehypePlugins={[rehypeRaw]}
           >
             {sanitizedHTML}

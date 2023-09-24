@@ -375,7 +375,7 @@ export default function DataTableView() {
           <Nothing mainText="No Data Recorded" subText="* Cricket Chirps *" />
         </div>
       ) : (
-        <div className="z-[999] h-full overflow-y-auto pr-1">
+        <div className="h-full overflow-y-auto pr-1">
           <table className=" min-w-full divide-y">
             <thead>
               <tr>

@@ -196,7 +196,7 @@ export default function UnitMembersPage() {
   // Add user card
   const addUserCard = (
     <div
-      className="relative flex h-[320px] w-[14%] flex-col justify-between gap-1
+      className="relative flex h-[320px] w-[290px] flex-col justify-between gap-1
       rounded-lg border-2 border-dashed border-silver p-2 pb-3 text-xs
       text-black"
     >

@@ -1,10 +1,9 @@
 // React Icons
-import { VscCloseAll, VscEdit } from "react-icons/vsc";
+import { VscCloseAll, VscEdit, VscSearch } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
 import React from "react";
 
 // Toaster Components and CSS
@@ -43,6 +42,8 @@ export default function NotificationsPage() {
   const [availableUnits, setAvailableUnits] = useState([]);
   const [notificationFormat, setNotificationFormat] = useState({});
   const [composerOpen, setComposerOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [result, setResult] = useState("");
   const [notificationData, setNotificationData] = useState([]);
   const [notificationRecipient, setNotificationRecipient] = useState("");
   const [notificationTag, setNotificationTag] = useState("");
@@ -152,6 +153,19 @@ export default function NotificationsPage() {
     })();
   }, [actionTrigger]);
 
+  // Search for items in the announcements page
+  useEffect(() => {
+    if (notificationData != undefined || notificationData != null) {
+      setResult(
+        notificationData.filter((item) =>
+          [1, 2, 3, 4, 7].some((index) =>
+            String(item[index]).toLowerCase().includes(search)
+          )
+        )
+      );
+    }
+  }, [search]);
+
   // Function definition for sending notification
   const createNotification = () => {
     // Get the target user's ID
@@ -237,8 +251,9 @@ export default function NotificationsPage() {
 
   // Component for toolbar
   const toolbar = (
-    <button
-      className={`my-3 flex w-fit flex-row gap-4 rounded-lg border px-3
+    <div className="flex w-full flex-row-reverse items-center justify-between">
+      <button
+        className={`my-3 flex w-fit flex-row gap-4 rounded-lg border px-3
         py-2 text-xl transition duration-200 ease-in hover:-translate-y-[0.1rem]
         hover:shadow-lg ${
           composerOpen
@@ -246,30 +261,47 @@ export default function NotificationsPage() {
             to-sky text-white hover:border-darkOcean`
             : `border-silver hover:border-sky`
         }`}
-      onClick={() => setComposerOpen(!composerOpen)}
-    >
-      <IconContext.Provider
-        value={{
-          size: "1.2em",
-        }}
+        onClick={() => setComposerOpen(!composerOpen)}
       >
-        <VscEdit />
-      </IconContext.Provider>
-      <div>Make Notification</div>
-    </button>
+        <IconContext.Provider
+          value={{
+            size: "1.2em",
+          }}
+        >
+          <VscEdit />
+        </IconContext.Provider>
+        <div>Make Notification</div>
+      </button>
+
+      <div
+        className="flex h-fit w-1/2 flex-row items-center gap-2
+        rounded-lg border border-silver p-2 shadow-inner"
+      >
+        <IconContext.Provider value={{ size: "1.5em" }}>
+          <VscSearch />
+        </IconContext.Provider>
+        <input
+          className="w-full"
+          placeholder="Search"
+          onChange={(e) => {
+            setSearch(e.target.value.toLowerCase());
+          }}
+        />
+      </div>
+    </div>
   );
 
   // Component for Inbox
   const inbox = (
     <div className="flex max-h-full w-full flex-col gap-2 overflow-auto pr-2">
-      {notificationData.length === 0 ? (
+      {(result.length != 0 ? result : notificationData).length === 0 ? (
         <Nothing
           icon={<VscCloseAll />}
           mainText={`No Notifications`}
           subText={`Seems Pretty Quiet`}
         />
       ) : (
-        notificationData.map((info, index) => (
+        (result.length != 0 ? result : notificationData).map((info, index) => (
           <CollapsableInfoCard
             id={info[6]}
             key={`feedbackInbox-${info[0]}-${index}`}
@@ -316,7 +348,7 @@ export default function NotificationsPage() {
         <div className="text-2xl">Tag</div>
         <BottomDropDown
           listOfItems={
-            notificationFormat == null
+            !notificationFormat.tag_options
               ? []
               : Object.keys(notificationFormat.tag_options)
           }

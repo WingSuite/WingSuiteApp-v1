@@ -25,13 +25,13 @@ import rehypeRaw from "rehype-raw";
 // Config imports
 import { quillConfigs } from "@/config/config";
 
-// Autosize inputs import
+// Inputs import
 import TextareaAutosize from "react-textarea-autosize";
 import AutosizeInput from "react-input-autosize";
+import { BottomDropDown } from "./dropdown";
 
 // React.js & Next.js libraries
-import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
+import { useState } from "react";
 import Image from "next/image";
 
 // Regular Card definition
@@ -99,6 +99,7 @@ export function ButtonCard({
 export function CollapsableInfoCard({
   id,
   date = null,
+  tag = null,
   title,
   titleAppendix = null,
   mainText,
@@ -107,10 +108,12 @@ export function CollapsableInfoCard({
   startState = false,
   titleUpdateDisable = false,
   simpleEditor = false,
+  tagList = null,
 }) {
   // Define useState
   const [titleContent, setTitleContent] = useState(title);
   const [mainTextContent, setMainTextContent] = useState(mainText);
+  const [tagContent, setTagContent] = useState(tag);
   const [collapsed, setCollapsed] = useState(startState);
   const [editMode, setEditMode] = useState(false);
   const [delMode, setDelMode] = useState(false);
@@ -131,8 +134,26 @@ export function CollapsableInfoCard({
             !editMode && setCollapsed(!collapsed);
           }}
         >
-          <div className="flex w-full flex-row items-center gap-0.5">
-            {date && <div className={`mr-3 text-base`}>{date}</div>}
+          <div className="flex w-full flex-row items-center gap-3">
+            {date && <div className={`text-base`}>{date}</div>}
+            {tagContent && !editMode && (
+              <div
+                className={`rounded-lg px-2 py-1 text-center text-sm`}
+                style={{ backgroundColor: tagList[tagContent] }}
+              >
+                {tagContent}
+              </div>
+            )}
+            {tagList && editMode && (
+              <div className="text-sm">
+                <BottomDropDown
+                  listOfItems={Object.keys(tagList)}
+                  setSelected={setTagContent}
+                  defaultValue={tagContent}
+                  editColor={true}
+                />
+              </div>
+            )}
             <AutosizeInput
               className={`${!titleUpdateDisable && editMode && `text-sky`}`}
               inputStyle={{ background: "transparent" }}
@@ -142,7 +163,7 @@ export function CollapsableInfoCard({
             />
             {titleAppendix && (
               <div
-                className={`ml-2 flex flex-col text-left
+                className={`flex flex-col text-left
                 ${delMode ? `text-scarlet` : `text-darkSilver`}`}
               >
                 {titleAppendix}
@@ -194,7 +215,7 @@ export function CollapsableInfoCard({
           {editMode && (
             <button
               onClick={() => {
-                updateFunc(id, titleContent, mainTextContent);
+                updateFunc(id, titleContent, mainTextContent, tagContent);
                 setEditMode(false);
               }}
             >

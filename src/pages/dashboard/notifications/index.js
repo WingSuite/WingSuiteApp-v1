@@ -1,10 +1,9 @@
 // React Icons
-import { VscCloseAll, VscEdit } from "react-icons/vsc";
+import { VscCloseAll, VscEdit, VscSearch } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
 import React from "react";
 
 // Toaster Components and CSS
@@ -41,9 +40,13 @@ export default function NotificationsPage() {
   // Define useStates and other constants
   const [toolbarAccess, setToolbarAccess] = useState(false);
   const [availableUnits, setAvailableUnits] = useState([]);
+  const [notificationFormat, setNotificationFormat] = useState({});
   const [composerOpen, setComposerOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [result, setResult] = useState("");
   const [notificationData, setNotificationData] = useState([]);
   const [notificationRecipient, setNotificationRecipient] = useState("");
+  const [notificationTag, setNotificationTag] = useState("");
   const [notificationName, setNotificationName] = useState("");
   const [notificationText, setNotificationText] = useState("");
   const [notificationEmailNotify, setNotificationEmailNotify] = useState(false);
@@ -101,6 +104,7 @@ export default function NotificationsPage() {
       if (res.status === "error") return;
 
       // Iterate through each item of the response and store just the quotes
+      // TODO: OPTIMIZE!!!!!!!!!!!!!!!!
       let parsed = [];
       for (let item of res.message) {
         // Get the author's name
@@ -129,13 +133,39 @@ export default function NotificationsPage() {
           user._id == item.author ||
             user.permissions.includes(config.allAccessPermission),
           item._id,
+          item.tag,
         ]);
       }
 
       // Store the quotes to the useState
       setNotificationData(parsed);
     })();
+
+    // Process the available tags for notifications
+    (async () => {
+      // Get the user's feedback information
+      var res = await get(
+        "/notification/get_notification_format/",
+        Cookies.get("access")
+      );
+
+      // Save the information
+      setNotificationFormat(res);
+    })();
   }, [actionTrigger]);
+
+  // Search for items in the announcements page
+  useEffect(() => {
+    if (notificationData != undefined || notificationData != null) {
+      setResult(
+        notificationData.filter((item) =>
+          [1, 2, 3, 4, 7].some((index) =>
+            String(item[index]).toLowerCase().includes(search)
+          )
+        )
+      );
+    }
+  }, [search]);
 
   // Function definition for sending notification
   const createNotification = () => {
@@ -158,6 +188,7 @@ export default function NotificationsPage() {
           name: notificationName,
           notification: notificationText,
           notify_email: notificationEmailNotify,
+          tag: notificationTag,
         },
         Cookies.get("access")
       );
@@ -170,13 +201,14 @@ export default function NotificationsPage() {
 
     // Clear inputs
     setNotificationRecipient("");
+    setNotificationTag("");
     setNotificationName("");
     setNotificationText("");
     setNotificationEmailNotify(false);
   };
 
   // Function definition for updating a notification
-  const updateNotification = (id, title, text) => {
+  const updateNotification = (id, title, text, tag) => {
     // Send API call for creating the feedback
     (async () => {
       // Get the user's feedback information
@@ -186,6 +218,7 @@ export default function NotificationsPage() {
           id: id,
           name: title,
           notification: text,
+          tag: tag,
         },
         Cookies.get("access")
       );
@@ -213,14 +246,16 @@ export default function NotificationsPage() {
       // If the call was successful, send a success toaster and trigger
       if (res.status == "success") successToaster(res.message);
       if (res.status == "error") errorToaster(res.message);
+      setSearch("");
       setActionTrigger(!actionTrigger);
     })();
   };
 
   // Component for toolbar
   const toolbar = (
-    <button
-      className={`my-3 flex w-fit flex-row gap-4 rounded-lg border px-3
+    <div className="flex w-full flex-row-reverse items-center justify-between">
+      <button
+        className={`my-3 flex w-fit flex-row gap-4 rounded-lg border px-3
         py-2 text-xl transition duration-200 ease-in hover:-translate-y-[0.1rem]
         hover:shadow-lg ${
           composerOpen
@@ -228,34 +263,52 @@ export default function NotificationsPage() {
             to-sky text-white hover:border-darkOcean`
             : `border-silver hover:border-sky`
         }`}
-      onClick={() => setComposerOpen(!composerOpen)}
-    >
-      <IconContext.Provider
-        value={{
-          size: "1.2em",
-        }}
+        onClick={() => setComposerOpen(!composerOpen)}
       >
-        <VscEdit />
-      </IconContext.Provider>
-      <div>Make Notification</div>
-    </button>
+        <IconContext.Provider
+          value={{
+            size: "1.2em",
+          }}
+        >
+          <VscEdit />
+        </IconContext.Provider>
+        <div>Make Notification</div>
+      </button>
+
+      <div
+        className="flex h-fit w-1/2 flex-row items-center gap-2
+        rounded-lg border border-silver p-2 shadow-inner"
+      >
+        <IconContext.Provider value={{ size: "1.5em" }}>
+          <VscSearch />
+        </IconContext.Provider>
+        <input
+          className="w-full"
+          placeholder="Search"
+          onChange={(e) => {
+            setSearch(e.target.value.toLowerCase());
+          }}
+        />
+      </div>
+    </div>
   );
 
   // Component for Inbox
   const inbox = (
     <div className="flex max-h-full w-full flex-col gap-2 overflow-auto pr-2">
-      {notificationData.length === 0 ? (
+      {(result.length != 0 ? result : notificationData).length === 0 ? (
         <Nothing
           icon={<VscCloseAll />}
           mainText={`No Notifications`}
           subText={`Seems Pretty Quiet`}
         />
       ) : (
-        notificationData.map((info, index) => (
+        (result.length != 0 ? result : notificationData).map((info, index) => (
           <CollapsableInfoCard
             id={info[6]}
             key={`feedbackInbox-${info[0]}-${index}`}
             date={formatMilDate(info[0])}
+            tag={info[7]}
             title={info[1]}
             titleAppendix={
               <>
@@ -272,6 +325,7 @@ export default function NotificationsPage() {
             mainText={info[4]}
             updateFunc={info[5] ? updateNotification : null}
             deleteFunc={info[5] ? deleteNotification : null}
+            tagList={notificationFormat.tag_options}
           />
         ))
       )}
@@ -280,13 +334,28 @@ export default function NotificationsPage() {
 
   // Component for editor
   const editor = (
-    <div className="flex max-h-full w-1/2 flex-col gap-5 overflow-auto pb-2 pl-3">
+    <div
+      className="flex max-h-full w-10/12 flex-col gap-5 overflow-auto pb-2
+      pl-3"
+    >
       <div className="flex flex-col gap-1">
         <div className="text-2xl">Recipient Unit</div>
         <BottomDropDown
           listOfItems={Object.keys(availableUnits)}
           setSelected={setNotificationRecipient}
           defaultValue={notificationRecipient || "Select Unit"}
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <div className="text-2xl">Tag</div>
+        <BottomDropDown
+          listOfItems={
+            !notificationFormat.tag_options
+              ? []
+              : Object.keys(notificationFormat.tag_options)
+          }
+          setSelected={setNotificationTag}
+          defaultValue={notificationTag || "Select Tag"}
         />
       </div>
       <div className="flex flex-col gap-1">

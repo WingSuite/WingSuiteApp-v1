@@ -31,8 +31,8 @@ export function BottomDropDown({
       </button>
       {expanded && (
         <div
-          className={`absolute z-[999] flex max-h-64 w-full flex-col
-          overflow-auto rounded-lg border border-silver bg-white`}
+          className={`absolute z-[999] flex max-h-72 min-w-fit w-full flex-col
+          overflow-y-auto rounded-lg border border-silver bg-white`}
         >
           {listOfItems.map((item) => (
             <button

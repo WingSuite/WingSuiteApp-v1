@@ -41,6 +41,7 @@ export default function NotificationsPage() {
   // Define useStates and other constants
   const [toolbarAccess, setToolbarAccess] = useState(false);
   const [availableUnits, setAvailableUnits] = useState([]);
+  const [notificationFormat, setNotificationFormat] = useState({});
   const [composerOpen, setComposerOpen] = useState(false);
   const [notificationData, setNotificationData] = useState([]);
   const [notificationRecipient, setNotificationRecipient] = useState("");
@@ -129,11 +130,24 @@ export default function NotificationsPage() {
           user._id == item.author ||
             user.permissions.includes(config.allAccessPermission),
           item._id,
+          item.tag,
         ]);
       }
 
       // Store the quotes to the useState
       setNotificationData(parsed);
+    })();
+
+    // Process the available tags for notifications
+    (async () => {
+      // Get the user's feedback information
+      var res = await get(
+        "/notification/get_notification_format/",
+        Cookies.get("access")
+      );
+
+      // Save the information
+      setNotificationFormat(res);
     })();
   }, [actionTrigger]);
 
@@ -176,7 +190,7 @@ export default function NotificationsPage() {
   };
 
   // Function definition for updating a notification
-  const updateNotification = (id, title, text) => {
+  const updateNotification = (id, title, text, tag) => {
     // Send API call for creating the feedback
     (async () => {
       // Get the user's feedback information
@@ -186,6 +200,7 @@ export default function NotificationsPage() {
           id: id,
           name: title,
           notification: text,
+          tag: tag
         },
         Cookies.get("access")
       );
@@ -256,6 +271,7 @@ export default function NotificationsPage() {
             id={info[6]}
             key={`feedbackInbox-${info[0]}-${index}`}
             date={formatMilDate(info[0])}
+            tag={info[7]}
             title={info[1]}
             titleAppendix={
               <>
@@ -272,6 +288,7 @@ export default function NotificationsPage() {
             mainText={info[4]}
             updateFunc={info[5] ? updateNotification : null}
             deleteFunc={info[5] ? deleteNotification : null}
+            tagList={notificationFormat.tag_options}
           />
         ))
       )}
@@ -280,7 +297,10 @@ export default function NotificationsPage() {
 
   // Component for editor
   const editor = (
-    <div className="flex max-h-full w-1/2 flex-col gap-5 overflow-auto pb-2 pl-3">
+    <div
+      className="flex max-h-full w-10/12 flex-col gap-5 overflow-auto pb-2
+      pl-3"
+    >
       <div className="flex flex-col gap-1">
         <div className="text-2xl">Recipient Unit</div>
         <BottomDropDown

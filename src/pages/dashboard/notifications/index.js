@@ -104,6 +104,7 @@ export default function NotificationsPage() {
       if (res.status === "error") return;
 
       // Iterate through each item of the response and store just the quotes
+      // TODO: OPTIMIZE!!!!!!!!!!!!!!!!
       let parsed = [];
       for (let item of res.message) {
         // Get the author's name
@@ -245,6 +246,7 @@ export default function NotificationsPage() {
       // If the call was successful, send a success toaster and trigger
       if (res.status == "success") successToaster(res.message);
       if (res.status == "error") errorToaster(res.message);
+      setSearch("");
       setActionTrigger(!actionTrigger);
     })();
   };

@@ -45,6 +45,7 @@ export default function NotificationsPage() {
   const [composerOpen, setComposerOpen] = useState(false);
   const [notificationData, setNotificationData] = useState([]);
   const [notificationRecipient, setNotificationRecipient] = useState("");
+  const [notificationTag, setNotificationTag] = useState("");
   const [notificationName, setNotificationName] = useState("");
   const [notificationText, setNotificationText] = useState("");
   const [notificationEmailNotify, setNotificationEmailNotify] = useState(false);
@@ -172,6 +173,7 @@ export default function NotificationsPage() {
           name: notificationName,
           notification: notificationText,
           notify_email: notificationEmailNotify,
+          tag: notificationTag,
         },
         Cookies.get("access")
       );
@@ -184,6 +186,7 @@ export default function NotificationsPage() {
 
     // Clear inputs
     setNotificationRecipient("");
+    setNotificationTag("");
     setNotificationName("");
     setNotificationText("");
     setNotificationEmailNotify(false);
@@ -200,7 +203,7 @@ export default function NotificationsPage() {
           id: id,
           name: title,
           notification: text,
-          tag: tag
+          tag: tag,
         },
         Cookies.get("access")
       );
@@ -307,6 +310,18 @@ export default function NotificationsPage() {
           listOfItems={Object.keys(availableUnits)}
           setSelected={setNotificationRecipient}
           defaultValue={notificationRecipient || "Select Unit"}
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <div className="text-2xl">Tag</div>
+        <BottomDropDown
+          listOfItems={
+            notificationFormat == null
+              ? []
+              : Object.keys(notificationFormat.tag_options)
+          }
+          setSelected={setNotificationTag}
+          defaultValue={notificationTag || "Select Tag"}
         />
       </div>
       <div className="flex flex-col gap-1">

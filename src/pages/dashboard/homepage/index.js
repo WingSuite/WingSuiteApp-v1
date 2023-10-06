@@ -206,7 +206,8 @@ export default function HomePage() {
         {config.daysOfTheWeek.map((item, index) => (
           <div
             key={`weekView-${item}-${index}`}
-            className={`flex h-56 w-[13.5%] flex-col gap-0.5 rounded-lg border p-2
+            className={`flex h-56 w-[13.5%] flex-col gap-0.5 overflow-y-auto rounded-lg border
+            pl-2 py-2 pr-1
             ${
               getTodayDay() == item
                 ? "border-2 border-sky shadow-md shadow-sky"
@@ -215,8 +216,8 @@ export default function HomePage() {
           >
             <div className="text-lg">{item}</div>
             <div
-              className="flex w-full flex-col gap-2 pr-1
-              pt-1.5"
+              className="flex w-full flex-col gap-2 overflow-y-auto
+              pr-1 pt-1.5"
             >
               {weekViewData[item].map((event, index) => (
                 <ButtonCard

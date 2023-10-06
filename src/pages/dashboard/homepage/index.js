@@ -59,6 +59,7 @@ export default function HomePage() {
     if ("rank" in localData) setRank(localData["rank"] + " ");
 
     // Process feedback information
+    // TODO: <!> OPTIMIZE POST FOR LOOP CALL <!>
     (async () => {
       // Get the user's feedback information
       var res = await post(
@@ -240,9 +241,9 @@ export default function HomePage() {
 
   // Quick Links view definition
   const quickLinksView = (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 overflow-y-auto">
       <div className="text-4xl">Quick Links</div>
-      <div className="flex h-full flex-col gap-4 p-1 pb-4">
+      <div className="flex h-full flex-col gap-4 overflow-y-auto p-1 pb-4">
         {config.quickLinks.map((item, index) => (
           <ButtonCard
             key={`quickLink-${item.name}-${index}`}
@@ -276,11 +277,11 @@ export default function HomePage() {
 
   // Feedback view definition
   const feedbackView = (
-    <div className="flex h-full w-1/4 flex-col gap-4">
+    <div className="flex h-full w-1/4 flex-col gap-4 overflow-y-auto">
       <div className="text-4xl">Feedback</div>
       <div
-        className="flex h-full flex-col gap-4 rounded-lg
-        px-1 pb-4 pr-2"
+        className="flex h-full flex-col gap-4 overflow-y-auto
+        rounded-lg px-1 pb-4 pr-2"
       >
         {feedbackData.length === 0 ? (
           <Nothing
@@ -311,11 +312,11 @@ export default function HomePage() {
 
   // Notifications view definition
   const notificationsView = (
-    <div className="flex w-1/3 flex-col gap-4">
+    <div className="flex w-1/3 flex-col gap-4 overflow-y-auto">
       <div className="text-4xl">Notifications</div>
       <div
-        className="flex h-full flex-col gap-4 rounded-lg px-1
-        pb-4 pr-2"
+        className="flex h-full flex-col gap-4 overflow-y-auto rounded-lg
+        px-1 pb-4 pr-2"
       >
         {notifications.length === 0 ? (
           <Nothing
@@ -346,19 +347,16 @@ export default function HomePage() {
 
   // Render components
   return (
-    <div className="relative flex h-screen flex-row">
+    <div className="relative flex h-screen flex-row overflow-y-auto">
       <Sidebar />
-      <div className="m-10 flex w-full flex-col overflow-y-auto">
-        <PageTitle className="flex-none" customName="Home Page" />
-        <div className="flex h-full flex-col gap-14 overflow-y-auto pr-4">
-          <div className="pt-2 text-7xl">{greeting}</div>
-          {weekView}
-          <div className="flex h-full flex-row gap-14">
-            {statsView}
-            {feedbackView}
-            {notificationsView}
-            {quickLinksView}
-          </div>
+      <div className="m-10 flex max-h-screen w-full flex-col gap-14 overflow-y-auto pr-4">
+        <div className="pt-2 text-7xl">{greeting}</div>
+        {weekView}
+        <div className="flex max-h-screen flex-row gap-14 overflow-y-auto">
+          {statsView}
+          {feedbackView}
+          {notificationsView}
+          {quickLinksView}
         </div>
       </div>
     </div>

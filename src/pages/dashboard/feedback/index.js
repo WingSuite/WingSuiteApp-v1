@@ -106,6 +106,7 @@ export default function FeedbackPage() {
       if (res.status === "error") return;
 
       // Iterate through each item of the response and store the feedbacks
+      // TODO: <!> OPTIMIZE POST FOR LOOP CALL <!>
       let parsed = [];
       for (let item of res.message) {
         // Get the from user

@@ -59,7 +59,6 @@ export default function HomePage() {
     if ("rank" in localData) setRank(localData["rank"] + " ");
 
     // Process feedback information
-    // TODO: <!> OPTIMIZE POST FOR LOOP CALL <!>
     (async () => {
       // Get the user's feedback information
       var res = await post(
@@ -72,6 +71,8 @@ export default function HomePage() {
       if (res.status === "error") return;
 
       // Iterate through each item of the response and store just the quotes
+      // TODO: <!> OPTIMIZE FOR LOOP CALLS <!>
+      // TODO: //////////// START ////////////
       let quotes = [];
       for (let item of res.message) {
         var from_user = await post(
@@ -79,8 +80,14 @@ export default function HomePage() {
           { id: item.from_user },
           Cookies.get("access")
         );
-        quotes.push([item.feedback, from_user.message.full_name]);
+        quotes.push([
+          item.feedback,
+          `${from_user.message.rank ? from_user.message.rank : ""} ${
+            from_user.message.full_name
+          }`,
+        ]);
       }
+      // TODO: ///////////// END /////////////
 
       // Store the quotes to the useState
       setFeedbackData(quotes);
@@ -207,7 +214,7 @@ export default function HomePage() {
           <div
             key={`weekView-${item}-${index}`}
             className={`flex h-56 w-[13.5%] flex-col gap-0.5 overflow-y-auto rounded-lg border
-            pl-2 py-2 pr-1
+            py-2 pl-2 pr-1
             ${
               getTodayDay() == item
                 ? "border-2 border-sky shadow-md shadow-sky"

@@ -104,7 +104,8 @@ export default function NotificationsPage() {
       if (res.status === "error") return;
 
       // Iterate through each item of the response and store just the quotes
-      // TODO: OPTIMIZE!!!!!!!!!!!!!!!!
+      // TODO: <!> OPTIMIZE FOR LOOP CALLS <!>
+      // TODO: //////////// START ////////////
       let parsed = [];
       for (let item of res.message) {
         // Get the author's name
@@ -136,6 +137,7 @@ export default function NotificationsPage() {
           item.tag,
         ]);
       }
+      // TODO: ///////////// END /////////////
 
       // Store the quotes to the useState
       setNotificationData(parsed);

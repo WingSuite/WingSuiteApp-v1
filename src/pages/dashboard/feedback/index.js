@@ -106,7 +106,8 @@ export default function FeedbackPage() {
       if (res.status === "error") return;
 
       // Iterate through each item of the response and store the feedbacks
-      // TODO: <!> OPTIMIZE POST FOR LOOP CALL <!>
+      // TODO: <!> OPTIMIZE FOR LOOP CALLS <!>
+      // TODO: //////////// START ////////////
       let parsed = [];
       for (let item of res.message) {
         // Get the from user
@@ -129,6 +130,7 @@ export default function FeedbackPage() {
             user.permissions.includes(config.allAccessPermission),
         ]);
       }
+      // TODO: ///////////// END /////////////
 
       // Store the quotes to the useState
       setFeedbackData(parsed);

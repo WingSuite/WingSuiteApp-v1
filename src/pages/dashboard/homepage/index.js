@@ -71,23 +71,13 @@ export default function HomePage() {
       if (res.status === "error") return;
 
       // Iterate through each item of the response and store just the quotes
-      // TODO: <!> OPTIMIZE FOR LOOP CALLS <!>
-      // TODO: //////////// START ////////////
       let quotes = [];
       for (let item of res.message) {
-        var from_user = await post(
-          "/user/get_user/",
-          { id: item.from_user },
-          Cookies.get("access")
-        );
         quotes.push([
           item.feedback,
-          `${from_user.message.rank ? from_user.message.rank : ""} ${
-            from_user.message.full_name
-          }`,
+          item.formatted_from_user
         ]);
       }
-      // TODO: ///////////// END /////////////
 
       // Store the quotes to the useState
       setFeedbackData(quotes);

@@ -106,31 +106,18 @@ export default function FeedbackPage() {
       if (res.status === "error") return;
 
       // Iterate through each item of the response and store the feedbacks
-      // TODO: <!> OPTIMIZE FOR LOOP CALLS <!>
-      // TODO: //////////// START ////////////
       let parsed = [];
       for (let item of res.message) {
-        // Get the from user
-        var from_user = await post(
-          "/user/get_user/",
-          { id: toolbarSelect == 0 ? item.from_user : item.to_user },
-          Cookies.get("access")
-        );
-
-        // Push new information
         parsed.push([
           item.datetime_created,
           item.name,
-          `${from_user.message.rank ? from_user.message.rank : ""} ${
-            from_user.message.full_name
-          }`,
+          item.formatted_from_user,
           item.feedback,
           item._id,
           user._id == item.from_user ||
             user.permissions.includes(config.allAccessPermission),
         ]);
       }
-      // TODO: ///////////// END /////////////
 
       // Store the quotes to the useState
       setFeedbackData(parsed);

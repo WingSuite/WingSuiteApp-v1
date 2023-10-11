@@ -104,32 +104,14 @@ export default function NotificationsPage() {
       if (res.status === "error") return;
 
       // Iterate through each item of the response and store just the quotes
-      // TODO: <!> OPTIMIZE FOR LOOP CALLS <!>
-      // TODO: //////////// START ////////////
       let parsed = [];
       for (let item of res.message) {
-        // Get the author's name
-        var from_user = await post(
-          "/user/get_user/",
-          { id: item.author },
-          Cookies.get("access")
-        );
-
-        // Get the source unit
-        var source_unit = await post(
-          "/unit/get_unit_info/",
-          { id: item.unit },
-          Cookies.get("access")
-        );
-
         // Append information
         parsed.push([
           item.created_datetime,
           item.name,
-          source_unit.message.name,
-          `${from_user.message.rank ? from_user.message.rank : ""} ${
-            from_user.message.full_name
-          }`,
+          item.formatted_unit,
+          item.formatted_author,
           item.notification,
           user._id == item.author ||
             user.permissions.includes(config.allAccessPermission),
@@ -137,7 +119,6 @@ export default function NotificationsPage() {
           item.tag,
         ]);
       }
-      // TODO: ///////////// END /////////////
 
       // Store the quotes to the useState
       setNotificationData(parsed);

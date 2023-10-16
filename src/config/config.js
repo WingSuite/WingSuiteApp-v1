@@ -9,6 +9,7 @@ import {
   VscListFlat,
   VscKey,
   VscOrganization,
+  VscChecklist
 } from "react-icons/vsc";
 import { BsPerson } from "react-icons/bs";
 import { BiNews } from "react-icons/bi";
@@ -217,6 +218,11 @@ export const regularSidebarContents = [
     title: "Home Page",
     link: "/dashboard/homepage",
     icon: <VscHome />,
+  },
+  {
+    title: "Tasks",
+    link: "/dashboard/tasks",
+    icon: <VscChecklist />,
   },
   {
     title: "Notifications",

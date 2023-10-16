@@ -56,14 +56,23 @@ export function getTodayDay() {
 }
 
 // Function to get current day
-export function formatMilDate(unixTimestamp) {
-  // Process time information
+export function formatMilDate(unixTimestamp, includeTime = false) {
+  // Convert the Unix timestamp to a JavaScript Date object
   const dateObject = new Date(unixTimestamp * 1000);
+  
+  // Extract the day, month, and year from the Date object
   const day = dateObject.getDate();
   const month = dateObject.toLocaleString("default", { month: "short" });
   const year = dateObject.getFullYear();
 
-  // Return formatted date
+  // If includeTime is true, format the date with time, otherwise format without time
+  if (includeTime) {
+    const hours = String(dateObject.getHours()).padStart(2, '0');
+    const minutes = String(dateObject.getMinutes()).padStart(2, '0');
+    return `${day} ${month} ${year}, ${hours}${minutes}`;
+  }
+
+  // Return the date in the 'DD MMM YYYY' format
   return `${day} ${month} ${year}`;
 }
 
@@ -80,8 +89,6 @@ export function getSeconds(minuteSecondString) {
 export function parseTime(minuteSecondString) {
   // Calculate the string into minutes and seconds
   const [minutes, seconds] = minuteSecondString.split(":").map(Number);
-
-  console.log(seconds)
 
   // Return the total in minutes
   return [

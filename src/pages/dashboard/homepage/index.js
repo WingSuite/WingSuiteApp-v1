@@ -370,8 +370,10 @@ export default function HomePage() {
           <button
             className="rounded-lg border-2 border-sky p-2
             transition duration-200 ease-in hover:-translate-y-[0.1rem]
-            hover:border-2 hover:border-darkOcean hover:shadow-xl truncate"
+            hover:border-2 hover:border-darkOcean hover:shadow-xl truncate
+            text-left"
             onClick={()=>{router.push('/dashboard/tasks/')}}
+            key={item._id}
           >
             {(item.status == "incomplete") ? `❌` : `⏳`} {item.name}
           </button>
@@ -391,7 +393,6 @@ export default function HomePage() {
         <div className="pt-2 text-7xl">{greeting}</div>
         {weekView}
         <div className="flex max-h-screen flex-row gap-14 overflow-y-auto">
-          {console.log(taskData.length)}
           {taskData.length == 0 ? statsView : taskView}
           {feedbackView}
           {notificationsView}

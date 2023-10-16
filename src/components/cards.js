@@ -109,6 +109,8 @@ export function CollapsableInfoCard({
   titleUpdateDisable = false,
   simpleEditor = false,
   tagList = null,
+  icon = null,
+  actionButton = null,
 }) {
   // Define useState
   const [titleContent, setTitleContent] = useState(title);
@@ -120,6 +122,140 @@ export function CollapsableInfoCard({
 
   // Sanitize mainText
   const sanitizedHTML = DOMPurify.sanitize(mainTextContent);
+
+  // Tag section definition
+  const tagSection = (
+    <>
+      {tagContent && !editMode && (
+        <div
+          className={`rounded-lg px-2 py-1 text-center text-sm`}
+          style={{ backgroundColor: tagList[tagContent] }}
+        >
+          {tagContent}
+        </div>
+      )}
+      {tagList && editMode && (
+        <div className="text-sm">
+          <BottomDropDown
+            listOfItems={Object.keys(tagList)}
+            setSelected={setTagContent}
+            defaultValue={tagContent}
+            editColor={true}
+          />
+        </div>
+      )}
+    </>
+  );
+
+  // Editing controls section definition
+  const editingControls = (
+    <div className="flex flex-row items-center gap-2">
+      {updateFunc != null && !editMode && !delMode && (
+        <button
+          onClick={() => {
+            setEditMode(true);
+            setCollapsed(true);
+          }}
+        >
+          <IconContext.Provider value={{ size: "1.5em" }}>
+            {<VscEdit />}
+          </IconContext.Provider>
+        </button>
+      )}
+      {deleteFunc != null && !editMode && !delMode && (
+        <button
+          onClick={() => {
+            setDelMode(true);
+          }}
+        >
+          <IconContext.Provider value={{ size: "1.5em", className: "ml-2" }}>
+            {<VscTrash />}
+          </IconContext.Provider>
+        </button>
+      )}
+      {actionButton != null && !editMode && !delMode && actionButton}
+      {editMode && (
+        <button
+          onClick={() => {
+            setEditMode(false);
+            setTitleContent(title);
+            setMainTextContent(mainText);
+          }}
+        >
+          <IconContext.Provider value={{ size: "1.5em", className: "ml-2" }}>
+            {<VscChromeClose />}
+          </IconContext.Provider>
+        </button>
+      )}
+      {editMode && (
+        <button
+          onClick={() => {
+            updateFunc(id, titleContent, mainTextContent, tagContent);
+            setEditMode(false);
+          }}
+        >
+          <IconContext.Provider value={{ size: "1.5em", className: "ml-2" }}>
+            {<VscCheck />}
+          </IconContext.Provider>
+        </button>
+      )}
+      {delMode && (
+        <button
+          onClick={() => {
+            deleteFunc(id);
+            setEditMode(false);
+          }}
+        >
+          <IconContext.Provider value={{ size: "1.5em", className: "ml-2" }}>
+            {<VscCheck />}
+          </IconContext.Provider>
+        </button>
+      )}
+      {delMode && (
+        <button
+          onClick={() => {
+            setDelMode(false);
+          }}
+        >
+          <IconContext.Provider value={{ size: "1.5em", className: "ml-2" }}>
+            {<VscChromeClose />}
+          </IconContext.Provider>
+        </button>
+      )}
+      <button
+        onClick={() => {
+          !editMode && setCollapsed(!collapsed);
+        }}
+      >
+        <IconContext.Provider value={{ size: "2em" }}>
+          {collapsed ? <VscChevronDown /> : <VscChevronUp />}
+        </IconContext.Provider>
+      </button>
+    </div>
+  );
+
+  // Main text render when editing mode is off
+  const mainTextNoEdit = (
+    <ReactMarkdown
+      className="custom-prose prose max-w-full"
+      rehypePlugins={[rehypeRaw]}
+    >
+      {sanitizedHTML}
+    </ReactMarkdown>
+  );
+
+  // Main text render when editing mode is enabled
+  const mainTextEdit = (
+    <div className="flex-1">
+      <QuillNoSSRWrapper
+        value={mainTextContent}
+        modules={quillConfigs.modules}
+        formats={quillConfigs.formats}
+        theme="snow"
+        onChange={(e) => setMainTextContent(DOMPurify.sanitize(e))}
+      />
+    </div>
+  );
 
   // Render component
   return (
@@ -135,25 +271,9 @@ export function CollapsableInfoCard({
           }}
         >
           <div className="flex w-full flex-row items-center gap-3">
+            {icon && icon}
             {date && <div className={`text-base`}>{date}</div>}
-            {tagContent && !editMode && (
-              <div
-                className={`rounded-lg px-2 py-1 text-center text-sm`}
-                style={{ backgroundColor: tagList[tagContent] }}
-              >
-                {tagContent}
-              </div>
-            )}
-            {tagList && editMode && (
-              <div className="text-sm">
-                <BottomDropDown
-                  listOfItems={Object.keys(tagList)}
-                  setSelected={setTagContent}
-                  defaultValue={tagContent}
-                  editColor={true}
-                />
-              </div>
-            )}
+            {tagSection}
             <AutosizeInput
               className={`${!titleUpdateDisable && editMode && `text-sky`}`}
               inputStyle={{ background: "transparent" }}
@@ -171,119 +291,11 @@ export function CollapsableInfoCard({
             )}
           </div>
         </div>
-        <div className="flex flex-row items-center gap-2">
-          {updateFunc != null && !editMode && !delMode && (
-            <button
-              onClick={() => {
-                setEditMode(true);
-                setCollapsed(true);
-              }}
-            >
-              <IconContext.Provider value={{ size: "1.5em" }}>
-                {<VscEdit />}
-              </IconContext.Provider>
-            </button>
-          )}
-          {deleteFunc != null && !editMode && !delMode && (
-            <button
-              onClick={() => {
-                setDelMode(true);
-              }}
-            >
-              <IconContext.Provider
-                value={{ size: "1.5em", className: "ml-2" }}
-              >
-                {<VscTrash />}
-              </IconContext.Provider>
-            </button>
-          )}
-          {editMode && (
-            <button
-              onClick={() => {
-                setEditMode(false);
-                setTitleContent(title);
-                setMainTextContent(mainText);
-              }}
-            >
-              <IconContext.Provider
-                value={{ size: "1.5em", className: "ml-2" }}
-              >
-                {<VscChromeClose />}
-              </IconContext.Provider>
-            </button>
-          )}
-          {editMode && (
-            <button
-              onClick={() => {
-                updateFunc(id, titleContent, mainTextContent, tagContent);
-                setEditMode(false);
-              }}
-            >
-              <IconContext.Provider
-                value={{ size: "1.5em", className: "ml-2" }}
-              >
-                {<VscCheck />}
-              </IconContext.Provider>
-            </button>
-          )}
-          {delMode && (
-            <button
-              onClick={() => {
-                deleteFunc(id);
-                setEditMode(false);
-              }}
-            >
-              <IconContext.Provider
-                value={{ size: "1.5em", className: "ml-2" }}
-              >
-                {<VscCheck />}
-              </IconContext.Provider>
-            </button>
-          )}
-          {delMode && (
-            <button
-              onClick={() => {
-                setDelMode(false);
-              }}
-            >
-              <IconContext.Provider
-                value={{ size: "1.5em", className: "ml-2" }}
-              >
-                {<VscChromeClose />}
-              </IconContext.Provider>
-            </button>
-          )}
-          <button
-            onClick={() => {
-              !editMode && setCollapsed(!collapsed);
-            }}
-          >
-            <IconContext.Provider value={{ size: "2em" }}>
-              {collapsed ? <VscChevronDown /> : <VscChevronUp />}
-            </IconContext.Provider>
-          </button>
-        </div>
+        {editingControls}
       </div>
       {!simpleEditor &&
         collapsed &&
-        (!editMode ? (
-          <ReactMarkdown
-            className="custom-prose prose max-w-full"
-            rehypePlugins={[rehypeRaw]}
-          >
-            {sanitizedHTML}
-          </ReactMarkdown>
-        ) : (
-          <div className="flex-1">
-            <QuillNoSSRWrapper
-              value={mainTextContent}
-              modules={quillConfigs.modules}
-              formats={quillConfigs.formats}
-              theme="snow"
-              onChange={(e) => setMainTextContent(DOMPurify.sanitize(e))}
-            />
-          </div>
-        ))}
+        (!editMode ? mainTextNoEdit : mainTextEdit)}
       {simpleEditor && collapsed && (
         <TextareaAutosize
           className={`resize-none bg-transparent ${editMode && `text-sky`}`}

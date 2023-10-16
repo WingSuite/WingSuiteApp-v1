@@ -44,6 +44,11 @@ export default function UnitResourcesPage() {
   const [taskData, setTaskData] = useState([]);
   const required = permissionsList.tasks;
   const toolbarItems = ["Your Tasks", "Dispatched"];
+  const iconMapper = {
+    incomplete: "❌",
+    pending: "🛂",
+    complete: "✅",
+  };
 
   // Execute function on mount
   useEffect(() => {
@@ -175,8 +180,20 @@ export default function UnitResourcesPage() {
               </div>
             }
             mainText={info.description}
-            // updateFunc={toolbarSelect && info[5] ? updateFeedback : null}
-            // deleteFunc={toolbarSelect && info[5] ? deleteFeedback : null}
+            icon={iconMapper[info.status]}
+            actionButton={
+              info.status == "incomplete" ? (
+                <button
+                  className="flex flex-row gap-4 rounded-lg border 
+                  border-transparent px-2 py-1.5 text-xl transition 
+                  duration-200 ease-in hover:border-sky hover:text-sky"
+                >
+                  Complete
+                </button>
+              ) : (
+                <></>
+              )
+            }
           />
         ))
       )}

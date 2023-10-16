@@ -375,7 +375,7 @@ export default function HomePage() {
             onClick={()=>{router.push('/dashboard/tasks/')}}
             key={item._id}
           >
-            {(item.status == "incomplete") ? `❌` : `⏳`} {item.name}
+            {(item.status == "incomplete") ? `❌` : `🛂`} {item.name}
           </button>
         ))}
       </div>

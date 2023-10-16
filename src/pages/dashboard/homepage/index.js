@@ -34,6 +34,7 @@ export default function HomePage() {
   const [rank, setRank] = useState("");
   const [feedbackData, setFeedbackData] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [taskData, setTaskData] = useState([]);
   const [lastWKScore, setLastWKScore] = useState("");
   const [lastPFAScore, setLastPFAScore] = useState("");
   const [weekViewData, setWeekViewData] = useState(
@@ -73,10 +74,7 @@ export default function HomePage() {
       // Iterate through each item of the response and store just the quotes
       let quotes = [];
       for (let item of res.message) {
-        quotes.push([
-          item.feedback,
-          item.formatted_from_user
-        ]);
+        quotes.push([item.feedback, item.formatted_from_user]);
       }
 
       // Store the quotes to the useState
@@ -183,6 +181,22 @@ export default function HomePage() {
       if (res.message.length == 0) setLastWKScore("N/A");
       else setLastWKScore(res.message[0].composite_score);
     })();
+
+    // Process task data
+    (async () => {
+      // Get the user's feedback information
+      var res = await post(
+        "/user/get_tasks/",
+        { page_size: 200, page_index: 0, get_completed: false },
+        Cookies.get("access")
+      );
+
+      // If resulting API results in an error, return
+      if (res.status === "error") return;
+
+      // Save the data
+      setTaskData(res.message);
+    })();
   }, []);
 
   // Get the greeting information
@@ -225,9 +239,10 @@ export default function HomePage() {
                     event.end
                   )}`}
                   buttonInfo={`transition duration-200 ease-in border
-                border-transparent hover:border hover:border-darkOcean
-                hover:border hover:-translate-y-[0.1rem] hover:shadow-xl
-                bg-gradient-to-tr from-deepOcean to-sky text-white`}
+                  border-transparent hover:border hover:border-darkOcean
+                  hover:border hover:-translate-y-[0.1rem] hover:shadow-xl
+                  bg-gradient-to-tr from-deepOcean to-sky text-white`}
+                  action={() => {router.push("/dashboard/events/")}}
                 />
               ))}
             </div>
@@ -343,15 +358,41 @@ export default function HomePage() {
     </div>
   );
 
+  // Task view definition
+  const taskView = (
+    <div className="flex h-full w-1/3 flex-1 flex-col gap-4 overflow-y-auto">
+      <div className="text-4xl">⚠️ Tasks</div>
+      <div
+        className="flex h-full flex-col gap-4 overflow-y-auto
+        px-1.5 pb-4 py-1"
+      >
+        {taskData.map((item, idx) => (
+          <button
+            className="rounded-lg border-2 border-sky p-2
+            transition duration-200 ease-in hover:-translate-y-[0.1rem]
+            hover:border-2 hover:border-darkOcean hover:shadow-xl truncate"
+            onClick={()=>{router.push('/dashboard/tasks/')}}
+          >
+            {(item.status == "incomplete") ? `❌` : `⏳`} {item.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   // Render components
   return (
     <div className="relative flex h-screen flex-row overflow-y-auto">
       <Sidebar />
-      <div className="m-10 flex max-h-screen w-full flex-col gap-14 overflow-y-auto pr-4">
+      <div
+        className="m-10 flex max-h-screen w-full flex-col gap-14
+        overflow-y-auto pr-4"
+      >
         <div className="pt-2 text-7xl">{greeting}</div>
         {weekView}
         <div className="flex max-h-screen flex-row gap-14 overflow-y-auto">
-          {statsView}
+          {console.log(taskData.length)}
+          {taskData.length == 0 ? statsView : taskView}
           {feedbackView}
           {notificationsView}
           {quickLinksView}

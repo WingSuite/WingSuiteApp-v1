@@ -6,6 +6,7 @@ import { IconContext } from "react-icons";
 import AutosizeInput from "react-input-autosize";
 
 // Custom imports
+import { AutoCompleteInput } from "./input";
 import { errorToaster } from "./toasters";
 import { BottomDropDown } from "./dropdown";
 
@@ -49,7 +50,7 @@ export function FreeAdd({
 
   // Confirmation selection content
   const confirmation = (
-    <div className="flex flex-row gap-1 ml-1">
+    <div className="ml-1 flex flex-row gap-1">
       {spanFullWidth ? (
         <>
           <button
@@ -126,21 +127,6 @@ export function FreeAdd({
     </button>
   );
 
-  // BottomDropDown component isolation
-  const BDDIso = ({ item, idx }) => {
-    return (
-      <BottomDropDown
-        listOfItems={additionalList}
-        setSelected={(e) => {
-          handleInputChange(idx, e);
-        }}
-        defaultValue={item}
-        bgColor="lightgray"
-        widthType="full"
-      />
-    );
-  };
-
   // Input component isolation
   const IIso = ({ item, idx }) => {
     return (
@@ -196,12 +182,20 @@ export function FreeAdd({
           text-lg ${spanFullWidth ? "w-full" : "w-auto"}`}
           key={idx}
         >
-          {spanFullWidth && dropDown && <BDDIso item={item} idx={idx} />}
+          {spanFullWidth && dropDown && (
+            <AutoCompleteInput
+              possibleItems={additionalList}
+              onChange={(e) => {
+                handleInputChange(idx, e);
+              }}
+              value={item}
+            />
+          )}
           {spanFullWidth && !dropDown && <IIso item={item} idx={idx} />}
           {!spanFullWidth && <AIIso item={item} idx={idx} />}
           {unremovable.includes(item) && <></>}
-          {!unremovable.includes(item) && !(index == idx) && <AIso idx={idx}/>}
-          {!unremovable.includes(item) && (index == idx) && confirmation}
+          {!unremovable.includes(item) && !(index == idx) && <AIso idx={idx} />}
+          {!unremovable.includes(item) && index == idx && confirmation}
         </div>
       ))}
       {addItemButton}

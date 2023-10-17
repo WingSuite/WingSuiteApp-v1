@@ -141,7 +141,17 @@
 }
 
 .rdp-table {
+  max-width: 100% !important;
   width: 100% !important;
+  table-layout: fixed !important;
+}
+
+.rdp-month {
+  width: 100% !important;
+}
+
+.rdp-day {
+  display: inline-block !important;
 }
 
 /*#endregion*/

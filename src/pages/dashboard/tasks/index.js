@@ -19,7 +19,15 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 
 // Config imports
-import { permissionsList } from "@/config/config";
+import { permissionsList, quillConfigs } from "@/config/config";
+
+// Quill editor and HTML import
+import QuillNoSSRWrapper from "@/components/editor";
+import "quill/dist/quill.snow.css";
+
+// Date Picker imports
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 
 // Modal imports
 import Modal from "react-modal";
@@ -32,8 +40,10 @@ import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
 
 // Custom components imports
+import { AutoCompleteInput, ToggleSwitch } from "@/components/input";
 import { errorToaster, successToaster } from "@/components/toasters";
 import { BottomDropDown } from "@/components/dropdown";
+import { TimeInput } from "@/components/input";
 import { CollapsableInfoCard } from "@/components/cards";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
@@ -50,6 +60,8 @@ export default function UnitResourcesPage() {
   const [userID, setUserID] = useState("");
   const [selected, setSelected] = useState({});
   const [taskData, setTaskData] = useState([]);
+  const [payload, setPayload] = useState({});
+  const [suspenseContent, setSuspenseContent] = useState({});
   const required = permissionsList.tasks;
   const toolbarItems = ["Your Tasks", "Dispatched"];
   const iconMapper = {
@@ -114,6 +126,22 @@ export default function UnitResourcesPage() {
     })();
   }, [actionTrigger, toolbarSelect, modalMode]);
 
+  // Update payload content
+  const updatePayload = (key, value) => {
+    setPayload((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
+
+  // Update suspense content
+  const updateSuspense = (key, value) => {
+    setSuspenseContent((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
+
   // Component for toolbar
   const toolbar = (
     <div className="flex flex-row justify-between py-3">
@@ -177,7 +205,7 @@ export default function UnitResourcesPage() {
   // Footnote component definition
   const Footnote = ({ info }) => {
     return (
-      <div className="flex flex-col mt-3">
+      <div className="mt-3 flex flex-col">
         <div className="text-3xl">
           {info.status == "pending"
             ? "Your Request Message:"
@@ -191,7 +219,8 @@ export default function UnitResourcesPage() {
         </ReactMarkdown>
       </div>
     );
-1  };
+    1;
+  };
 
   // Component for inbox
   const inbox = (
@@ -227,10 +256,94 @@ export default function UnitResourcesPage() {
                 <></>
               )
             }
-            footnote={<Footnote info={info}/>}
+            footnote={<Footnote info={info} />}
           />
         ))
       )}
+    </div>
+  );
+
+  // Component for composer
+  const composer = (
+    <div
+      className="flex max-h-full w-1/2 flex-col gap-5 overflow-auto pb-2
+      pl-3 pr-2"
+    >
+      <div className="flex flex-col gap-1">
+        <div className="text-2xl">Task Name</div>
+        <input
+          className="rounded-lg border border-silver p-2 shadow-inner"
+          onChange={(event) => updatePayload("name", event.target.value)}
+          value={payload.name}
+          id="feedbackTitle"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <div className="w-fit text-2xl">Suspense</div>
+        <div className="flex flex-col">
+          <div className="flex flex-row items-center gap-3 text-lg">
+            Time (24hr Format):
+            <TimeInput
+              hour={suspenseContent.hour}
+              setHour={(e) => {
+                updateSuspense("hour", e);
+              }}
+              minute={suspenseContent.minute}
+              setMinute={(e) => {
+                updateSuspense("minute", e);
+              }}
+            />
+          </div>
+          <DayPicker
+            showOutsideDays
+            mode="single"
+            selected={suspenseContent.date}
+            onSelect={(e) => {
+              updateSuspense("date", e);
+            }}
+          />
+        </div>
+      </div>
+      <div className="flex h-full flex-col gap-1">
+        <div className="text-2xl">Description</div>
+        <div className="flex-1">
+          <QuillNoSSRWrapper
+            className="h-full pb-[4.2rem]"
+            modules={quillConfigs.modules}
+            formats={quillConfigs.formats}
+            theme="snow"
+            value={payload.description}
+            onChange={(event) => updatePayload("description", event)}
+          />
+        </div>
+      </div>
+      <div className="flex flex-row items-center gap-4">
+        <div className="text-2xl">Auto Complete on Request?</div>
+        <ToggleSwitch
+          onToggle={(event) => {
+            updatePayload("auto_accept_requests", event);
+          }}
+          initialState={payload.auto_accept_requests}
+        />
+      </div>
+      <div className="flex flex-row items-center gap-4">
+        <div className="text-2xl">Notify via Email?</div>
+        <ToggleSwitch
+          onToggle={(event) => {
+            updatePayload("notify_email", event);
+          }}
+          initialState={payload.notify_email}
+        />
+      </div>
+      <button
+        onClick={() => {}}
+        className="w-fit rounded-lg border border-silver bg-gradient-to-tr
+        from-deepOcean to-sky bg-clip-text p-2 text-xl text-transparent
+        transition duration-200 ease-in hover:-translate-y-[0.1rem]
+        hover:border-sky hover:shadow-md hover:shadow-sky"
+      >
+        Dispatch Task
+      </button>
     </div>
   );
 
@@ -243,7 +356,7 @@ export default function UnitResourcesPage() {
         {toolbarAccess && toolbar}
         <div className="flex h-full w-full flex-row gap-5 overflow-hidden">
           {inbox}
-          {/* {composerOpen && editor} */}
+          {composerOpen && composer}
         </div>
       </div>
       <ToastContainer

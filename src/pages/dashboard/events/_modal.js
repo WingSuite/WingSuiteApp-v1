@@ -370,7 +370,7 @@ export default function EventModal({
         className={`${
           !editMode && `hidden`
         } flex flex-col items-center gap-10 rounded-br-lg rounded-tr-lg
-        bg-white p-6 drop-shadow-xl`}
+        bg-white p-6 drop-shadow-xl w-1/3`}
       >
         <div className="text-4xl">Edit Time Frame</div>
         <div>

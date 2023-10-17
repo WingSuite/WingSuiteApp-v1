@@ -14,8 +14,16 @@ import "react-toastify/dist/ReactToastify.css";
 // JS Cookies import
 import Cookies from "js-cookie";
 
+// Markdown component import
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+
 // Config imports
 import { permissionsList } from "@/config/config";
+
+// Modal imports
+import Modal from "react-modal";
+import RequestCompletion from "./_request";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
@@ -33,14 +41,14 @@ import Sidebar from "@/components/sidebar";
 
 // Unit member page definition
 export default function UnitResourcesPage() {
-  // Define the router for page transitioning
-  const router = useRouter();
-
   // Define useStates and other constants
   const [toolbarAccess, setToolbarAccess] = useState(false);
   const [toolbarSelect, setToolbarSelect] = useState(0);
   const [composerOpen, setComposerOpen] = useState(false);
   const [actionTrigger, setActionTrigger] = useState(true);
+  const [modalMode, setModalMode] = useState(false);
+  const [userID, setUserID] = useState("");
+  const [selected, setSelected] = useState({});
   const [taskData, setTaskData] = useState([]);
   const required = permissionsList.tasks;
   const toolbarItems = ["Your Tasks", "Dispatched"];
@@ -50,22 +58,17 @@ export default function UnitResourcesPage() {
     complete: "✅",
   };
 
-  // Execute function on mount
+  // Process on change of the taskbar selection and other actions
   useEffect(() => {
     // Check for correct user auth
     if (!authCheck()) return;
 
     // Fetch the permissions of the user from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
+    setUserID(user);
 
     // Set access for toolbar and other information
     setToolbarAccess(permissionsCheck(required.toolbar, user.permissions));
-  }, []);
-
-  // Process on change of the taskbar selection and other actions
-  useEffect(() => {
-    // Check for correct user auth
-    if (!authCheck()) return;
 
     // Get the user's tasks
     (async () => {
@@ -80,7 +83,7 @@ export default function UnitResourcesPage() {
       );
 
       // Add to the tasks list
-      tasks = tasks.concat(res.message);
+      if (res.status != "error") tasks = tasks.concat(res.message);
 
       // Get the user's tasks that have been completed
       res = await post(
@@ -90,17 +93,17 @@ export default function UnitResourcesPage() {
       );
 
       // Add to the tasks list
-      tasks = tasks.concat(res.message);
+      if (res.status != "error") tasks = tasks.concat(res.message);
 
       // Sort the tasks by suspense date and then its completion status
       tasks.sort((a, b) => {
-        // Sort by suspense date
-        if (a.suspense < b.suspense) return -1;
-        if (a.suspense > b.suspense) return 1;
-
         // If suspense dates are the same, sort by status
         if (a.status === "complete" && b.status !== "complete") return 1;
         if (a.status !== "complete" && b.status === "complete") return -1;
+
+        // Sort by suspense date
+        if (a.suspense < b.suspense) return -1;
+        if (a.suspense > b.suspense) return 1;
 
         // If both have the same status, they remain in their current order
         return 0;
@@ -109,7 +112,7 @@ export default function UnitResourcesPage() {
       // Save the data
       setTaskData(tasks);
     })();
-  }, [actionTrigger, toolbarSelect]);
+  }, [actionTrigger, toolbarSelect, modalMode]);
 
   // Component for toolbar
   const toolbar = (
@@ -154,6 +157,42 @@ export default function UnitResourcesPage() {
     </div>
   );
 
+  // Complete button definition
+  const CompleteButton = ({ info }) => {
+    return (
+      <button
+        className="flex flex-row gap-4 rounded-lg border
+        border-transparent px-2 py-1.5 text-xl transition
+        duration-200 ease-in hover:border-sky hover:text-sky"
+        onClick={() => {
+          setModalMode(true);
+          setSelected(info);
+        }}
+      >
+        Complete
+      </button>
+    );
+  };
+
+  // Footnote component definition
+  const Footnote = ({ info }) => {
+    return (
+      <div className="flex flex-col mt-3">
+        <div className="text-3xl">
+          {info.stats == "pending"
+            ? "Your Request Message:"
+            : "Authority's Message:"}
+        </div>
+        <ReactMarkdown
+          className="custom-prose prose max-w-full"
+          rehypePlugins={[rehypeRaw]}
+        >
+          {info.message == "" ? "N/A" : info.message}
+        </ReactMarkdown>
+      </div>
+    );
+  };
+
   // Component for inbox
   const inbox = (
     <div className="flex max-h-full w-full flex-col gap-2 overflow-auto pr-2">
@@ -183,17 +222,12 @@ export default function UnitResourcesPage() {
             icon={iconMapper[info.status]}
             actionButton={
               info.status == "incomplete" ? (
-                <button
-                  className="flex flex-row gap-4 rounded-lg border 
-                  border-transparent px-2 py-1.5 text-xl transition 
-                  duration-200 ease-in hover:border-sky hover:text-sky"
-                >
-                  Complete
-                </button>
+                <CompleteButton info={info} />
               ) : (
                 <></>
               )
             }
+            footnote={<Footnote info={info}/>}
           />
         ))
       )}
@@ -224,6 +258,26 @@ export default function UnitResourcesPage() {
         pauseOnHover
         theme="dark"
       />
+      <Modal
+        isOpen={modalMode}
+        onRequestClose={() => {
+          setModalMode(false);
+        }}
+        contentLabel="Example Modal"
+        ariaHideApp={false}
+        className="m-auto flex w-1/2 flex-col items-center border-0
+        outline-none"
+        overlayClassName="flex items-center justify-center bg-black
+        bg-opacity-30 fixed inset-0 z-[999]"
+      >
+        <RequestCompletion
+          taskContent={selected}
+          closeModal={() => {
+            setModalMode(false);
+            setSelected({});
+          }}
+        />
+      </Modal>
     </div>
   );
 }

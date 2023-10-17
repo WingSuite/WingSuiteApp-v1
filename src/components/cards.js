@@ -111,6 +111,7 @@ export function CollapsableInfoCard({
   tagList = null,
   icon = null,
   actionButton = null,
+  footnote = null,
 }) {
   // Define useState
   const [titleContent, setTitleContent] = useState(title);
@@ -304,6 +305,7 @@ export function CollapsableInfoCard({
           onChange={(e) => setMainTextContent(e.target.value)}
         />
       )}
+      {footnote && collapsed && !editMode && footnote}
     </div>
   );
 }

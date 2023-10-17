@@ -42,9 +42,10 @@ import { post } from "@/utils/call";
 // Custom components imports
 import { AutoCompleteInput, ToggleSwitch } from "@/components/input";
 import { errorToaster, successToaster } from "@/components/toasters";
-import { BottomDropDown } from "@/components/dropdown";
-import { TimeInput } from "@/components/input";
 import { CollapsableInfoCard } from "@/components/cards";
+import { BottomDropDown } from "@/components/dropdown";
+import { FreeAdd } from "@/components/freeadd";
+import { TimeInput } from "@/components/input";
 import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
@@ -277,6 +278,22 @@ export default function UnitResourcesPage() {
           value={payload.name}
           id="feedbackTitle"
         />
+      </div>
+      <div className="flex flex-col gap-1">
+        <div className="text-2xl">Users</div>
+        <div className="rounded-lg border border-silver p-2">
+          <FreeAdd
+            itemList={payload.users ? payload.users : []}
+            setItemList={(content, key) => {
+              updatePayload("users", content);
+              console.log(content);
+            }}
+            type={"users"}
+            additionalList={["a", "b", "c", "d", "e", "f"]}
+            spanFullWidth={true}
+            dropDown={true}
+          />
+        </div>
       </div>
       <div className="flex flex-col gap-1">
         <div className="w-fit text-2xl">Suspense</div>

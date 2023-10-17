@@ -179,7 +179,7 @@ export default function UnitResourcesPage() {
     return (
       <div className="flex flex-col mt-3">
         <div className="text-3xl">
-          {info.stats == "pending"
+          {info.status == "pending"
             ? "Your Request Message:"
             : "Authority's Message:"}
         </div>
@@ -191,7 +191,7 @@ export default function UnitResourcesPage() {
         </ReactMarkdown>
       </div>
     );
-  };
+1  };
 
   // Component for inbox
   const inbox = (

@@ -85,47 +85,80 @@ export default function UnitResourcesPage() {
     setToolbarAccess(permissionsCheck(required.toolbar, user.permissions));
 
     // Get the user's tasks
-    (async () => {
-      // Set a variable to collect all types of tasks
-      var tasks = [];
+    if (toolbarSelect == 0) {
+      (async () => {
+        // Set a variable to collect all types of tasks
+        var tasks = [];
 
-      // Get the user's tasks that have not been completed
-      var res = await post(
-        "/user/get_tasks/",
-        { page_size: 2000, page_index: 0, get_completed: false },
-        Cookies.get("access")
-      );
+        // Get the user's tasks that have not been completed
+        var res = await post(
+          "/user/get_tasks/",
+          { page_size: 2000, page_index: 0, get_completed: false },
+          Cookies.get("access")
+        );
 
-      // Add to the tasks list
-      if (res.status != "error") tasks = tasks.concat(res.message);
+        // Add to the tasks list
+        if (res.status != "error") tasks = tasks.concat(res.message);
 
-      // Get the user's tasks that have been completed
-      res = await post(
-        "/user/get_tasks/",
-        { page_size: 2000, page_index: 0, get_completed: true },
-        Cookies.get("access")
-      );
+        // Get the user's tasks that have been completed
+        res = await post(
+          "/user/get_tasks/",
+          { page_size: 2000, page_index: 0, get_completed: true },
+          Cookies.get("access")
+        );
 
-      // Add to the tasks list
-      if (res.status != "error") tasks = tasks.concat(res.message);
+        // Add to the tasks list
+        if (res.status != "error") tasks = tasks.concat(res.message);
 
-      // Sort the tasks by suspense date and then its completion status
-      tasks.sort((a, b) => {
-        // If suspense dates are the same, sort by status
-        if (a.status === "complete" && b.status !== "complete") return 1;
-        if (a.status !== "complete" && b.status === "complete") return -1;
+        // Sort the tasks by suspense date and then its completion status
+        tasks.sort((a, b) => {
+          // If suspense dates are the same, sort by status
+          if (a.status === "complete" && b.status !== "complete") return 1;
+          if (a.status !== "complete" && b.status === "complete") return -1;
 
-        // Sort by suspense date
-        if (a.suspense < b.suspense) return -1;
-        if (a.suspense > b.suspense) return 1;
+          // Sort by suspense date
+          if (a.suspense < b.suspense) return -1;
+          if (a.suspense > b.suspense) return 1;
 
-        // If both have the same status, they remain in their current order
-        return 0;
-      });
+          // If both have the same status, they remain in their current order
+          return 0;
+        });
 
-      // Save the data
-      setTaskData(tasks);
-    })();
+        // Save the data
+        setTaskData(tasks);
+      })();
+    }
+
+    // Get the user's dispatched tasks
+    else if (toolbarSelect == 1) {
+      (async () => {
+        // Set a variable to collect all types of tasks
+        var tasks = [];
+
+        // Get the user's tasks that have not been completed
+        var res = await post(
+          "/statistic/task/get_dispatched_tasks/",
+          { page_size: 2000, page_index: 0, },
+          Cookies.get("access")
+        );
+
+        // Add to the tasks list
+        if (res.status != "error") tasks = tasks.concat(res.message);
+
+        // Sort the tasks by suspense date and then its completion status
+        tasks.sort((a, b) => {
+          // Sort by suspense date
+          if (a.suspense < b.suspense) return -1;
+          if (a.suspense > b.suspense) return 1;
+
+          // If both have the same status, they remain in their current order
+          return 0;
+        });
+
+        // Save the data
+        setTaskData(tasks);
+      })();
+    }
 
     // Get the list of all units and everyone
     (async () => {
@@ -416,27 +449,32 @@ export default function UnitResourcesPage() {
         />
       ) : (
         taskData.map((info, index) => (
-          <CollapsableInfoCard
-            id={`task-${toolbarSelect}-${info._id}`}
-            key={`task-${toolbarSelect}-${info._id}`}
-            title={info.name}
-            titleAppendix={
-              <div className="flex flex-row gap-2">
-                <div className="font-bold">Suspense: </div>
-                <div>{formatMilDate(info.suspense, true)}</div>
-              </div>
-            }
-            mainText={info.description}
-            icon={iconMapper[info.status]}
-            actionButton={
-              info.status == "incomplete" ? (
-                <CompleteButton info={info} />
-              ) : (
-                <></>
-              )
-            }
-            footnote={<Footnote info={info} />}
-          />
+          <>
+            {toolbarSelect == 0 && (
+              <CollapsableInfoCard
+                id={`task-${toolbarSelect}-${info._id}`}
+                key={`task-${toolbarSelect}-${info._id}`}
+                title={info.name}
+                titleAppendix={
+                  <div className="flex flex-row gap-2">
+                    <div className="font-bold">Suspense: </div>
+                    <div>{formatMilDate(info.suspense, true)}</div>
+                  </div>
+                }
+                mainText={info.description}
+                icon={iconMapper[info.status]}
+                actionButton={
+                  info.status == "incomplete" ? (
+                    <CompleteButton info={info} />
+                  ) : (
+                    <></>
+                  )
+                }
+                footnote={<Footnote info={info} />}
+              />
+            )}
+            {toolbarSelect == 1 && <div>{info.name}</div>}
+          </>
         ))
       )}
     </div>

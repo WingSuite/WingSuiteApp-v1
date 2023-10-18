@@ -44,7 +44,7 @@ export function AutoCompleteInput({ possibleItems, value, onChange }) {
       />
       {inputValue != "" && isFocused && (
         <div
-          className="absolute z-[999] flex max-h-32 w-full flex-col
+          className="absolute z-[999] flex max-h-64 w-full flex-col
           overflow-auto rounded-lg border border-silver bg-white"
         >
           {availableChoices.map((item, index) => (

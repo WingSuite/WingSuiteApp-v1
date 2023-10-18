@@ -59,7 +59,7 @@ export function FreeAdd({
               setIndex(-1);
             }}
           >
-            <IconContext.Provider value={{ color: "#000000", size: `1.3em` }}>
+            <IconContext.Provider value={{ color: "#000000", size: `1.7em` }}>
               <VscCheck />
             </IconContext.Provider>
           </button>
@@ -68,7 +68,7 @@ export function FreeAdd({
               setIndex(-1);
             }}
           >
-            <IconContext.Provider value={{ color: "#000000", size: `1.3em` }}>
+            <IconContext.Provider value={{ color: "#000000", size: `1.7em` }}>
               <VscChromeClose />
             </IconContext.Provider>
           </button>
@@ -80,7 +80,7 @@ export function FreeAdd({
               setIndex(-1);
             }}
           >
-            <IconContext.Provider value={{ color: "#000000", size: `1.3em` }}>
+            <IconContext.Provider value={{ color: "#000000", size: `1.7em` }}>
               <VscChromeClose />
             </IconContext.Provider>
           </button>
@@ -90,7 +90,7 @@ export function FreeAdd({
               setIndex(-1);
             }}
           >
-            <IconContext.Provider value={{ color: "#000000", size: `1.3em` }}>
+            <IconContext.Provider value={{ color: "#000000", size: `1.7em` }}>
               <VscCheck />
             </IconContext.Provider>
           </button>
@@ -118,7 +118,7 @@ export function FreeAdd({
         );
       }}
     >
-      <IconContext.Provider value={{ color: "#54C0FF", size: `1.3em` }}>
+      <IconContext.Provider value={{ color: "#54C0FF", size: `1.7em` }}>
         <VscAdd />
       </IconContext.Provider>
       <div className={`text-lg text-sky`}>
@@ -164,7 +164,7 @@ export function FreeAdd({
           setIndex(idx);
         }}
       >
-        <IconContext.Provider value={{ color: "#000000", size: `1.3em` }}>
+        <IconContext.Provider value={{ color: "#000000", size: `1.7em` }}>
           <VscTrash />
         </IconContext.Provider>
       </button>
@@ -179,7 +179,7 @@ export function FreeAdd({
       {itemList.map((item, idx) => (
         <div
           className={`bg-lightgray flex items-center gap-0.5 rounded-lg
-          text-lg ${spanFullWidth ? "w-full" : "w-auto"}`}
+          text-sm ${spanFullWidth ? "w-full" : "w-auto"}`}
           key={idx}
         >
           {spanFullWidth && dropDown && (

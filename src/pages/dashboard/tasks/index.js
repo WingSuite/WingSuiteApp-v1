@@ -58,13 +58,15 @@ export default function UnitResourcesPage() {
   const [composerOpen, setComposerOpen] = useState(false);
   const [actionTrigger, setActionTrigger] = useState(true);
   const [modalMode, setModalMode] = useState(false);
-  const [userID, setUserID] = useState("");
   const [selected, setSelected] = useState({});
   const [taskData, setTaskData] = useState([]);
   const [payload, setPayload] = useState({});
   const [suspenseContent, setSuspenseContent] = useState({});
+  const [targetList, setTargetList] = useState({});
   const required = permissionsList.tasks;
   const toolbarItems = ["Your Tasks", "Dispatched"];
+  const cascadeOptions = ["Cascade", "No Cascade"];
+  const memberOptions = ["All", "Officers-Only", "Members-Only"];
   const iconMapper = {
     incomplete: "❌",
     pending: "🛂",
@@ -78,7 +80,6 @@ export default function UnitResourcesPage() {
 
     // Fetch the permissions of the user from local storage
     const user = JSON.parse(localStorage.getItem("whoami"));
-    setUserID(user);
 
     // Set access for toolbar and other information
     setToolbarAccess(permissionsCheck(required.toolbar, user.permissions));
@@ -125,6 +126,43 @@ export default function UnitResourcesPage() {
       // Save the data
       setTaskData(tasks);
     })();
+
+    // Get the list of all units and everyone
+    (async () => {
+      // Get the user's tasks that have not been completed
+      var res = await post(
+        "/unit/get_all_units/",
+        { page_size: 2000, page_index: 0, tree_format: false },
+        Cookies.get("access")
+      );
+
+      // Create a JSON of selections for targets
+      const listOfTargets = {};
+      res.message.forEach((item) => {
+        cascadeOptions.forEach((cascade) => {
+          memberOptions.forEach((member) => {
+            const key = `(${cascade}; ${member}) ${item.name}`;
+            const value = `${cascade}, ${member}, ${item._id}`;
+            listOfTargets[key] = value;
+          });
+        });
+      });
+
+      // Get the list of every person in the organization
+      res = await post(
+        "/user/everyone/",
+        { page_size: 2000, page_index: 0, allow_permissions: false },
+        Cookies.get("access")
+      );
+
+      // Add to the list
+      res.message.forEach((item) => {
+        listOfTargets[item.full_name] = `User, ${item._id}`;
+      });
+
+      // Save calculations
+      setTargetList(listOfTargets);
+    })();
   }, [actionTrigger, toolbarSelect, modalMode]);
 
   // Update payload content
@@ -141,6 +179,146 @@ export default function UnitResourcesPage() {
       ...prevState,
       [key]: value,
     }));
+  };
+
+  // Create task function
+  const createTask = () => {
+    // Create copies of the inputs
+    var copy = payload;
+    var due = suspenseContent;
+
+    /*
+        INPUT CHECKING
+    */
+    //#region
+
+    // Throw error if no name is provided
+    if (!("name" in copy) || copy.name == undefined || copy.name == "") {
+      errorToaster("No name was provided");
+      return;
+    }
+
+    // Throw error if no target is provided
+    if (!("users" in copy) || copy.users == undefined || copy.users == []) {
+      errorToaster("No users was provided");
+      return;
+    }
+
+    // Throw error if no suspense is provided
+    if (
+      due == {} ||
+      due.minute == undefined ||
+      due.minute == "" ||
+      due.hour == undefined ||
+      due.hour == "" ||
+      due.date == undefined ||
+      due.hour == ""
+    ) {
+      errorToaster("No suspense was provided");
+      return;
+    }
+
+    // Throw error if no description is provided
+    if (
+      !("description" in copy) ||
+      copy.description == undefined ||
+      copy.description == "" ||
+      copy.description == "<p><br></p>"
+    ) {
+      errorToaster("No description was provided");
+      return;
+    }
+
+    // Set auto accept if no option was provided
+    if (!("auto_accept_requests" in copy)) copy.auto_accept_requests = false;
+
+    // Set auto accept if no option was provided
+    if (!("notify_email" in copy)) copy.notify_email = false;
+
+    //#endregion
+
+    /*
+        SUSPENSE CALCULATION
+    */
+    //#region
+
+    // Calculate suspense datetime
+    var suspense_datetime = new Date(due.date);
+    suspense_datetime.setHours(parseInt(due.hour));
+    suspense_datetime.setMinutes(parseInt(due.minute));
+    suspense_datetime = suspense_datetime.getTime() / 1000;
+
+    // Save datetime
+    copy.suspense = suspense_datetime;
+
+    //#endregion
+
+    // Process task creation
+    (async () => {
+      /*
+          GET ID LIST
+      */
+      //#region
+
+      // Format users list
+      var targets = [];
+      copy.users.forEach((item) => {
+        if (!(item in targetList)) {
+          errorToaster(`"${item}" is not a valid user or target`);
+          return;
+        }
+        targets.push(targetList[item]);
+      });
+
+      // Call API to get task list
+      var res = await post(
+        "/unit/get_specified_personnel/",
+        { raw: targets },
+        Cookies.get("access")
+      );
+
+      // Return if an error occurred
+      if (res.status == "error") {
+        errorToaster("An error occurred");
+        return;
+      }
+
+      // Extract content
+      targets = res.message;
+
+      //#endregion
+
+      /*
+          DISPATCH TASK
+      */
+      //#region
+
+      // Include the users list
+      copy.users = targets;
+
+      // Create task
+      var res = await post(
+        "/statistic/task/create_task/",
+        copy,
+        Cookies.get("access")
+      );
+
+      // Send toaster message upon creation
+      if (res.status == "success") successToaster(res.message);
+      if (res.status == "error") errorToaster(res.message);
+      setActionTrigger(!actionTrigger);
+
+      //#endregion
+    })();
+
+    // Clear inputs
+    setPayload({
+      name: "",
+      description: "",
+      notify_email: "",
+      auto_accept_requests: "",
+    });
+    setSuspenseContent({ date: "", minute: "", hour: "" });
   };
 
   // Component for toolbar
@@ -286,10 +464,9 @@ export default function UnitResourcesPage() {
             itemList={payload.users ? payload.users : []}
             setItemList={(content, key) => {
               updatePayload("users", content);
-              console.log(content);
             }}
-            type={"users"}
-            additionalList={["a", "b", "c", "d", "e", "f"]}
+            type={"target"}
+            additionalList={Object.keys(targetList)}
             spanFullWidth={true}
             dropDown={true}
           />
@@ -353,7 +530,9 @@ export default function UnitResourcesPage() {
         />
       </div>
       <button
-        onClick={() => {}}
+        onClick={() => {
+          createTask();
+        }}
         className="w-fit rounded-lg border border-silver bg-gradient-to-tr
         from-deepOcean to-sky bg-clip-text p-2 text-xl text-transparent
         transition duration-200 ease-in hover:-translate-y-[0.1rem]

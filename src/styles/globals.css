@@ -53,6 +53,22 @@
   background-color: rgb(169, 222, 253);
   border-radius: 100vw;
 }
+
+.thin-scrollbar::-webkit-scrollbar {
+  width: 0.2em;
+  height: 0.4em;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: rgba(182, 182, 182, 0);
+  border-radius: 100vw;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgb(47, 105, 247);
+  border-radius: 100vw;
+}
+
 /*#endregion*/
 
 /*

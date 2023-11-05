@@ -31,7 +31,7 @@ import "react-day-picker/dist/style.css";
 
 // Modal imports
 import Modal from "react-modal";
-import RequestCompletion from "./_request";
+import ActionModal from "./_request";
 
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
@@ -40,10 +40,9 @@ import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
 
 // Custom components imports
-import { AutoCompleteInput, ToggleSwitch } from "@/components/input";
 import { errorToaster, successToaster } from "@/components/toasters";
 import { CollapsableInfoCard } from "@/components/cards";
-import { BottomDropDown } from "@/components/dropdown";
+import { ToggleSwitch } from "@/components/input";
 import { FreeAdd } from "@/components/freeadd";
 import { TimeInput } from "@/components/input";
 import { Nothing } from "@/components/nothing";
@@ -52,6 +51,9 @@ import Sidebar from "@/components/sidebar";
 
 // Unit member page definition
 export default function UnitResourcesPage() {
+  // Define router
+  const router = useRouter();
+
   // Define useStates and other constants
   const [toolbarAccess, setToolbarAccess] = useState(false);
   const [toolbarSelect, setToolbarSelect] = useState(0);
@@ -82,7 +84,7 @@ export default function UnitResourcesPage() {
     const user = JSON.parse(localStorage.getItem("whoami"));
 
     // Set access for toolbar and other information
-    setToolbarAccess(permissionsCheck(required.toolbar, user.permissions));
+    setToolbarAccess(permissionsCheck(required.edit, user.permissions));
 
     // Get the user's tasks
     if (toolbarSelect == 0) {
@@ -138,7 +140,7 @@ export default function UnitResourcesPage() {
         // Get the user's tasks that have not been completed
         var res = await post(
           "/statistic/task/get_dispatched_tasks/",
-          { page_size: 2000, page_index: 0, },
+          { page_size: 2000, page_index: 0 },
           Cookies.get("access")
         );
 
@@ -397,6 +399,29 @@ export default function UnitResourcesPage() {
     </div>
   );
 
+  // Component to show dispatched tasks
+  const DispatchedTasks = ({ task }) => {
+    return (
+      <button
+        className="relative flex h-[320px] w-[290px] flex-col gap-2 rounded-lg
+        border-2 border-silver bg-white px-4 pb-4 pt-4 text-xl shadow-md
+        transition duration-200 ease-in hover:-translate-y-[0.1rem]
+        hover:border-2 hover:border-sky hover:shadow-sky"
+        onClick={() => router.push(`/dashboard/tasks/${task._id}`)}
+      >
+        <div className="text-4xl">{task.name}</div>
+        <div className="thin-scrollbar h-full overflow-y-auto pr-1 text-left">
+          <ReactMarkdown
+            className="custom-prose prose max-w-full text-base"
+            rehypePlugins={[rehypeRaw]}
+          >
+            {task.description}
+          </ReactMarkdown>
+        </div>
+      </button>
+    );
+  };
+
   // Complete button definition
   const CompleteButton = ({ info }) => {
     return (
@@ -436,7 +461,13 @@ export default function UnitResourcesPage() {
 
   // Component for inbox
   const inbox = (
-    <div className="flex max-h-full w-full flex-col gap-2 overflow-auto pr-2">
+    <div
+      className={
+        toolbarSelect == 0
+          ? `flex max-h-full w-full flex-col gap-2 overflow-auto pr-2`
+          : `flex w-full flex-wrap gap-4 p-1`
+      }
+    >
       {taskData.length === 0 ? (
         <Nothing
           icon={<VscCloseAll />}
@@ -473,7 +504,12 @@ export default function UnitResourcesPage() {
                 footnote={<Footnote info={info} />}
               />
             )}
-            {toolbarSelect == 1 && <div>{info.name}</div>}
+            {toolbarSelect == 1 && (
+              <DispatchedTasks
+                task={info}
+                key={`task-${toolbarSelect}-${info._id}`}
+              />
+            )}
           </>
         ))
       )}
@@ -617,12 +653,15 @@ export default function UnitResourcesPage() {
         overlayClassName="flex items-center justify-center bg-black
         bg-opacity-30 fixed inset-0 z-[999]"
       >
-        <RequestCompletion
+        <ActionModal
           taskContent={selected}
           closeModal={() => {
             setModalMode(false);
             setSelected({});
           }}
+          title={"Complete Task"}
+          actionButton={"Complete Task"}
+          action="complete/request"
         />
       </Modal>
     </div>

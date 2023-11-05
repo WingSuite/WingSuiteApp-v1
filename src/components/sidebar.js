@@ -148,7 +148,7 @@ const Sidebar = () => {
     <button
       key={`${item.title.toLowerCase()}`}
       className={`${
-        currentPath == `${item.link}`
+        currentPath.includes(`${item.link}`)
           ? `bg-white hover:-translate-y-[0.1rem] hover:shadow-md
           hover:shadow-white`
           : `border border-transparent hover:-translate-y-[0.1rem]
@@ -160,7 +160,7 @@ const Sidebar = () => {
     >
       <IconContext.Provider
         value={{
-          color: currentPath == `${item.link}` ? "#000000" : "#FFFFFF",
+          color: currentPath.includes(`${item.link}`) ? "#000000" : "#FFFFFF",
           size: "1.2em",
           className: "mr-2",
         }}
@@ -169,7 +169,7 @@ const Sidebar = () => {
       </IconContext.Provider>
       <div
         className={`text-${
-          currentPath == `${item.link}` ? "black" : "white"
+          currentPath.includes(`${item.link}`) ? "black" : "white"
         } text-left text-sm`}
       >
         {item.title}

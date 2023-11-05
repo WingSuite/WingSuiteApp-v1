@@ -22,9 +22,13 @@ import { post } from "@/utils/call";
 import { errorToaster, successToaster } from "@/components/toasters";
 
 // Define request modal
-export default function RequestCompletion({
+export default function ActionModal({
   taskContent = {},
   closeModal = () => {},
+  title = "",
+  actionButton = "",
+  action = "",
+  user_id = "",
 }) {
   // Define UseStates
   const [confirm, setConfirm] = useState(false);
@@ -33,15 +37,35 @@ export default function RequestCompletion({
   // Send request call
   const request = () => {
     (async () => {
+      // Variable declaration
+      var res;
+      var body = {
+        task_id: taskContent._id,
+        user_id: user_id,
+        message: requestMessage,
+        action: action,
+      };
+
       // Call API endpoint for sending completion request
-      var res = await post(
-        "/statistic/task/request_completion/",
-        {
-          id: taskContent._id,
-          message: requestMessage,
-        },
-        Cookies.get("access")
-      );
+      if (action == "complete/request") {
+        res = await post(
+          "/statistic/task/request_completion/",
+          {
+            id: taskContent._id,
+            message: requestMessage,
+          },
+          Cookies.get("access")
+        );
+      }
+
+      // Call API endpoint for sending approval, reject, or deny
+      else {
+        res = await post(
+          "/statistic/task/change_status/",
+          body,
+          Cookies.get("access")
+        );
+      }
 
       // If the call was successful, send a success toaster and trigger
       if (res.status == "success") successToaster(res.message);
@@ -53,7 +77,7 @@ export default function RequestCompletion({
   return (
     <div className="flex w-full flex-col gap-4 rounded-lg bg-white p-5">
       <div className="flex flex-row justify-between">
-        <div className="text-6xl">Complete Task</div>
+        <div className="text-6xl">{title}</div>
         <button className="-m-2 h-fit" onClick={() => closeModal()}>
           <IconContext.Provider value={{ size: "1.3em" }}>
             <VscChromeClose />
@@ -82,7 +106,7 @@ export default function RequestCompletion({
             hover:shadow-sky"
             onClick={() => setConfirm(true)}
           >
-            Send Request
+            {actionButton}
           </button>
         )}
         {confirm && (

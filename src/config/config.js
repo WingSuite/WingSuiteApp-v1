@@ -118,14 +118,14 @@ export const permissionsList = {
     ],
   },
   tasks: {
-    toolbar: [
+    edit: [
       "statistic.task.create_task",
       "statistic.task.get_task_info",
       "statistic.task.update_task",
       "statistic.task.reject_completion",
       "statistic.task.change_status",
       "statistic.task.delete_task",
-    ],
+    ]
   },
   admin: {
     register_list: {

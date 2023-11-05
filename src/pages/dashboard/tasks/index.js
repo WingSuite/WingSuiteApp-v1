@@ -656,6 +656,7 @@ export default function UnitResourcesPage() {
         <ActionModal
           taskContent={selected}
           closeModal={() => {
+            setActionTrigger(!actionTrigger);
             setModalMode(false);
             setSelected({});
           }}

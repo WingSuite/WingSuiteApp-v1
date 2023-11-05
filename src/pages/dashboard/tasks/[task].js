@@ -217,7 +217,7 @@ export default function UnitResourcesPage() {
 
   // Component for toolbar
   const toolbar = (
-    <div className="flex flex-row justify-between py-3">
+    <div className="flex flex-col justify-between gap-3 py-3">
       <div className="flex flex-row gap-4">
         {toolbarItems.map((item, index) => (
           <div className="relative">
@@ -238,7 +238,7 @@ export default function UnitResourcesPage() {
                 Object.keys(task.pending).length > 0 && (
                   <div
                     className="absolute -left-1 -top-1 z-10 h-4 w-4 rounded-full
-                    bg-sky"
+                    bg-scarlet"
                   ></div>
                 )}
               {item}
@@ -459,24 +459,36 @@ export default function UnitResourcesPage() {
 
   // Define the task area
   const taskArea = (
-    <div className="h-full w-2/3">
+    <div className="flex h-full w-2/3 flex-col">
       {toolbar}
       <div className="flex h-full w-full flex-col gap-2 overflow-y-auto pt-2">
         {task[completionKey[toolbarSelect]] != undefined ? (
-          Object.keys(task[completionKey[toolbarSelect]]).map((item, index) => (
-            <CollapsableInfoCard
-              id={item}
-              title={task.name_map[item]}
-              mainText={task[completionKey[toolbarSelect]][item] || "N/A"}
-              startState={true}
-              actionButton={
-                <>
-                  {toolbarSelect == 1 && <PendingButtonSet user_id={item} />}
-                  {toolbarSelect == 2 && <CompleteButtonSet user_id={item} />}
-                </>
-              }
-            />
-          ))
+          Object.keys(task[completionKey[toolbarSelect]]).length == 0 ? (
+            <div className="h-full">
+              <Nothing mainText={"No One is Under This Category"} />
+            </div>
+          ) : (
+            Object.keys(task[completionKey[toolbarSelect]]).map(
+              (item, index) => (
+                <CollapsableInfoCard
+                  id={item}
+                  title={task.name_map[item]}
+                  mainText={task[completionKey[toolbarSelect]][item] || "N/A"}
+                  startState={true}
+                  actionButton={
+                    <>
+                      {toolbarSelect == 1 && (
+                        <PendingButtonSet user_id={item} />
+                      )}
+                      {toolbarSelect == 2 && (
+                        <CompleteButtonSet user_id={item} />
+                      )}
+                    </>
+                  }
+                />
+              )
+            )
+          )
         ) : (
           <></>
         )}

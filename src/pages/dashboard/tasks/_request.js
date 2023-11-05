@@ -130,8 +130,8 @@ export default function ActionModal({
               className="transition duration-200 ease-in
               hover:-translate-y-[0.1rem] hover:text-sky"
               onClick={() => {
-                closeModal();
                 request();
+                closeModal();
               }}
             >
               <IconContext.Provider

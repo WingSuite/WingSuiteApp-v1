@@ -34,9 +34,9 @@ import Modal from "react-modal";
 import ActionModal from "./_request";
 
 // Util imports
+import { formatMilDate, convertToSeconds } from "@/utils/time";
 import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
-import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
 
 // Custom components imports
@@ -69,6 +69,7 @@ export default function UnitResourcesPage() {
   const toolbarItems = ["Your Tasks", "Dispatched"];
   const cascadeOptions = ["Cascade", "No Cascade"];
   const memberOptions = ["All", "Officers-Only", "Members-Only"];
+  const defaultReminders = ["30 minutes", "1 hours", "12 hours", "1 days"];
   const iconMapper = {
     incomplete: "❌",
     pending: "🛂",
@@ -227,6 +228,20 @@ export default function UnitResourcesPage() {
     */
     //#region
 
+    // Throw error if one of the reminder timings is in the wrong format, and
+    // replace the reminder field with formatted seconds
+    var formatted_reminders = [];
+    for (var item of copy.reminders) {
+      const seconds = convertToSeconds(item);
+      if (seconds == null) {
+        errorToaster(
+          "Improper format. Format should be (XX minutes, XX hours, or XX days)"
+        );
+        return;
+      }
+      formatted_reminders.push(seconds);
+    }
+
     // Throw error if no name is provided
     if (!("name" in copy) || copy.name == undefined || copy.name == "") {
       errorToaster("No name was provided");
@@ -328,7 +343,8 @@ export default function UnitResourcesPage() {
       */
       //#region
 
-      // Include the users list
+      // Include the users list and reformat the reminders field
+      copy.reminders = formatted_reminders.map(item => copy.suspense - item);
       copy.users = targets;
 
       // Create task
@@ -352,6 +368,7 @@ export default function UnitResourcesPage() {
       description: "",
       notify_email: "",
       auto_accept_requests: "",
+      reminders: defaultReminders,
     });
     setSuspenseContent({ date: "", minute: "", hour: "" });
   };
@@ -362,7 +379,7 @@ export default function UnitResourcesPage() {
       <div className="flex flex-row gap-4">
         {toolbarItems.map((item, index) => (
           <button
-            key={`toolbarItems-${item}`}
+            key={`toolbarItems-${item}-asdf`}
             className={`rounded-lg border px-3 py-2 text-xl transition
             duration-200 ease-in hover:-translate-y-[0.1rem] hover:shadow-lg ${
               toolbarSelect == index
@@ -385,7 +402,10 @@ export default function UnitResourcesPage() {
             to-sky text-white hover:border-darkOcean`
             : `border-silver hover:border-sky`
         }`}
-        onClick={() => setComposerOpen(!composerOpen)}
+        onClick={() => {
+          updatePayload("reminder", defaultReminders);
+          setComposerOpen(!composerOpen);
+        }}
       >
         <IconContext.Provider
           value={{
@@ -569,6 +589,19 @@ export default function UnitResourcesPage() {
             onSelect={(e) => {
               updateSuspense("date", e);
             }}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col gap-1">
+        <div className="text-2xl">Reminder Timings</div>
+        <div className="rounded-lg border border-silver p-2">
+          <FreeAdd
+            itemList={payload.reminders ? payload.reminders : []}
+            setItemList={(content, key) => {
+              updatePayload("reminders", content);
+            }}
+            type={"reminder"}
+            spanFullWidth={true}
           />
         </div>
       </div>

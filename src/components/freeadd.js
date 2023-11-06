@@ -134,8 +134,8 @@ export function FreeAdd({
         type="text"
         value={item}
         style={{ background: "transparent" }}
-        className={`text-poppins w-full bg-transparent px-1 text-lg
-      placeholder-silver`}
+        className={`text-poppins w-full bg-transparent px-1.5 text-lg
+        placeholder-silver shadow-inner rounded-lg border border-silver`}
         onChange={(e) => handleInputChange(idx, e.target.value)}
       />
     );

@@ -43,7 +43,7 @@ export default function NotificationsPage() {
   const [notificationFormat, setNotificationFormat] = useState({});
   const [composerOpen, setComposerOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState([]);
   const [notificationData, setNotificationData] = useState([]);
   const [notificationRecipient, setNotificationRecipient] = useState("");
   const [notificationTag, setNotificationTag] = useState("");
@@ -140,12 +140,12 @@ export default function NotificationsPage() {
   // Search for items in the announcements page
   useEffect(() => {
     if (notificationData != undefined || notificationData != null) {
-      setResult(
+      setResult(search ?
         notificationData.filter((item) =>
           [1, 2, 3, 4, 7].some((index) =>
             String(item[index]).toLowerCase().includes(search)
           )
-        )
+        ) : []
       );
     }
   }, [search]);
@@ -177,9 +177,9 @@ export default function NotificationsPage() {
       );
 
       // If the call was successful, send a success toaster and trigger
+      setActionTrigger(!actionTrigger);
       if (res.status == "success") successToaster(res.message);
       if (res.status == "error") errorToaster(res.message);
-      setActionTrigger(!actionTrigger);
     })();
 
     // Clear inputs
@@ -286,8 +286,14 @@ export default function NotificationsPage() {
           subText={`Seems Pretty Quiet`}
         />
       ) : (
-        (result.length != 0 ? result : notificationData).map((info, index) => (
+        (result.length != 0
+          ? result
+          : notificationData.filter(
+              (subList) => subList[subList.length - 1] !== "<< ARCHIVED >>"
+            )
+        ).map((info, index) => (
           <CollapsableInfoCard
+            console={console.log(result.length)}
             id={info[6]}
             key={`feedbackInbox-${info[0]}-${index}`}
             date={formatMilDate(info[0])}

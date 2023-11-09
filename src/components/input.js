@@ -1,8 +1,11 @@
 // React.js & Next.js libraries
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 // Autosize inputs import
 import AutosizeInput from "react-input-autosize";
+
+// Unique ID import
+import { v4 as uuidv4 } from 'uuid';
 
 // Input field with autocomplete feature
 export function AutoCompleteInput({ possibleItems, value, onChange }) {
@@ -41,7 +44,7 @@ export function AutoCompleteInput({ possibleItems, value, onChange }) {
       />
       {inputValue != "" && isFocused && (
         <div
-          className="absolute z-[999] flex max-h-32 w-full flex-col
+          className="absolute z-[999] flex max-h-64 w-full flex-col
           overflow-auto rounded-lg border border-silver bg-white"
         >
           {availableChoices.map((item, index) => (
@@ -125,6 +128,9 @@ export function ToggleSwitch({ initialState = false, onToggle }) {
   // Define useStates for the component
   const [isOn, setIsOn] = useState(initialState);
 
+  // Generate a unique ID for each instance of the ToggleSwitch
+  const uniqueId = useMemo(() => uuidv4(), []);
+
   // useEffect to synchronize internal state with external prop
   useEffect(() => {
     setIsOn(initialState);
@@ -145,13 +151,13 @@ export function ToggleSwitch({ initialState = false, onToggle }) {
       <input
         type="checkbox"
         name="toggle"
-        id="toggle"
+        id={uniqueId}
         checked={isOn}
         onChange={toggle}
         className="hidden"
       />
       <label
-        htmlFor="toggle"
+        htmlFor={uniqueId}
         className="bg-gray-300 block h-7 cursor-pointer overflow-hidden
         rounded-full"
       >

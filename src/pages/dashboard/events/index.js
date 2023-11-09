@@ -4,7 +4,6 @@ import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
 import React from "react";
 
 // Toaster components and CSS
@@ -416,12 +415,6 @@ export default function EventsPage() {
             onChange={setEventDescription}
           />
         </div>
-        {/* <textarea
-          className="rounded-lg border border-silver p-2 shadow-inner"
-          onChange={(event) => setEventDescription(event.target.value)}
-          value={eventDescription}
-          id="feedback"
-        /> */}
       </div>
       <div className="flex h-full flex-col gap-1">
         <div className="text-2xl">Event Location</div>

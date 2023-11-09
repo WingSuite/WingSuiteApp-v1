@@ -6,7 +6,8 @@ import { IconContext } from "react-icons";
 import AutosizeInput from "react-input-autosize";
 
 // Custom imports
-import { ErrorToaster } from "@/components/subcomponent/toasters";
+import { AutoCompleteInput } from "./input";
+import { errorToaster } from "./toasters";
 import { BottomDropDown } from "./dropdown";
 
 // React.js and Next.js libraries
@@ -17,10 +18,6 @@ export function FreeAdd({
   itemList,
   setItemList,
   type,
-  fontSize = "lg",
-  iconSize = "1.2",
-  padding = "",
-  textColor = "black",
   spanFullWidth = false,
   dropDown = false,
   unremovable = [],
@@ -34,7 +31,7 @@ export function FreeAdd({
     // Check if the value is in the list
     if (itemList.includes(value)) {
       // Send error message and return
-      ErrorToaster(`"${value}" ${type} already exists`);
+      errorToaster(`"${value}" ${type} already exists`);
       return;
     }
 
@@ -52,8 +49,8 @@ export function FreeAdd({
   };
 
   // Confirmation selection content
-  const confirmationSelection = (
-    <div className="flex flex-row gap-1">
+  const confirmation = (
+    <div className="ml-1 flex flex-row gap-1">
       {spanFullWidth ? (
         <>
           <button
@@ -62,9 +59,7 @@ export function FreeAdd({
               setIndex(-1);
             }}
           >
-            <IconContext.Provider
-              value={{ color: "#000000", size: `${iconSize}em` }}
-            >
+            <IconContext.Provider value={{ color: "#000000", size: `1.7em` }}>
               <VscCheck />
             </IconContext.Provider>
           </button>
@@ -73,9 +68,7 @@ export function FreeAdd({
               setIndex(-1);
             }}
           >
-            <IconContext.Provider
-              value={{ color: "#000000", size: `${iconSize}em` }}
-            >
+            <IconContext.Provider value={{ color: "#000000", size: `1.7em` }}>
               <VscChromeClose />
             </IconContext.Provider>
           </button>
@@ -87,9 +80,7 @@ export function FreeAdd({
               setIndex(-1);
             }}
           >
-            <IconContext.Provider
-              value={{ color: "#000000", size: `${iconSize}em` }}
-            >
+            <IconContext.Provider value={{ color: "#000000", size: `1.7em` }}>
               <VscChromeClose />
             </IconContext.Provider>
           </button>
@@ -99,9 +90,7 @@ export function FreeAdd({
               setIndex(-1);
             }}
           >
-            <IconContext.Provider
-              value={{ color: "#000000", size: `${iconSize}em` }}
-            >
+            <IconContext.Provider value={{ color: "#000000", size: `1.7em` }}>
               <VscCheck />
             </IconContext.Provider>
           </button>
@@ -110,96 +99,106 @@ export function FreeAdd({
     </div>
   );
 
+  // Add item button
+  const addItemButton = (
+    <button
+      className={`flex flex-row items-center justify-center gap-1
+      rounded-lg border-2 border-dashed border-sky px-1 ${
+        spanFullWidth ? "w-full" : "w-auto"
+      } hover:-translate-y-[0.09rem] hover:drop-shadow-lg`}
+      onClick={() => {
+        setItemList(
+          [
+            ...itemList,
+            `${type.charAt(0).toUpperCase() + type.slice(1)} #${
+              itemList.length + 1
+            }`,
+          ],
+          type
+        );
+      }}
+    >
+      <IconContext.Provider value={{ color: "#54C0FF", size: `1.7em` }}>
+        <VscAdd />
+      </IconContext.Provider>
+      <div className={`text-lg text-sky`}>
+        {`Add ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+      </div>
+    </button>
+  );
+
+  // Input component isolation
+  const IIso = ({ item, idx }) => {
+    return (
+      <input
+        type="text"
+        value={item}
+        style={{ background: "transparent" }}
+        className={`text-poppins w-full bg-transparent px-1.5 text-lg
+        placeholder-silver shadow-inner rounded-lg border border-silver`}
+        onChange={(e) => handleInputChange(idx, e.target.value)}
+      />
+    );
+  };
+
+  // AutoSizeInput component isolation
+  const AIIso = ({ item, idx }) => {
+    return (
+      <AutosizeInput
+        type="text"
+        value={item}
+        inputStyle={{ background: "transparent" }}
+        className={`text-poppins w-full px-1 text-lg
+        placeholder-silver`}
+        onChange={(e) => handleInputChange(idx, e.target.value)}
+      />
+    );
+  };
+
+  // Add item button component isolation
+  const AIso = ({ idx }) => {
+    return (
+      <button
+        className="ml-1.5"
+        onClick={() => {
+          setIndex(idx);
+        }}
+      >
+        <IconContext.Provider value={{ color: "#000000", size: `1.7em` }}>
+          <VscTrash />
+        </IconContext.Provider>
+      </button>
+    );
+  };
+
   // Return the component
   return (
     <div
-      className={`flex flex-wrap p-${padding} gap-2 w-${
-        spanFullWidth ? "full" : "auto"
-      }`}
+      className={`flex ${spanFullWidth ? "w-full" : "w-auto"} flex-wrap gap-2`}
     >
       {itemList.map((item, idx) => (
         <div
-          className={`flex rounded-lg text-${fontSize} bg-lightgray items-center
-          gap-0.5 p-1 w-${spanFullWidth ? "full" : "auto"}`}
+          className={`bg-lightgray flex items-center gap-0.5 rounded-lg
+          text-sm ${spanFullWidth ? "w-full" : "w-auto"}`}
           key={idx}
         >
-          {spanFullWidth ? (
-            dropDown ? (
-              <BottomDropDown
-                listOfItems={additionalList}
-                setSelected={(e) => {
-                  handleInputChange(idx, e);
-                }}
-                defaultValue={item}
-                bgColor="lightgray"
-                widthType="full"
-              />
-            ) : (
-              <input
-                type="text"
-                value={item}
-                style={{ background: "transparent" }}
-                className={`text-${fontSize} text-poppins text-${textColor}
-                w-full bg-transparent px-1 placeholder-silver`}
-                onChange={(e) => handleInputChange(idx, e.target.value)}
-              />
-            )
-          ) : (
-            <AutosizeInput
-              type="text"
+          {spanFullWidth && dropDown && (
+            <AutoCompleteInput
+              possibleItems={additionalList}
+              onChange={(e) => {
+                handleInputChange(idx, e);
+              }}
               value={item}
-              inputStyle={{ background: "transparent" }}
-              className={`text-${fontSize} text-poppins text-${textColor}
-              w-full px-1 placeholder-silver`}
-              onChange={(e) => handleInputChange(idx, e.target.value)}
             />
           )}
-          {unremovable.includes(item) ? (
-            <></>
-          ) : !(index == idx) ? (
-            <button
-              onClick={() => {
-                setIndex(idx);
-              }}
-            >
-              <IconContext.Provider
-                value={{ color: "#000000", size: `${iconSize}em` }}
-              >
-                <VscTrash />
-              </IconContext.Provider>
-            </button>
-          ) : (
-            confirmationSelection
-          )}
+          {spanFullWidth && !dropDown && <IIso item={item} idx={idx} />}
+          {!spanFullWidth && <AIIso item={item} idx={idx} />}
+          {unremovable.includes(item) && <></>}
+          {!unremovable.includes(item) && !(index == idx) && <AIso idx={idx} />}
+          {!unremovable.includes(item) && index == idx && confirmation}
         </div>
       ))}
-      <button
-        className={`flex flex-row items-center justify-center gap-1
-        rounded-lg border-2 border-dashed border-bermuda px-1 w-${
-          spanFullWidth ? "full" : "auto"
-        }
-         hover:-translate-y-[0.09rem] hover:drop-shadow-lg`}
-        onClick={() => {
-          setItemList(
-            [
-              ...itemList,
-              `${type.charAt(0).toUpperCase() + type.slice(1)} #${
-                itemList.length + 1
-              }`,
-            ],
-            type
-          );
-        }}
-      >
-        <IconContext.Provider
-          value={{ color: "#0DD9B5", size: `${iconSize}em` }}
-        >
-          <VscAdd />
-        </IconContext.Provider>
-        <div className={`text-bermuda text-${fontSize}`}>
-          {`Add ${type.charAt(0).toUpperCase() + type.slice(1)}`}
-        </div>
-      </button>
+      {addItemButton}
     </div>
   );
 }

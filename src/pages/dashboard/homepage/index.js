@@ -34,6 +34,7 @@ export default function HomePage() {
   const [rank, setRank] = useState("");
   const [feedbackData, setFeedbackData] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [taskData, setTaskData] = useState([]);
   const [lastWKScore, setLastWKScore] = useState("");
   const [lastPFAScore, setLastPFAScore] = useState("");
   const [weekViewData, setWeekViewData] = useState(
@@ -73,12 +74,7 @@ export default function HomePage() {
       // Iterate through each item of the response and store just the quotes
       let quotes = [];
       for (let item of res.message) {
-        var from_user = await post(
-          "/user/get_user/",
-          { id: item.from_user },
-          Cookies.get("access")
-        );
-        quotes.push([item.feedback, from_user.message.full_name]);
+        quotes.push([item.feedback, item.formatted_from_user]);
       }
 
       // Store the quotes to the useState
@@ -185,6 +181,22 @@ export default function HomePage() {
       if (res.message.length == 0) setLastWKScore("N/A");
       else setLastWKScore(res.message[0].composite_score);
     })();
+
+    // Process task data
+    (async () => {
+      // Get the user's feedback information
+      var res = await post(
+        "/user/get_tasks/",
+        { page_size: 200, page_index: 0, get_completed: false },
+        Cookies.get("access")
+      );
+
+      // If resulting API results in an error, return
+      if (res.status === "error") return;
+
+      // Save the data
+      setTaskData(res.message);
+    })();
   }, []);
 
   // Get the greeting information
@@ -205,7 +217,8 @@ export default function HomePage() {
         {config.daysOfTheWeek.map((item, index) => (
           <div
             key={`weekView-${item}-${index}`}
-            className={`flex h-56 w-[13.5%] flex-col gap-0.5 rounded-lg border p-2
+            className={`flex h-56 w-[13.5%] flex-col gap-0.5 overflow-y-auto rounded-lg border
+            py-2 pl-2 pr-1
             ${
               getTodayDay() == item
                 ? "border-2 border-sky shadow-md shadow-sky"
@@ -214,8 +227,8 @@ export default function HomePage() {
           >
             <div className="text-lg">{item}</div>
             <div
-              className="flex w-full flex-col gap-2 pr-1
-              pt-1.5"
+              className="flex w-full flex-col gap-2 overflow-y-auto
+              pr-1 pt-1.5"
             >
               {weekViewData[item].map((event, index) => (
                 <ButtonCard
@@ -226,9 +239,10 @@ export default function HomePage() {
                     event.end
                   )}`}
                   buttonInfo={`transition duration-200 ease-in border
-                border-transparent hover:border hover:border-darkOcean
-                hover:border hover:-translate-y-[0.1rem] hover:shadow-xl
-                bg-gradient-to-tr from-deepOcean to-sky text-white`}
+                  border-transparent hover:border hover:border-darkOcean
+                  hover:border hover:-translate-y-[0.1rem] hover:shadow-xl
+                  bg-gradient-to-tr from-deepOcean to-sky text-white`}
+                  action={() => {router.push("/dashboard/events/")}}
                 />
               ))}
             </div>
@@ -240,9 +254,9 @@ export default function HomePage() {
 
   // Quick Links view definition
   const quickLinksView = (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 overflow-y-auto">
       <div className="text-4xl">Quick Links</div>
-      <div className="flex h-full flex-col gap-4 p-1 pb-4">
+      <div className="flex h-full flex-col gap-4 overflow-y-auto p-1 pb-4">
         {config.quickLinks.map((item, index) => (
           <ButtonCard
             key={`quickLink-${item.name}-${index}`}
@@ -276,11 +290,11 @@ export default function HomePage() {
 
   // Feedback view definition
   const feedbackView = (
-    <div className="flex h-full w-1/4 flex-col gap-4">
+    <div className="flex h-full w-1/4 flex-col gap-4 overflow-y-auto">
       <div className="text-4xl">Feedback</div>
       <div
-        className="flex h-full flex-col gap-4 rounded-lg
-        px-1 pb-4 pr-2"
+        className="flex h-full flex-col gap-4 overflow-y-auto
+        rounded-lg px-1 pb-4 pr-2"
       >
         {feedbackData.length === 0 ? (
           <Nothing
@@ -311,11 +325,11 @@ export default function HomePage() {
 
   // Notifications view definition
   const notificationsView = (
-    <div className="flex w-1/3 flex-col gap-4">
+    <div className="flex w-1/3 flex-col gap-4 overflow-y-auto">
       <div className="text-4xl">Notifications</div>
       <div
-        className="flex h-full flex-col gap-4 rounded-lg px-1
-        pb-4 pr-2"
+        className="flex h-full flex-col gap-4 overflow-y-auto rounded-lg
+        px-1 pb-4 pr-2"
       >
         {notifications.length === 0 ? (
           <Nothing
@@ -344,21 +358,45 @@ export default function HomePage() {
     </div>
   );
 
+  // Task view definition
+  const taskView = (
+    <div className="flex h-full w-1/3 flex-1 flex-col gap-4 overflow-y-auto">
+      <div className="text-4xl">⚠️ Tasks</div>
+      <div
+        className="flex h-full flex-col gap-4 overflow-y-auto
+        px-1.5 pb-4 py-1"
+      >
+        {taskData.map((item, idx) => (
+          <button
+            className="rounded-lg border-2 border-sky p-2
+            transition duration-200 ease-in hover:-translate-y-[0.1rem]
+            hover:border-2 hover:border-darkOcean hover:shadow-xl truncate
+            text-left"
+            onClick={()=>{router.push('/dashboard/tasks/')}}
+            key={item._id}
+          >
+            {(item.status == "incomplete") ? `❌` : `🛂`} {item.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   // Render components
   return (
-    <div className="relative flex h-screen flex-row">
+    <div className="relative flex h-screen flex-row overflow-y-auto">
       <Sidebar />
-      <div className="m-10 flex w-full flex-col overflow-y-auto">
-        <PageTitle className="flex-none" customName="Home Page" />
-        <div className="flex h-full flex-col gap-14 overflow-y-auto pr-4">
-          <div className="pt-2 text-7xl">{greeting}</div>
-          {weekView}
-          <div className="flex h-full flex-row gap-14">
-            {statsView}
-            {feedbackView}
-            {notificationsView}
-            {quickLinksView}
-          </div>
+      <div
+        className="m-10 flex max-h-screen w-full flex-col gap-14
+        overflow-y-auto pr-4"
+      >
+        <div className="pt-2 text-7xl">{greeting}</div>
+        {weekView}
+        <div className="flex max-h-screen flex-row gap-14 overflow-y-auto">
+          {taskData.length == 0 ? statsView : taskView}
+          {feedbackView}
+          {notificationsView}
+          {quickLinksView}
         </div>
       </div>
     </div>

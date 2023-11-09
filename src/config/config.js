@@ -9,6 +9,7 @@ import {
   VscListFlat,
   VscKey,
   VscOrganization,
+  VscChecklist
 } from "react-icons/vsc";
 import { BsPerson } from "react-icons/bs";
 import { BiNews } from "react-icons/bi";
@@ -116,6 +117,16 @@ export const permissionsList = {
       "statistic.feedback.delete_feedback",
     ],
   },
+  tasks: {
+    edit: [
+      "statistic.task.create_task",
+      "statistic.task.get_task_info",
+      "statistic.task.update_task",
+      "statistic.task.reject_completion",
+      "statistic.task.change_status",
+      "statistic.task.delete_task",
+    ]
+  },
   admin: {
     register_list: {
       page: [
@@ -217,6 +228,11 @@ export const regularSidebarContents = [
     title: "Home Page",
     link: "/dashboard/homepage",
     icon: <VscHome />,
+  },
+  {
+    title: "Tasks",
+    link: "/dashboard/tasks",
+    icon: <VscChecklist />,
   },
   {
     title: "Notifications",

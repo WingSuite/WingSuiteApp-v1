@@ -43,7 +43,7 @@ export default function NotificationsPage() {
   const [notificationFormat, setNotificationFormat] = useState({});
   const [composerOpen, setComposerOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState([]);
   const [notificationData, setNotificationData] = useState([]);
   const [notificationRecipient, setNotificationRecipient] = useState("");
   const [notificationTag, setNotificationTag] = useState("");
@@ -104,31 +104,14 @@ export default function NotificationsPage() {
       if (res.status === "error") return;
 
       // Iterate through each item of the response and store just the quotes
-      // TODO: OPTIMIZE!!!!!!!!!!!!!!!!
       let parsed = [];
       for (let item of res.message) {
-        // Get the author's name
-        var from_user = await post(
-          "/user/get_user/",
-          { id: item.author },
-          Cookies.get("access")
-        );
-
-        // Get the source unit
-        var source_unit = await post(
-          "/unit/get_unit_info/",
-          { id: item.unit },
-          Cookies.get("access")
-        );
-
         // Append information
         parsed.push([
           item.created_datetime,
           item.name,
-          source_unit.message.name,
-          `${from_user.message.rank ? from_user.message.rank : ""} ${
-            from_user.message.full_name
-          }`,
+          item.formatted_unit,
+          item.formatted_author,
           item.notification,
           user._id == item.author ||
             user.permissions.includes(config.allAccessPermission),
@@ -157,12 +140,12 @@ export default function NotificationsPage() {
   // Search for items in the announcements page
   useEffect(() => {
     if (notificationData != undefined || notificationData != null) {
-      setResult(
+      setResult(search ?
         notificationData.filter((item) =>
           [1, 2, 3, 4, 7].some((index) =>
             String(item[index]).toLowerCase().includes(search)
           )
-        )
+        ) : []
       );
     }
   }, [search]);
@@ -194,9 +177,9 @@ export default function NotificationsPage() {
       );
 
       // If the call was successful, send a success toaster and trigger
+      setActionTrigger(!actionTrigger);
       if (res.status == "success") successToaster(res.message);
       if (res.status == "error") errorToaster(res.message);
-      setActionTrigger(!actionTrigger);
     })();
 
     // Clear inputs
@@ -303,8 +286,14 @@ export default function NotificationsPage() {
           subText={`Seems Pretty Quiet`}
         />
       ) : (
-        (result.length != 0 ? result : notificationData).map((info, index) => (
+        (result.length != 0
+          ? result
+          : notificationData.filter(
+              (subList) => subList[subList.length - 1] !== "<< ARCHIVED >>"
+            )
+        ).map((info, index) => (
           <CollapsableInfoCard
+            console={console.log(result.length)}
             id={info[6]}
             key={`feedbackInbox-${info[0]}-${index}`}
             date={formatMilDate(info[0])}

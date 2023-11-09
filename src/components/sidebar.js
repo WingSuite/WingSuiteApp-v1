@@ -27,6 +27,10 @@ import {
   config,
 } from "@/config/config";
 
+// Modal imports
+import Modal from "react-modal";
+import ProfileModal from "./_profileModal";
+
 // Util imports
 import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
@@ -44,6 +48,7 @@ const Sidebar = () => {
   const [unitCollapse, setUnitCollapse] = useState({});
   const [userInfo, setUserInfo] = useState({});
   const [units, setUnits] = useState([]);
+  const [modalMode, setModalMode] = useState(false);
 
   // Get current path and router
   const router = useRouter();
@@ -148,7 +153,7 @@ const Sidebar = () => {
     <button
       key={`${item.title.toLowerCase()}`}
       className={`${
-        currentPath == `${item.link}`
+        currentPath.includes(`${item.link}`)
           ? `bg-white hover:-translate-y-[0.1rem] hover:shadow-md
           hover:shadow-white`
           : `border border-transparent hover:-translate-y-[0.1rem]
@@ -160,7 +165,7 @@ const Sidebar = () => {
     >
       <IconContext.Provider
         value={{
-          color: currentPath == `${item.link}` ? "#000000" : "#FFFFFF",
+          color: currentPath.includes(`${item.link}`) ? "#000000" : "#FFFFFF",
           size: "1.2em",
           className: "mr-2",
         }}
@@ -169,7 +174,7 @@ const Sidebar = () => {
       </IconContext.Provider>
       <div
         className={`text-${
-          currentPath == `${item.link}` ? "black" : "white"
+          currentPath.includes(`${item.link}`) ? "black" : "white"
         } text-left text-sm`}
       >
         {item.title}
@@ -450,8 +455,15 @@ const Sidebar = () => {
             className="mx-4 mb-4 flex flex-row items-center gap-3
             rounded-xl bg-white py-2 pl-3 pr-1"
           >
-            <Image alt="Logo" src={logobw} width={37} height={37} />
-            <div className="flex-1 truncate text-sm">{userInfo.full_name}</div>
+            <button onClick={() => setModalMode(true)}>
+              <Image alt="Logo" src={logobw} width={37} height={37} />
+            </button>
+            <button
+              className="flex-1 truncate text-sm"
+              onClick={() => setModalMode(true)}
+            >
+              {userInfo.full_name}
+            </button>
             <button onClick={logoutButton}>
               <IconContext.Provider
                 value={{
@@ -466,6 +478,20 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={modalMode}
+        onRequestClose={() => {
+          setModalMode(false);
+        }}
+        contentLabel="Example Modal"
+        ariaHideApp={false}
+        className="m-auto flex w-5/12 flex-col items-center border-0
+        outline-none max-h-1/2"
+        overlayClassName="flex items-center justify-center bg-black
+        bg-opacity-30 fixed inset-0 z-[999]"
+      >
+        <ProfileModal />
+      </Modal>
     </div>
   );
 };

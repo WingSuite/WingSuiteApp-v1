@@ -108,20 +108,10 @@ export default function FeedbackPage() {
       // Iterate through each item of the response and store the feedbacks
       let parsed = [];
       for (let item of res.message) {
-        // Get the from user
-        var from_user = await post(
-          "/user/get_user/",
-          { id: toolbarSelect == 0 ? item.from_user : item.to_user },
-          Cookies.get("access")
-        );
-
-        // Push new information
         parsed.push([
           item.datetime_created,
           item.name,
-          `${from_user.message.rank ? from_user.message.rank : ""} ${
-            from_user.message.full_name
-          }`,
+          item.formatted_from_user,
           item.feedback,
           item._id,
           user._id == item.from_user ||

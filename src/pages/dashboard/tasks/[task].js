@@ -1,5 +1,5 @@
 // React Icons
-import { VscChromeClose, VscEdit, VscCheck } from "react-icons/vsc";
+import { VscChromeClose, VscEdit, VscCheck, VscTrash } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
@@ -37,7 +37,6 @@ import Modal from "react-modal";
 import ActionModal from "./_request";
 
 // Util imports
-import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
 import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
@@ -45,7 +44,6 @@ import { post } from "@/utils/call";
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
 import { CollapsableInfoCard } from "@/components/cards";
-import { BottomDropDown } from "@/components/dropdown";
 import { ToggleSwitch } from "@/components/input";
 import { Nothing } from "@/components/nothing";
 import { TimeInput } from "@/components/input";
@@ -56,7 +54,6 @@ import Sidebar from "@/components/sidebar";
 export default function UnitResourcesPage() {
   // Define router and get unit ID from URL
   const router = useRouter();
-  const { task: task_id } = router.query;
 
   // Define useStates
   const [task, setTask] = useState({});
@@ -67,6 +64,7 @@ export default function UnitResourcesPage() {
   const [toolbarSelect, setToolbarSelect] = useState(0);
   const [modalMode, setModalMode] = useState(false);
   const [modalSelect, setModalSelect] = useState({});
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
   const toolbarItems = ["Incomplete", "Pending", "Complete"];
   const completionKey = ["incomplete", "pending", "complete"];
 
@@ -76,18 +74,20 @@ export default function UnitResourcesPage() {
     if (!authCheck(permissionsList.admin.view_and_edit)) return;
 
     // Get all data about the task
-    (async () => {
-      // Get the task data of
-      var res = await post(
-        "/statistic/task/get_task_info/",
-        { id: task_id },
-        Cookies.get("access")
-      );
+    if (router.isReady) {
+      (async () => {
+        // Get the task data of
+        var res = await post(
+          "/statistic/task/get_task_info/",
+          { id: router.query.task },
+          Cookies.get("access")
+        );
 
-      // Save that data
-      setTask(res.message);
-    })();
-  }, [actionTrigger]);
+        // Save that data
+        setTask(res.message);
+      })();
+    }
+  }, [actionTrigger, router.isReady]);
 
   // Reset payloads function
   const resetPayloads = () => {
@@ -121,6 +121,23 @@ export default function UnitResourcesPage() {
       ...prevState,
       [key]: value,
     }));
+  };
+
+  // Delete task function
+  const deleteTask = () => {
+    // Send API call
+    (async () => {
+      // Create task
+      var res = await post(
+        "/statistic/task/delete_task/",
+        { id: task._id },
+        Cookies.get("access")
+      );
+
+      // Send toaster message upon creation
+      if (res.status == "success") successToaster(res.message);
+      if (res.status == "error") errorToaster(res.message);
+    })();
   };
 
   // Create task function
@@ -272,9 +289,10 @@ export default function UnitResourcesPage() {
           <div>{task.auto_accept_requests ? "Yes" : "No"}</div>
         </div>
       </div>
-      <div className="">
-        <button
-          className={`flex flex-row gap-4 rounded-lg border px-3
+      {!deleteConfirm ? (
+        <div className="flex flex-row gap-2">
+          <button
+            className={`flex flex-row gap-4 rounded-lg border px-3
           py-2 text-xl transition duration-200 ease-in
           hover:-translate-y-[0.1rem] hover:shadow-lg ${
             taskEdit
@@ -282,21 +300,71 @@ export default function UnitResourcesPage() {
             to-sky text-white hover:border-darkOcean`
               : `border-silver hover:border-sky`
           }`}
-          onClick={() => {
-            resetPayloads();
-            setTaskEdit(!taskEdit);
-          }}
-        >
-          <IconContext.Provider
-            value={{
-              size: "1.2em",
+            onClick={() => {
+              resetPayloads();
+              setTaskEdit(!taskEdit);
             }}
           >
-            <VscEdit />
-          </IconContext.Provider>
-          <div>Edit Task</div>
-        </button>
-      </div>
+            <IconContext.Provider
+              value={{
+                size: "1.2em",
+              }}
+            >
+              <VscEdit />
+            </IconContext.Provider>
+            <div>Edit Task</div>
+          </button>
+          <button
+            className={`flex flex-row gap-4 rounded-lg border px-3 py-2 text-xl
+          transition duration-200 ease-in hover:-translate-y-[0.1rem]
+          hover:shadow-lg ${
+            taskEdit
+              ? `border-scarlet bg-gradient-to-tr from-scarlet
+              to-darkScarlet text-white hover:border-darkScarlet`
+              : `border-silver hover:border-scarlet`
+          }`}
+            onClick={() => {
+              setDeleteConfirm(true);
+            }}
+          >
+            <IconContext.Provider
+              value={{
+                size: "1.2em",
+              }}
+            >
+              <VscTrash />
+            </IconContext.Provider>
+            <div>Delete Task</div>
+          </button>
+        </div>
+      ) : (
+        <div
+          className="mt-4 flex w-fit flex-row gap-2 rounded-lg border
+          border-scarlet px-1 py-0.5 pl-1.5 text-left text-3xl text-scarlet"
+        >
+          <div>Are You Sure?</div>
+          <button
+            className="transition duration-200 ease-in
+            hover:-translate-y-[0.1rem] hover:text-scarlet"
+            onClick={() => {
+              setDeleteConfirm(false);
+            }}
+          >
+            <VscChromeClose />
+          </button>
+          <button
+            className="first-letter: mr-0.5 transition duration-200 ease-in
+            hover:-translate-y-[0.1rem] hover:text-scarlet"
+            onClick={() => {
+              deleteTask();
+              setDeleteConfirm(false);
+              router.push("/dashboard/tasks/");
+            }}
+          >
+            <VscCheck />
+          </button>
+        </div>
+      )}
     </div>
   );
 
@@ -473,7 +541,12 @@ export default function UnitResourcesPage() {
                 <CollapsableInfoCard
                   id={item}
                   title={task.name_map[item]}
-                  mainText={task[completionKey[toolbarSelect]][item] || "N/A"}
+                  mainText={
+                    task[completionKey[toolbarSelect]][item] == "" ||
+                    task[completionKey[toolbarSelect]][item] == "<p><br></p>"
+                      ? "N/A"
+                      : task[completionKey[toolbarSelect]][item]
+                  }
                   startState={true}
                   actionButton={
                     <>

@@ -403,7 +403,7 @@ export default function UnitResourcesPage() {
             : `border-silver hover:border-sky`
         }`}
         onClick={() => {
-          updatePayload("reminder", defaultReminders);
+          updatePayload("reminders", defaultReminders);
           setComposerOpen(!composerOpen);
         }}
       >
@@ -429,7 +429,7 @@ export default function UnitResourcesPage() {
         hover:border-2 hover:border-sky hover:shadow-sky"
         onClick={() => router.push(`/dashboard/tasks/${task._id}`)}
       >
-        <div className="text-4xl">{task.name}</div>
+        <div className="text-4xl text-left">{task.name}</div>
         <div className="thin-scrollbar h-full overflow-y-auto pr-1 text-left">
           <ReactMarkdown
             className="custom-prose prose max-w-full text-base"
@@ -484,7 +484,7 @@ export default function UnitResourcesPage() {
     <div
       className={
         toolbarSelect == 0
-          ? `flex max-h-full w-full flex-col gap-2 overflow-auto pr-2`
+          ? `flex max-h-full w-full flex-col gap-2 overflow-auto p-1`
           : `flex w-full flex-wrap gap-4 p-1`
       }
     >

@@ -128,7 +128,11 @@ export function FreeAdd({
   );
 
   // Input component isolation
-  const IIso = ({ item, idx }) => {
+  const IIso = ({ item, idx, func }) => {
+    const [IIsoTrigger, setIIsoTrigger] = useState(true);
+    const [value, setVal] = useState("");
+    useEffect(() => {func(idx, value)}, [IIsoTrigger]);
+
     return (
       <input
         type="text"

@@ -43,7 +43,7 @@ export default function UnitResourcesPage() {
   // Execute function on mount
   useEffect(() => {
     // Check for correct user auth
-    if (!authCheck(permissionsList.admin.unit_handling.page)) return;
+    if (!authCheck()) return;
 
     // Call backend to fetch all unit data
     (async () => {

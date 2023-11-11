@@ -69,6 +69,12 @@
   border-radius: 100vw;
 }
 
+.custom-placeholder::placeholder {
+  color: #54c0ff;
+  opacity: 1;
+}
+
+
 /*#endregion*/
 
 /*

@@ -9,7 +9,7 @@ import {
   VscListFlat,
   VscKey,
   VscOrganization,
-  VscChecklist
+  VscChecklist,
 } from "react-icons/vsc";
 import { BsPerson } from "react-icons/bs";
 import { BiNews } from "react-icons/bi";
@@ -59,6 +59,37 @@ export const config = {
   passwordRegex:
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
   emailRegex: /^[a-zA-Z0-9._%+-]+@(asu|my.gcu|maricopa)\.edu$/,
+  rankList: [
+    "C/4C",
+    "C/3C",
+    "C/2d Lt",
+    "C/1st Lt",
+    "C/Capt",
+    "C/Maj",
+    "C/Lt Col",
+    "C/Col",
+    "AB",
+    "Amn",
+    "A1C",
+    "SrA",
+    "SSgt",
+    "TSgt",
+    "MSgt",
+    "SMSgt",
+    "CMSgt",
+    "CCM",
+    "CMSAF",
+    "2d Lt",
+    "1st Lt",
+    "Capt",
+    "Maj",
+    "Lt Col",
+    "Col",
+    "Brig Gen",
+    "Maj Gen",
+    "Lt Gen",
+    "Gen",
+  ],
 };
 
 // Quill editor configurations
@@ -125,7 +156,7 @@ export const permissionsList = {
       "statistic.task.reject_completion",
       "statistic.task.change_status",
       "statistic.task.delete_task",
-    ]
+    ],
   },
   admin: {
     register_list: {

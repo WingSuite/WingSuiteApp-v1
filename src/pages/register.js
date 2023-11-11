@@ -196,8 +196,8 @@ const Register = () => {
                 <div className="text-xl">(</div>
                 <input
                   className="text-gray-700 focus:shadow-outline w-1/4
-                rounded-lg border border-silver bg-white/[0.3] p-1
-                shadow-lg focus:outline-none"
+                  rounded-lg border border-silver bg-white/[0.3] p-1
+                  shadow-lg focus:outline-none"
                   id="phone1"
                   maxlength="3"
                   type="text"
@@ -303,7 +303,7 @@ const Register = () => {
           Login
         </button>
       </div>
-      
+
       <ToastContainer
         position="top-right"
         autoClose={5000}

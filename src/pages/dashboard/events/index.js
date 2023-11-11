@@ -58,11 +58,13 @@ export default function EventsPage() {
   const [composerOpen, setComposerOpen] = useState(false);
   const [actionTrigger, setActionTrigger] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState({});
+  const [colorFormat, setColorFormat] = useState({});
 
   // Define useStates for composing an event
   const [availableUnits, setAvailableUnits] = useState([]);
   const [eventRecipient, setEventRecipient] = useState("");
   const [eventTitle, setEventTitle] = useState("");
+  const [eventTag, setEventTag] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [eventLocation, setEventLocation] = useState("");
   const [eventTimes, setEventTimes] = useState({
@@ -115,6 +117,12 @@ export default function EventsPage() {
 
       // Return
       return;
+    })();
+
+    // Save the current formatting for tags
+    (async () => {
+      var res = await get("/event/get_event_format/", Cookies.get("access"));
+      setColorFormat(res.tag_options);
     })();
   }, []);
 
@@ -201,6 +209,12 @@ export default function EventsPage() {
       return;
     }
 
+    // Check if event tag is empty
+    if (eventTag == "") {
+      errorToaster("Event tag is empty");
+      return;
+    }
+
     // Check if start event times are empty
     if (eventTimes.startHour == "" || eventTimes.startMinute == "") {
       errorToaster("Event start time should not be empty or partially filled");
@@ -236,9 +250,6 @@ export default function EventsPage() {
         EVENT CREATION
     */
 
-    // Start a loading toast
-    const toastId = infoToaster("Loading...", "top-right", false);
-
     // Call API for creating the event
     (async () => {
       // Iterate through every day selected
@@ -272,24 +283,21 @@ export default function EventsPage() {
             end_datetime: end_datetime,
             description: eventDescription,
             notify_email: eventEmailNotify,
+            tag: eventTag,
           },
           Cookies.get("access")
         );
-
-        // If the call was successful, send a success toaster and trigger
-        // if (res.status == "success") successToaster(res.message);
-        // if (res.status == "error") errorToaster(res.message);
       }
+
+      // Display success
+      successToaster("All events created successfully!");
       setActionTrigger(!actionTrigger);
     })();
-
-    // Close the loading toast and display success
-    toast.dismiss(toastId);
-    successToaster("All events created successfully!");
 
     // Clear inputs
     setEventRecipient("");
     setEventTitle("");
+    setEventTag("");
     setEventDescription("");
     setEventLocation("");
     setEventTimes({
@@ -317,6 +325,7 @@ export default function EventsPage() {
           location: info.location,
           start_datetime: info.start.getTime() / 1000,
           end_datetime: info.end.getTime() / 1000,
+          tag: info.tag,
         },
         Cookies.get("access")
       );
@@ -401,6 +410,15 @@ export default function EventsPage() {
           onChange={(event) => setEventTitle(event.target.value)}
           value={eventTitle}
           id="feedbackTitle"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <div className="text-2xl">Event Tag</div>
+        <BottomDropDown
+          listOfItems={Object.keys(colorFormat)}
+          setSelected={(e) => setEventTag(e)}
+          defaultValue={eventTag || "Select a Tag"}
+          editColor={false}
         />
       </div>
       <div className="flex h-full flex-col gap-1">
@@ -498,6 +516,7 @@ export default function EventsPage() {
         <div className="flex flex-row-reverse">{toolbarAccess && toolbar}</div>
         <div className="flex h-full w-full flex-row gap-5 overflow-hidden">
           <CalendarComponent
+            colorFormatting={colorFormat}
             events={events}
             updateRange={setQueryRange}
             onEventClick={(e) => {
@@ -517,6 +536,7 @@ export default function EventsPage() {
               selectedEvent={selectedEvent}
               units={availableUnits}
               setModalIsOpen={setModalIsOpen}
+              colorFormat={colorFormat}
               updateEvent={toolbarAccess ? updateEvent : null}
               deleteEvent={toolbarAccess ? deleteEvent : null}
             />

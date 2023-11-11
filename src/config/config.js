@@ -10,6 +10,8 @@ import {
   VscKey,
   VscOrganization,
   VscChecklist,
+  VscNotebook,
+  VscTypeHierarchySub
 } from "react-icons/vsc";
 import { BsPerson } from "react-icons/bs";
 import { BiNews } from "react-icons/bi";
@@ -284,6 +286,16 @@ export const regularSidebarContents = [
     title: "Metrics",
     link: "/dashboard/metrics",
     icon: <VscGraph />,
+  },
+  {
+    title: "User Sheet",
+    link: "/dashboard/user_sheet",
+    icon: <VscNotebook />,
+  },
+  {
+    title: "Organization Tree",
+    link: "/dashboard/organization_tree",
+    icon: <VscTypeHierarchySub />,
   },
 ];
 

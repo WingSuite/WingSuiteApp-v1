@@ -31,18 +31,16 @@ import Sidebar from "@/components/sidebar";
 export default function UnitResourcesPage() {
   // Define useStates
   const [filterUserList, setFilteredUserList] = useState([]);
-  const [actionTrigger, setActionTrigger] = useState(false);
   const [tooltipContent, setTooltipContent] = useState("");
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipID, setTooltipID] = useState("");
-  const [viewMode, setViewMode] = useState(false);
   const [userList, setUserList] = useState([]);
   const [search, setSearch] = useState("");
 
   // Execute function on mount
   useEffect(() => {
     // Check for correct user auth
-    if (!authCheck(permissionsList.admin.user_list.page)) return;
+    if (!authCheck()) return;
 
     // Get the list of users
     (async () => {
@@ -78,7 +76,7 @@ export default function UnitResourcesPage() {
       setFilteredUserList(processed);
       setUserList(processed);
     })();
-  }, [actionTrigger]);
+  }, []);
 
   // Apply search filter
   useEffect(() => {
@@ -107,45 +105,6 @@ export default function UnitResourcesPage() {
   const handleMouseLeave = () => {
     setShowTooltip(false);
   };
-
-  // Define the kick user action
-  const kickUser = (id) => {
-    // Run async call to process kick
-    (async () => {
-      // Call API
-      var res = await post(
-        "/auth/kick_user/",
-        { id: id },
-        Cookies.get("access")
-      );
-
-      // Show toast messages depending on state
-      if (res.status == "error") errorToaster(res.message);
-      if (res.status == "success") successToaster(res.message);
-
-      // Trigger action trigger
-      setActionTrigger(!actionTrigger);
-    })();
-  };
-
-  // Card mode view
-  const cardModeView = (
-    <div className="flex flex-wrap gap-4 overflow-y-auto pt-2">
-      {filterUserList.map((item) => (
-        <UserCard
-          id={item._id}
-          key={`Member-${item._id}`}
-          name={`${item.last_name}, ${item.first_name} ${
-            item.middle_initial == undefined ? `` : item.middle_initial
-          }`}
-          rank={item.rank ? item.rank : "No Rank"}
-          email={item.email}
-          phone={item.phone_number}
-          deleteFunc={(id, _) => kickUser(id)}
-        />
-      ))}
-    </div>
-  );
 
   const listModeView = (
     <div className="max-w-screen overflow-y-auto pt-3">
@@ -239,7 +198,7 @@ export default function UnitResourcesPage() {
     <div className="relative flex h-screen flex-row">
       <Sidebar />
       <div className="m-10 flex max-h-full w-full flex-col">
-        <PageTitle className="flex-none" customName="Admin / User List" />
+        <PageTitle className="flex-none" customName="User Sheet" />
         {userList.length == 0 ? (
           <Nothing
             mainText={"There are No Members in the Organization"}
@@ -263,21 +222,8 @@ export default function UnitResourcesPage() {
                   }}
                 />
               </div>
-              <div className="static">
-                <button
-                  className="absolute rounded-lg border border-silver p-3
-                  shadow-md transition duration-200 ease-in
-                  hover:-translate-y-[0.03rem] hover:border-sky
-                  hover:shadow-sky"
-                  onClick={() => setViewMode(!viewMode)}
-                >
-                  <IconContext.Provider value={{ size: "1.8em" }}>
-                    {viewMode ? <VscListUnordered /> : <VscExtensions />}
-                  </IconContext.Provider>
-                </button>
-              </div>
             </div>
-            {!viewMode ? cardModeView : listModeView}
+            {listModeView}
           </div>
         )}
       </div>

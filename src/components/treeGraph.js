@@ -16,7 +16,7 @@ const Tree = dynamic(() => import("react-d3-tree"), {
 export function TreeChart({
   treeData,
   updateUnitFunc = () => {},
-  addUnitFunc = () => {},
+  addUnitFunc = null,
 }) {
   // Define useStates and ref information
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -78,7 +78,7 @@ export function TreeChart({
             </foreignObject>
           </>
         )}
-        {nodeDatum.children == undefined && (
+        {nodeDatum.children == undefined && addUnitFunc && (
           <foreignObject
             width={100}
             height={44}

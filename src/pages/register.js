@@ -19,6 +19,9 @@ import { config } from "@/config/config";
 // Util imports
 import { post } from "@/utils/call";
 
+// Custom components imports
+import { BottomDropDown } from "@/components/dropdown";
+
 // JS Cookies import
 import Cookies from "js-cookie";
 
@@ -30,6 +33,7 @@ const Register = () => {
   // Variable declaration and initialization
   const [passwordReq, setPasswordReq] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [selectedRank, setSelectedRank] = useState("");
   const router = useRouter();
 
   // Pop toaster message if noTokens cookie is present
@@ -97,6 +101,10 @@ const Register = () => {
       errorToaster("Passwords do not match");
       return;
     }
+    if (selectedRank == "") {
+      errorToaster("No rank was selected");
+      return;
+    }
     // #endregion
 
     // Build the query JSON
@@ -106,6 +114,7 @@ const Register = () => {
       email: email,
       phone_number: phone,
       password: password1,
+      rank: selectedRank
     };
     if (middle != "") {
       query.middle_initial = middle;
@@ -176,6 +185,18 @@ const Register = () => {
                 id="last"
                 type="text"
               />
+            </div>
+            <div className="flex flex-col">
+              <div className="">Rank</div>
+
+              <div className="rounded-lg !bg-white/[0.3] !shadow-lg">
+                <BottomDropDown
+                  listOfItems={config.rankList}
+                  setSelected={(e) => setSelectedRank(e)}
+                  defaultValue={selectedRank || ""}
+                  editColor={false}
+                />
+              </div>
             </div>
             <div className="flex flex-col">
               <div className="">Email</div>

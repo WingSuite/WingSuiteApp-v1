@@ -7,71 +7,46 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 
 export default function Home() {
-  const [editorContent, setEditorContent] = useState("");
-  const [sanitizedHTML, setSanitizedHTML] = useState("");
+  const [imageSrc, setImageSrc] = useState("");
 
-  useEffect(() => {
-    setSanitizedHTML(DOMPurify.sanitize(editorContent));
-  }, [editorContent]);
-
-  const modules = {
-    toolbar: [
-      [{ header: "1" }, { header: "2" }],
-      [{ size: [] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [
-        { list: "ordered" },
-        { list: "bullet" },
-        { indent: "-1" },
-        { indent: "+1" },
-      ],
-      ["link", "image", "video"],
-      ["clean"],
-    ],
-    clipboard: {
-      matchVisual: false,
-    },
-  };
-
-  const formats = [
-    "header",
-    "size",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-    "video",
-  ];
-
-  const handleEditorChange = (content, delta, source, editor) => {
-    setEditorContent(editor.getHTML());
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file.size > 5 * 1024 * 1024) {
+      alert("ile size should not exceed 5 MB");
+      return;
+    }
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImageSrc(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
-    <div className="p-10">
-      <div className="h-[50vh]">
-        <QuillNoSSRWrapper
-          modules={modules}
-          formats={formats}
-          theme="snow"
-          onChange={handleEditorChange}
-          style={{ height: "100%" }}
+    <div>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageChange}
+        style={{ display: "none" }}
+        id="fileInput"
+      />
+      <button onClick={() => document.getElementById("fileInput").click()}>
+        Upload Image
+      </button>
+      {imageSrc && (
+        <div
+          className="flex h-64 w-64 items-center justify-center overflow-hidden
+          rounded-full bg-sky"
+          style={{
+            backgroundImage: `url('${imageSrc}')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
         />
-      </div>
-      <div className="mt-20">
-        <ReactMarkdown
-          className="custom-prose prose"
-          rehypePlugins={[rehypeRaw]}
-        >
-          {sanitizedHTML}
-        </ReactMarkdown>
-      </div>
+      )}
     </div>
   );
 }

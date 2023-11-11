@@ -2,19 +2,9 @@
 import { VscCheck, VscChromeClose, VscEdit } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
-// Quill editor and HTML import
-import QuillNoSSRWrapper from "@/components/editor";
-import "quill/dist/quill.snow.css";
-
-// Inputs imports
-import TextareaAutosize from "react-textarea-autosize";
-
 // React and Next.js import
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
-// Config import
-import { quillConfigs } from "@/config/config";
 
 // JS Cookies import
 import Cookies from "js-cookie";
@@ -25,16 +15,19 @@ import logobw from "../../public/logobw.png";
 // Util imports
 import { post, get } from "@/utils/call";
 
+// Toaster related imports
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 // Config imports
 import { config } from "@/config/config";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
 import { BottomDropDown } from "./dropdown";
-import { cookies } from "next/dist/client/components/headers";
 
 // Define request modal
-export default function ProfileModal({}) {
+export default function ProfileModal({ closeModal }) {
   // Define UseStates
   const [whoami, setWhoami] = useState({});
   const [editMode, setEditMode] = useState(false);
@@ -111,11 +104,12 @@ export default function ProfileModal({}) {
       );
 
       // Pop toasters if the call was successful
-      setActionTrigger(!actionTrigger);
       if (res.status == "error") errorToaster(res.message);
       if (res.status == "success") {
+        console.log(">>>>>>>>>>>>");
         successToaster("Your profile has been updated");
       }
+      setActionTrigger(!actionTrigger);
     })();
   };
 
@@ -197,9 +191,11 @@ export default function ProfileModal({}) {
           <div className="text-3xl">{whoami.last_name}</div>
         )}
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col overflow-x-auto overflow-y-hidden">
         <div className="text-xl">Email</div>
-        <div className="text-3xl">{whoami.email}</div>
+        <div className="overflow-x-auto overflow-y-hidden text-3xl">
+          {whoami.email}
+        </div>
       </div>
       <div className="flex flex-col">
         <div className="text-xl">Phone Number</div>
@@ -214,7 +210,7 @@ export default function ProfileModal({}) {
               border border-silver bg-white/[0.3] p-2 text-sky
               shadow-inner focus:outline-none"
               id="phone1"
-              maxlength="3"
+              maxLength="3"
               onChange={(event) => updatePayload("phone1", event.target.value)}
               value={
                 "phone1" in payload
@@ -229,7 +225,7 @@ export default function ProfileModal({}) {
               border border-silver bg-white/[0.3] p-2 text-sky
               shadow-inner focus:outline-none"
               id="phone2"
-              maxlength="3"
+              maxLength="3"
               onChange={(event) => updatePayload("phone2", event.target.value)}
               value={
                 "phone2" in payload
@@ -244,7 +240,7 @@ export default function ProfileModal({}) {
               border border-silver bg-white/[0.3] p-2 text-sky
               shadow-inner focus:outline-none"
               id="phone3"
-              maxlength="4"
+              maxLength="4"
               onChange={(event) => updatePayload("phone3", event.target.value)}
               value={
                 "phone3" in payload
@@ -261,8 +257,8 @@ export default function ProfileModal({}) {
       <div className="flex flex-col">
         <div className="text-xl">About Me</div>
         <textarea
-          className={`custom-placeholder w-full resize-none rounded-lg border
-          border-silver p-1 text-xs ${editMode ? "text-sky" : ``}`}
+          className={`custom-placeholder h-16 w-full resize-none rounded-lg
+          border border-silver p-1 text-xs ${editMode ? "text-sky" : ``}`}
           disabled={!editMode}
           onChange={(event) => updatePayload("about_me", event.target.value)}
           value={
@@ -280,7 +276,7 @@ export default function ProfileModal({}) {
 
   // Render modal
   return (
-    <div className="flex w-full flex-col gap-10 rounded-lg bg-white p-10">
+    <div className="flex w-full flex-col gap-10 rounded-lg bg-white px-10 pt-10">
       <div className="flex flex-row justify-between">
         <div className="text-6xl font-bold">Your Profile</div>
         <button className="-m-2 h-fit" onClick={() => closeModal()}>
@@ -291,7 +287,12 @@ export default function ProfileModal({}) {
       </div>
       <div className="flex flex-row gap-12">
         <div className="flex flex-col gap-6">
-          <Image alt="Logo" src={logobw} width={300} height={300} />
+          <div
+            className="flex h-80 w-80 items-center justify-center
+            overflow-hidden rounded-full"
+          >
+            <Image src={logobw} alt="Logo" objectFit="cover" />
+          </div>
           {!editMode && (
             <button
               onClick={() => {
@@ -339,10 +340,25 @@ export default function ProfileModal({}) {
             </div>
           )}
         </div>
-        <div className="flex flex-1 flex-col gap-7 overflow-y-auto">
+        <div
+          className="flex w-full flex-1 flex-col gap-7 overflow-x-auto
+        overflow-y-hidden"
+        >
           {infoView}
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   );
 }

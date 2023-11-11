@@ -179,6 +179,7 @@ export function CollapsableInfoCard({
         <button
           onClick={() => {
             setEditMode(false);
+            setTagContent(tag);
             setTitleContent(title);
             setMainTextContent(mainText);
           }}
@@ -275,13 +276,13 @@ export function CollapsableInfoCard({
             {icon && icon}
             {date && <div className={`text-base`}>{date}</div>}
             {tagSection}
-            <AutosizeInput
+            {titleContent && <AutosizeInput
               className={`${!titleUpdateDisable && editMode && `text-sky`}`}
               inputStyle={{ background: "transparent" }}
               value={titleContent}
               disabled={titleUpdateDisable || !editMode}
               onChange={(e) => setTitleContent(e.target.value)}
-            />
+            />}
             {titleAppendix && (
               <div
                 className={`flex flex-col text-left

@@ -3,7 +3,7 @@ import { VscEdit, VscTrash, VscCheck, VscChromeClose } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
-import { useState, useContext, useCallback } from "react";
+import { useState, useContext, useCallback, useEffect } from "react";
 import React from "react";
 
 // JS Cookies import
@@ -13,7 +13,7 @@ import Cookies from "js-cookie";
 import AutosizeInput from "react-input-autosize";
 
 // Util imports
-import { parseTime, updateTimeString } from "@/utils/time";
+import { parseTime, updateTimeString, getFormattedTime } from "@/utils/time";
 import { Nothing } from "@/components/nothing";
 import { post } from "@/utils/call";
 
@@ -35,6 +35,11 @@ export default function DataTableView() {
   const updateSelected = () => {
     // Grab a copy of the editItem
     var copy = c.editItem;
+
+    // Delete component created datetime
+    delete copy.datetime_created;
+
+    console.log(copy);
 
     // If composite score is the only value, then just update that
     if (c.format.scoring_ids.length == 1) {
@@ -143,103 +148,6 @@ export default function DataTableView() {
     })();
   };
 
-  // Render the table body row for the metric values
-  const TableBodyRowMetricValues = ({ item }) => {
-    // Local useState definitions
-    const [localValues, setLocalValues] = useState(item);
-
-    // Local change function
-    const handleInputChange = useCallback((id, value) => {
-      setLocalValues((prevValues) => ({ ...prevValues, [id]: value }));
-    }, []);
-
-    // Global change function
-    const handleUpdate = useCallback((id) => {
-      c.setEditItem((prevState) => ({ ...prevState, [id]: localValues[id] }));
-    }, []);
-
-    // Straightforward change function
-    const straightForward = useCallback((id, value) => {
-      c.setEditItem((prevState) => ({ ...prevState, [id]: value }));
-    }, []);
-
-    // For TimeInput hour and minute changes
-    const handleTimeChange = useCallback(
-      (index, e, part) => {
-        const newTime = updateTimeString(
-          c.editItem[c.format.scoring_ids[index]],
-          part,
-          e
-        );
-        straightForward(c.format.scoring_ids[index], newTime);
-      },
-      [c.editItem, c.format.scoring_ids]
-    );
-
-    return c.format.scoring_formatted.map((metric, index) => (
-      <td
-        className="h-auto px-3 py-3 text-left text-xs "
-        key={`table-${metric}`}
-      >
-        {c.isUpdating[item.id] &&
-        (index != 0 || c.format.scoring_formatted.length == 1)
-          ? (c.format.scoring_type[index] == "number" && (
-              <AutosizeInput
-                placeholder="###"
-                id={`intake-hold-${index}`}
-                pattern="[0-9]*"
-                maxLength={"3"}
-                value={localValues[c.format.scoring_ids[index]]}
-                className="text-sky"
-                onKeyDown={(event) =>
-                  !/[0-9.]/.test(event.key) &&
-                  !(event.key === "Backspace") &&
-                  !(event.key === "Delete") &&
-                  !(event.key === "Tab") &&
-                  !(event.key === "ArrowLeft") &&
-                  !(event.key === "ArrowRight") &&
-                  event.preventDefault()
-                }
-                onChange={(e) =>
-                  handleInputChange(
-                    c.format.scoring_ids[index],
-                    Number(e.target.value)
-                  )
-                }
-                onBlur={() => handleUpdate(c.format.scoring_ids[index])}
-              />
-            )) ||
-            (c.format.scoring_type[index] == "selection" && (
-              <BottomDropDown
-                editColor={true}
-                listOfItems={
-                  c.format[`scoring_options`][c.format.scoring_ids[index]]
-                }
-                setSelected={(e) => {
-                  straightForward(c.format.scoring_ids[index], e);
-                }}
-                defaultValue={c.editItem[c.format.scoring_ids[index]]}
-              />
-            )) ||
-            (c.format.scoring_type[index] == "time" && (
-              <div className="text-sky">
-                <TimeInput
-                  hour={parseTime(c.editItem[c.format.scoring_ids[index]])[0]}
-                  setHour={(e) => handleTimeChange(index, e, "mm")}
-                  minute={parseTime(c.editItem[c.format.scoring_ids[index]])[1]}
-                  setMinute={(e) => handleTimeChange(index, e, "ss")}
-                  textSize="text-xsm"
-                  id={`${index}`}
-                />
-              </div>
-            ))
-          : c.specialProcess[c.format.scoring_type[index]](
-              item[c.format.scoring_ids[index]]
-            )}
-      </td>
-    ));
-  };
-
   // Render table body
   const tableBody = (
     <tbody>
@@ -249,7 +157,103 @@ export default function DataTableView() {
           <tr key={item.id}>
             <td className="px-1 py-2 text-sm">{item.user}</td>
             <td className="px-1 py-2 text-sm">{item.unit}</td>
-            <TableBodyRowMetricValues item={item} />
+            {/* <TableBodyRowMetricValues item={item} /> */}
+            {c.format.scoring_formatted.map((metric, index) => (
+              <td
+                className="h-auto px-3 py-3 text-left text-xs "
+                key={`table-${metric}`}
+              >
+                {c.isUpdating[item.id] &&
+                (index != 0 || c.format.scoring_formatted.length == 1)
+                  ? (c.format.scoring_type[index] == "number" && (
+                      <AutosizeInput
+                        placeholder="###"
+                        id={`intake-hold-${index}`}
+                        pattern="[0-9]*"
+                        maxLength={"5"}
+                        value={c.editItem[c.format.scoring_ids[index]]}
+                        className="text-sky"
+                        onKeyDown={(event) =>
+                          !/[0-9.]/.test(event.key) &&
+                          !(event.key === "Backspace") &&
+                          !(event.key === "Delete") &&
+                          !(event.key === "Tab") &&
+                          !(event.key === "ArrowLeft") &&
+                          !(event.key === "ArrowRight") &&
+                          event.preventDefault()
+                        }
+                        onChange={(e) =>
+                          c.setEditItem((prevState) => ({
+                            ...prevState,
+                            [c.format.scoring_ids[index]]: Number(
+                              e.target.value
+                            ),
+                          }))
+                        }
+                      />
+                    )) ||
+                    (c.format.scoring_type[index] == "selection" && (
+                      <BottomDropDown
+                        editColor={true}
+                        listOfItems={
+                          c.format[`scoring_options`][
+                            c.format.scoring_ids[index]
+                          ]
+                        }
+                        setSelected={(e) => {
+                          c.setEditItem((prevState) => ({
+                            ...prevState,
+                            [c.format.scoring_ids[index]]: e,
+                          }));
+                        }}
+                        defaultValue={c.editItem[c.format.scoring_ids[index]]}
+                      />
+                    )) ||
+                    (c.format.scoring_type[index] == "time" && (
+                      <div className="text-sky">
+                        <TimeInput
+                          hour={
+                            parseTime(
+                              c.editItem[c.format.scoring_ids[index]]
+                            )[0]
+                          }
+                          setHour={(e) => {
+                            const newTime = updateTimeString(
+                              c.editItem[c.format.scoring_ids[index]],
+                              "mm",
+                              e
+                            );
+                            c.setEditItem((prevState) => ({
+                              ...prevState,
+                              [c.format.scoring_ids[index]]: newTime,
+                            }));
+                          }}
+                          minute={
+                            parseTime(
+                              c.editItem[c.format.scoring_ids[index]]
+                            )[1]
+                          }
+                          setMinute={(e) => {
+                            const newTime = updateTimeString(
+                              c.editItem[c.format.scoring_ids[index]],
+                              "ss",
+                              e
+                            );
+                            c.setEditItem((prevState) => ({
+                              ...prevState,
+                              [c.format.scoring_ids[index]]: newTime,
+                            }));
+                          }}
+                          textSize="text-xsm"
+                          id={`${index}`}
+                        />
+                      </div>
+                    ))
+                  : c.specialProcess[c.format.scoring_type[index]](
+                      item[c.format.scoring_ids[index]]
+                    )}
+              </td>
+            ))}
             <td className="w-20 px-1 py-2 text-right text-sm">
               {c.isDeleting[item.id] ? (
                 <>

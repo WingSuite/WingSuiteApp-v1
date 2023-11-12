@@ -1,6 +1,5 @@
 // Config imports
 import { config } from "@/config/config";
-import { Duration } from "luxon";
 
 // Function to get start and end time of this week
 export function getTimeBounds() {
@@ -93,15 +92,15 @@ export function parseTime(minuteSecondString) {
 
   // Return the total in minutes
   return [
-    minutes < 10 ? `0${minutes}` : `${minutes}`,
-    seconds < 10 ? `0${seconds}` : `${seconds}`,
+    minutes == 0 ? null : `${minutes}`,
+    seconds == 0 ? null : `${seconds}`,
   ];
 }
 
 // Function to get "mm:ss" from seconds values format
-export function getFormattedTime(minuteSecondString) {
+export function getFormattedTime(secondsCount) {
   // Get calculations
-  const seconds = minuteSecondString;
+  const seconds = secondsCount;
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
   const formattedTime = `${m.toString().padStart(2, "0")}:${s

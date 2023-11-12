@@ -137,7 +137,10 @@ export default function MetricsPage() {
                 to-sky text-white hover:border-darkOcean`
                 : `border-silver hover:border-sky`
             }`}
-            onClick={() => setToolbarSelect(index)}
+            onClick={() => {
+              setMetricToolbarSelect(0);
+              setToolbarSelect(index);
+            }}
           >
             {item}
           </button>

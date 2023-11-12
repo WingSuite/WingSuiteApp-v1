@@ -1,4 +1,5 @@
 // Style import
+import Head from "next/head";
 import "@/styles/globals.css";
 
 // JS Cookies import
@@ -61,5 +62,13 @@ export default function App({ Component, pageProps }) {
   })();
 
   // Render page's components
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <Head>
+        <link rel="icon" href="/logo.png"/>
+        <title>{`WingSuite`}</title>
+      </Head>
+      <Component {...pageProps} />
+    </>
+  );
 }

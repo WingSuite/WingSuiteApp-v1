@@ -15,7 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 // Config imports
-import { permissionsList } from "@/config/config";
+import { config, permissionsList } from "@/config/config";
 
 // Util imports
 import { authCheck } from "@/utils/authCheck";
@@ -78,10 +78,7 @@ export default function UnitResourcesPage() {
     // Get the list of permissions
     (async () => {
       // Get the list of permissions
-      var res = await get(
-        "/user/get_permissions_list/",
-        Cookies.get("access")
-      );
+      var res = await get("/user/get_permissions_list/", Cookies.get("access"));
 
       // Show error response status message
       if (res.status == "error") {
@@ -102,16 +99,23 @@ export default function UnitResourcesPage() {
       return;
     }
 
+    // Convert search string to lower case for case-insensitive comparison
+    const searchLower = search.toLowerCase();
+
     // Filter the filtered user list if the search bar changed
     setFilteredUserList(
-      userList.filter((item) =>
-        item.multipurpose.toLowerCase().includes(search.toLowerCase())
+      userList.filter(
+        (item) =>
+          item.multipurpose.toLowerCase().includes(searchLower) ||
+          item.permissions.some((permission) =>
+            permission.toLowerCase().includes(searchLower)
+          )
       )
     );
   }, [search, userList]);
 
   // Update function
-  const updateFeedback = (id, title, perms) => {
+  const updateUser = (id, title, perms, rank) => {
     // Send API call for creating the feedback
     (async () => {
       // Get the user's feedback information
@@ -130,7 +134,7 @@ export default function UnitResourcesPage() {
         // Call API to change rank
         res = await post(
           "/user/update_rank/",
-          { id: id, rank: title },
+          { id: id, rank: rank },
           Cookies.get("access")
         );
 
@@ -169,23 +173,21 @@ export default function UnitResourcesPage() {
                   <VscSearch />
                 </IconContext.Provider>
                 <input
-                  className=""
+                  className="w-full"
                   placeholder="Search"
                   onChange={(e) => {
                     setSearch(e.target.value);
                   }}
                 />
               </div>
-
               <div
                 className="flex h-full w-full flex-col gap-2 overflow-y-auto
                 pt-2"
               >
-                {filterUserList.map((item) => (
+                {search == "" && filterUserList.map((item) => (
                   <CollapsableInfoCard
                     id={item._id}
                     key={`Member-${item._id}`}
-                    title={`${item.rank != undefined ? item.rank : "N/R"}`}
                     titleAppendix={
                       <div className="-ml-1">{item.full_name} </div>
                     }
@@ -194,8 +196,39 @@ export default function UnitResourcesPage() {
                         ? ""
                         : item.permissions.join("\n")
                     }
-                    updateFunc={updateFeedback}
+                    updateFunc={updateUser}
                     simpleEditor={true}
+                    tag={item.rank || "N/R"}
+                    tagList={["N/R"]
+                      .concat(config.rankList)
+                      .reduce((obj, item) => {
+                        obj[item] = "";
+                        return obj;
+                      }, {})}
+                  />
+                ))}
+                {search != "" && filterUserList.map((item) => (
+                  <CollapsableInfoCard
+                    id={item._id}
+                    key={`Member-${item._id}`}
+                    titleAppendix={
+                      <div className="-ml-1">{item.full_name} </div>
+                    }
+                    mainText={
+                      item.permissions.length == 0
+                        ? ""
+                        : item.permissions.join("\n")
+                    }
+                    updateFunc={updateUser}
+                    startState={true}
+                    simpleEditor={true}
+                    tag={item.rank || "N/R"}
+                    tagList={["N/R"]
+                      .concat(config.rankList)
+                      .reduce((obj, item) => {
+                        obj[item] = "";
+                        return obj;
+                      }, {})}
                   />
                 ))}
               </div>

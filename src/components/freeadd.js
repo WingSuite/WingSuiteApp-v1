@@ -11,7 +11,7 @@ import { errorToaster } from "./toasters";
 import { BottomDropDown } from "./dropdown";
 
 // React.js and Next.js libraries
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // View functionality component definition
 export function FreeAdd({
@@ -127,20 +127,6 @@ export function FreeAdd({
     </button>
   );
 
-  // Input component isolation
-  const IIso = ({ item, idx }) => {
-    return (
-      <input
-        type="text"
-        value={item}
-        style={{ background: "transparent" }}
-        className={`text-poppins w-full bg-transparent px-1.5 text-lg
-        placeholder-silver shadow-inner rounded-lg border border-silver`}
-        onChange={(e) => handleInputChange(idx, e.target.value)}
-      />
-    );
-  };
-
   // AutoSizeInput component isolation
   const AIIso = ({ item, idx }) => {
     return (
@@ -180,7 +166,7 @@ export function FreeAdd({
         <div
           className={`bg-lightgray flex items-center gap-0.5 rounded-lg
           text-sm ${spanFullWidth ? "w-full" : "w-auto"}`}
-          key={idx}
+          key={`item-${idx}`}
         >
           {spanFullWidth && dropDown && (
             <AutoCompleteInput
@@ -191,7 +177,16 @@ export function FreeAdd({
               value={item}
             />
           )}
-          {spanFullWidth && !dropDown && <IIso item={item} idx={idx} />}
+          {spanFullWidth && !dropDown && (
+            <input
+              type="text"
+              value={item}
+              style={{ background: "transparent" }}
+              className={`text-poppins w-full rounded-lg border border-silver
+              bg-transparent px-1.5 text-lg placeholder-silver shadow-inner`}
+              onChange={(e) => handleInputChange(idx, e.target.value)}
+            />
+          )}
           {!spanFullWidth && <AIIso item={item} idx={idx} />}
           {unremovable.includes(item) && <></>}
           {!unremovable.includes(item) && !(index == idx) && <AIso idx={idx} />}

@@ -6,12 +6,19 @@ import React from "react";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
+// JS Cookies import
+import Cookies from "js-cookie";
+
+// Util imports
+import { get } from "@/utils/call";
+
 // Time library imports
 import moment from "moment";
 
 // Calendar definition
 export function CalendarComponent({
   events,
+  colorFormatting,
   updateRange = () => {},
   onEventClick = () => {},
 }) {
@@ -20,6 +27,7 @@ export function CalendarComponent({
 
   // Get the starting start end time
   useEffect(() => {
+    // Get current timings
     const now = new Date();
     getStartEndTime(now);
   }, []);
@@ -37,6 +45,18 @@ export function CalendarComponent({
       return `${s} - ${e}`;
     },
   };
+
+  // Specify card background color
+  const eventStyleGetter = (event, start, end, isSelected) => {
+    console.log(event);
+    return {
+      style:  {
+        backgroundColor:  colorFormatting[event.tag] || '#3174ad',
+        color: 'black',
+      },
+    };
+  };
+
 
   // Event customizing specification
   const customRBCEvent = ({ event }) => (
@@ -72,6 +92,7 @@ export function CalendarComponent({
         onSelectEvent={onEventClick}
         showAllEvents={true}
         formats={formats}
+        eventPropGetter={eventStyleGetter}
         components={{
           event: customRBCEvent,
         }}

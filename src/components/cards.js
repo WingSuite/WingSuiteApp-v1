@@ -179,6 +179,7 @@ export function CollapsableInfoCard({
         <button
           onClick={() => {
             setEditMode(false);
+            setTagContent(tag);
             setTitleContent(title);
             setMainTextContent(mainText);
           }}
@@ -261,27 +262,27 @@ export function CollapsableInfoCard({
   // Render component
   return (
     <div
-      className={`flex w-full flex-col gap-2 rounded-md border
+      className={`flex w-full flex-col gap-2 rounded-md border overflow-x-auto
       border-silver p-2 ${delMode && `border-scarlet text-scarlet`}`}
     >
-      <div className="flex w-full flex-row items-center justify-between">
+      <div className="flex w-full flex-row items-center justify-between overflow-x-auto">
         <div
-          className="w-full text-2xl"
+          className="w-full text-2xl overflow-x-auto"
           onClick={() => {
             !editMode && setCollapsed(!collapsed);
           }}
         >
-          <div className="flex w-full flex-row items-center gap-3">
+          <div className="flex w-full flex-row items-center gap-3 overflow-x-auto">
             {icon && icon}
-            {date && <div className={`text-base`}>{date}</div>}
+            {date && <div className={`text-base line-clamp-1`}>{date}</div>}
             {tagSection}
-            <AutosizeInput
+            {titleContent && <AutosizeInput
               className={`${!titleUpdateDisable && editMode && `text-sky`}`}
               inputStyle={{ background: "transparent" }}
               value={titleContent}
               disabled={titleUpdateDisable || !editMode}
               onChange={(e) => setTitleContent(e.target.value)}
-            />
+            />}
             {titleAppendix && (
               <div
                 className={`flex flex-col text-left

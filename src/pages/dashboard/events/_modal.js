@@ -36,6 +36,7 @@ export default function EventModal({
   selectedEvent,
   units,
   setModalIsOpen,
+  colorFormat,
   deleteEvent = null,
   updateEvent = null,
 }) {
@@ -186,15 +187,34 @@ export default function EventModal({
       >
         {Object.keys(event).length != 0 && (
           <div className="flex flex-col text-7xl">
-            <AutosizeInput
-              className={`${editMode && `text-sky`}`}
-              inputStyle={{ background: "transparent" }}
-              value={event.title}
-              disabled={!editMode}
-              onChange={(e) => {
-                updateEventInfo("title", e.target.value);
-              }}
-            />
+            <div className="flex flex-row items-center gap-6">
+              <AutosizeInput
+                className={`${editMode && `text-sky`}`}
+                inputStyle={{ background: "transparent" }}
+                value={event.title}
+                disabled={!editMode}
+                onChange={(e) => {
+                  updateEventInfo("title", e.target.value);
+                }}
+              />
+              {!editMode ? (
+                <div
+                  className="rounded-lg p-2 text-2xl"
+                  style={{ backgroundColor: colorFormat[event.tag] }}
+                >
+                  {event.tag}
+                </div>
+              ) : (
+                <div className="text-xl">
+                  <BottomDropDown
+                    listOfItems={Object.keys(colorFormat)}
+                    setSelected={(e) => updateEventInfo("tag", e)}
+                    defaultValue={event.tag || ""}
+                    editColor={true}
+                  />
+                </div>
+              )}
+            </div>
             {!(event.start.getTime() == event.end.getTime()) ? (
               <div
                 className={`${
@@ -252,12 +272,14 @@ export default function EventModal({
         <div className="flex flex-col">
           <div className="text-3xl font-bold">Description</div>
           {!editMode ? (
-            <div className="overflow-y-auto pr-1 h-fit max-h-[26rem]">
+            <div className="h-fit max-h-[26rem] overflow-y-auto pr-1">
               <ReactMarkdown
                 className="custom-prose prose pb-1.5"
                 rehypePlugins={[rehypeRaw]}
               >
-                {!event.description ? `N/A` : event.description}
+                {!event.description || event.description == "<p><br></p>"
+                  ? `N/A`
+                  : event.description}
               </ReactMarkdown>
             </div>
           ) : (
@@ -369,8 +391,8 @@ export default function EventModal({
       <div
         className={`${
           !editMode && `hidden`
-        } flex flex-col items-center gap-10 rounded-br-lg rounded-tr-lg
-        bg-white p-6 drop-shadow-xl w-1/3`}
+        } flex w-1/3 flex-col items-center gap-10 rounded-br-lg
+        rounded-tr-lg bg-white p-6 drop-shadow-xl`}
       >
         <div className="text-4xl">Edit Time Frame</div>
         <div>

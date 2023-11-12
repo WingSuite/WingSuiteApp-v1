@@ -485,12 +485,16 @@ const Sidebar = () => {
         }}
         contentLabel="Example Modal"
         ariaHideApp={false}
-        className="m-auto flex w-5/12 flex-col items-center border-0
-        outline-none max-h-1/2"
+        className="max-h-1/2 m-auto flex w-5/12 flex-col items-center
+        border-0 outline-none"
         overlayClassName="flex items-center justify-center bg-black
         bg-opacity-30 fixed inset-0 z-[999]"
       >
-        <ProfileModal />
+        <ProfileModal
+          closeModal={() => {
+            setModalMode(false);
+          }}
+        />
       </Modal>
     </div>
   );

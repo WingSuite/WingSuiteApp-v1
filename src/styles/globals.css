@@ -69,6 +69,12 @@
   border-radius: 100vw;
 }
 
+.custom-placeholder::placeholder {
+  color: #54c0ff;
+  opacity: 1;
+}
+
+
 /*#endregion*/
 
 /*
@@ -113,7 +119,7 @@
 
 .rbc-event,
 .rbc-day-slot .rbc-background-event {
-  background: linear-gradient(45deg, #0a50fa, #54c0ff) !important;
+  /* background: linear-gradient(45deg, #0a50fa, #54c0ff) !important; */
   transition: all 200ms ease-in !important;
   transform: translate(0, 0) !important;
   width: 96% !important;

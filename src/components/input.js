@@ -97,7 +97,7 @@ export function TimeInput({
         onBlur={() => {
           if (parseInt(hour) > 23) setHour("00");
         }}
-        onChange={(e) => setHour(e.target.value)}
+        onChange={(e) => {setHour(e.target.value);}}
       />
       :
       <AutosizeInput
@@ -108,11 +108,11 @@ export function TimeInput({
         value={minute}
         className={`rounded-lg px-1 ${textSize}`}
         onKeyDown={(event) =>
-          !/[0-9]/.test(event.key) &&
+          {!/[0-9]/.test(event.key) &&
           !(event.key === "Backspace") &&
           !(event.key === "Delete") &&
           !(event.key === "Tab") &&
-          event.preventDefault()
+          event.preventDefault(); console.log(minute)}
         }
         onBlur={() => {
           if (parseInt(minute) > 59) setMinute("00");

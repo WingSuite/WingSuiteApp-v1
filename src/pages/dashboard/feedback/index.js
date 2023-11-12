@@ -271,10 +271,10 @@ export default function FeedbackPage() {
             title={info[1]}
             titleAppendix={
               <div className="flex flex-row items-center gap-1.5 text-sm">
-                <div className="font-bold">
+                <div className="font-bold line-clamp-1">
                   {toolbarSelect ? `To: ` : `From: `}
                 </div>
-                <div>{info[2]}</div>
+                <div className="line-clamp-1">{info[2]}</div>
               </div>
             }
             mainText={info[3]}

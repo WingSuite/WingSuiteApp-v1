@@ -302,12 +302,12 @@ export default function NotificationsPage() {
             titleAppendix={
               <>
                 <div className="flex flex-row items-center gap-1.5 text-xs">
-                  <div className="font-bold">For Personnel Under: </div>
-                  <div>{info[2]}</div>
+                  <div className="font-bold line-clamp-1">For Personnel Under: </div>
+                  <div className="line-clamp-1">{info[2]}</div>
                 </div>
                 <div className="flex flex-row items-center gap-1.5 text-xs">
-                  <div className="font-bold">From: </div>
-                  <div>{info[3]}</div>
+                  <div className="font-bold line-clamp-1">From: </div>
+                  <div className="line-clamp-1">{info[3]}</div>
                 </div>
               </>
             }

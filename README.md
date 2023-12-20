@@ -1,3 +1,5 @@
+© 2023 Benjamin Herrera. All Right's Reserved.
+
 # WingSuiteApp
 Application that runs the WingSuite web app
 

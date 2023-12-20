@@ -140,12 +140,14 @@ export default function NotificationsPage() {
   // Search for items in the announcements page
   useEffect(() => {
     if (notificationData != undefined || notificationData != null) {
-      setResult(search ?
-        notificationData.filter((item) =>
-          [1, 2, 3, 4, 7].some((index) =>
-            String(item[index]).toLowerCase().includes(search)
-          )
-        ) : []
+      setResult(
+        search
+          ? notificationData.filter((item) =>
+              [1, 2, 3, 4, 7].some((index) =>
+                String(item[index]).toLowerCase().includes(search)
+              )
+            )
+          : []
       );
     }
   }, [search]);
@@ -300,16 +302,22 @@ export default function NotificationsPage() {
             tag={info[7]}
             title={info[1]}
             titleAppendix={
-              <>
-                <div className="flex flex-row items-center gap-1.5 text-xs">
-                  <div className="font-bold line-clamp-1">For Personnel Under: </div>
-                  <div className="line-clamp-1">{info[2]}</div>
+              <div className="w-full">
+                <div
+                  className="flex flex-row items-center gap-1.5 truncate 
+                  text-xs"
+                >
+                  <div className="font-bold">For Personnel Under:</div>
+                  <div className="">{info[2]}</div>
                 </div>
-                <div className="flex flex-row items-center gap-1.5 text-xs">
-                  <div className="font-bold line-clamp-1">From: </div>
-                  <div className="line-clamp-1">{info[3]}</div>
+                <div
+                  className="flex flex-row items-center gap-1.5 truncate 
+                  text-xs"
+                >
+                  <div className="font-bold">From: </div>
+                  <div className="">{info[3]}</div>
                 </div>
-              </>
+              </div>
             }
             mainText={info[4]}
             updateFunc={info[5] ? updateNotification : null}

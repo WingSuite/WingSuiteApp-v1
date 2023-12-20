@@ -126,7 +126,7 @@ export function CollapsableInfoCard({
 
   // Tag section definition
   const tagSection = (
-    <>
+    <div>
       {tagContent && !editMode && (
         <div
           className={`rounded-lg px-2 py-1 text-center text-sm`}
@@ -145,7 +145,7 @@ export function CollapsableInfoCard({
           />
         </div>
       )}
-    </>
+    </div>
   );
 
   // Editing controls section definition
@@ -262,38 +262,35 @@ export function CollapsableInfoCard({
   // Render component
   return (
     <div
-      className={`flex w-full flex-col gap-2 rounded-md border overflow-x-auto
+      className={`flex w-full flex-col gap-2 rounded-md border
       border-silver p-2 ${delMode && `border-scarlet text-scarlet`}`}
     >
-      <div className="flex w-full flex-row items-center justify-between overflow-x-auto">
-        <div
-          className="w-full text-2xl overflow-x-auto"
-          onClick={() => {
-            !editMode && setCollapsed(!collapsed);
-          }}
-        >
-          <div className="flex w-full flex-row items-center gap-3 overflow-x-auto">
-            {icon && icon}
-            {date && <div className={`text-base line-clamp-1`}>{date}</div>}
-            {tagSection}
-            {titleContent && <AutosizeInput
-              className={`${!titleUpdateDisable && editMode && `text-sky`}`}
-              inputStyle={{ background: "transparent" }}
+      <div className="flex max-w-full flex-row items-center gap-2">
+        {icon && <div className="">{icon}</div>}
+        {date && <div className="flex-none truncate text-base">{date}</div>}
+        <div className="flex-none">{tagSection}</div>
+        {titleContent && (
+          <div className="max-w-[50em] truncate items-center flex">
+            <AutosizeInput
+              className={`truncate ${
+                !titleUpdateDisable && editMode && `text-sky`
+              }`}
+              inputStyle={{ background: "transparent", maxWidth: "100%" }}
               value={titleContent}
               disabled={titleUpdateDisable || !editMode}
               onChange={(e) => setTitleContent(e.target.value)}
-            />}
-            {titleAppendix && (
-              <div
-                className={`flex flex-col text-left
-                ${delMode ? `text-scarlet` : `text-darkSilver`}`}
-              >
-                {titleAppendix}
-              </div>
-            )}
+            />
           </div>
-        </div>
-        {editingControls}
+        )}
+        {titleAppendix && (
+          <div
+            className={`flex w-fit flex-col text-left
+                ${delMode ? `text-scarlet` : `text-darkSilver`}`}
+          >
+            {titleAppendix}
+          </div>
+        )}
+        <div className="ml-auto">{editingControls}</div>
       </div>
       {!simpleEditor &&
         collapsed &&

@@ -270,11 +270,12 @@ export default function FeedbackPage() {
             date={formatMilDate(info[0])}
             title={info[1]}
             titleAppendix={
-              <div className="flex flex-row items-center gap-1.5 text-sm">
+              <div className="flex flex-row items-center gap-1.5 truncate 
+              text-sm">
                 <div className="font-bold line-clamp-1">
                   {toolbarSelect ? `To: ` : `From: `}
                 </div>
-                <div className="line-clamp-1">{info[2]}</div>
+                <div className="">{info[2]}</div>
               </div>
             }
             mainText={info[3]}

@@ -150,36 +150,33 @@ const Sidebar = () => {
 
   // Render the items list
   const menuList = regularSidebarContents.map((item) => (
-    <button
-      key={`${item.title.toLowerCase()}`}
-      className={`${
-        currentPath.includes(`${item.link}`)
-          ? `bg-white hover:-translate-y-[0.1rem] hover:shadow-md
-          hover:shadow-white`
-          : `border border-transparent hover:-translate-y-[0.1rem]
-          hover:border-white hover:shadow-lg hover:shadow-sky`
-      }
-    	flex w-10/12 items-center justify-start
-      rounded-lg px-2 py-1 transition duration-200 ease-in`}
-      onClick={() => router.push(`${item.link}`)}
-    >
-      <IconContext.Provider
-        value={{
-          color: currentPath.includes(`${item.link}`) ? "#000000" : "#FFFFFF",
-          size: "1.2em",
-          className: "mr-2",
-        }}
+    <div className="flex w-10/12 flex-col gap-2">
+      <button
+        key={`${item.title.toLowerCase()}`}
+        className={`${
+          currentPath.includes(encodeURIComponent(item.link))
+            ? `bg-white text-[1.2em] text-black hover:-translate-y-[0.1rem]
+            hover:shadow-md hover:shadow-white`
+            : `border border-transparent text-[1.2em] text-white
+           hover:-translate-y-[0.1rem] hover:border-white hover:shadow-lg 
+           hover:shadow-sky`
+        }
+        flex w-10/12 items-center justify-start gap-2
+        rounded-lg px-2 py-1 transition duration-200 ease-in`}
+        onClick={() => router.push(`${item.link}`)}
       >
         {item.icon}
-      </IconContext.Provider>
-      <div
-        className={`text-${
-          currentPath.includes(`${item.link}`) ? "black" : "white"
-        } text-left text-sm`}
-      >
-        {item.title}
-      </div>
-    </button>
+        <div
+          className={`text-${
+            currentPath.includes(encodeURIComponent(item.link))
+              ? "black"
+              : "white"
+          } text-left text-sm`}
+        >
+          {item.title}
+        </div>
+      </button>
+    </div>
   ));
 
   // Render the admin access list

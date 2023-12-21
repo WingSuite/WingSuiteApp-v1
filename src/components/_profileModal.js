@@ -106,7 +106,6 @@ export default function ProfileModal({ closeModal }) {
       // Pop toasters if the call was successful
       if (res.status == "error") errorToaster(res.message);
       if (res.status == "success") {
-        console.log(">>>>>>>>>>>>");
         successToaster("Your profile has been updated");
       }
       setActionTrigger(!actionTrigger);

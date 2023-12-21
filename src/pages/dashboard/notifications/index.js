@@ -295,7 +295,6 @@ export default function NotificationsPage() {
             )
         ).map((info, index) => (
           <CollapsableInfoCard
-            console={console.log(result.length)}
             id={info[6]}
             key={`feedbackInbox-${info[0]}-${index}`}
             date={formatMilDate(info[0])}

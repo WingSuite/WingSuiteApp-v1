@@ -264,9 +264,16 @@ export default function ProfileModal({ closeModal }) {
             editMode
               ? "about_me" in payload
                 ? payload.about_me
-                : whoami.about_me
-              : whoami.about_me
+                : whoami.about_me || ""
+              : whoami.about_me || ""
           }
+          a={console.log(
+            editMode
+              ? "about_me" in payload
+                ? payload.about_me
+                : whoami.about_me || ""
+              : whoami.about_me || ""
+          )}
           placeholder={editMode ? `Tell Something About Yourself!` : ""}
         ></textarea>
       </div>

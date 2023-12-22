@@ -50,6 +50,7 @@ export default function NotificationsPage() {
   const [notificationName, setNotificationName] = useState("");
   const [notificationText, setNotificationText] = useState("");
   const [notificationEmailNotify, setNotificationEmailNotify] = useState(false);
+  const [notificationDiscordNotify, setNotificationDiscordNotify] = useState(false);
   const [actionTrigger, setActionTrigger] = useState(true);
   const required = permissionsList.notifications;
 
@@ -140,12 +141,14 @@ export default function NotificationsPage() {
   // Search for items in the announcements page
   useEffect(() => {
     if (notificationData != undefined || notificationData != null) {
-      setResult(search ?
-        notificationData.filter((item) =>
-          [1, 2, 3, 4, 7].some((index) =>
-            String(item[index]).toLowerCase().includes(search)
-          )
-        ) : []
+      setResult(
+        search
+          ? notificationData.filter((item) =>
+              [1, 2, 3, 4, 7].some((index) =>
+                String(item[index]).toLowerCase().includes(search)
+              )
+            )
+          : []
       );
     }
   }, [search]);
@@ -171,6 +174,7 @@ export default function NotificationsPage() {
           name: notificationName,
           notification: notificationText,
           notify_email: notificationEmailNotify,
+          notify_discord: notificationDiscordNotify,
           tag: notificationTag,
         },
         Cookies.get("access")
@@ -188,6 +192,7 @@ export default function NotificationsPage() {
     setNotificationName("");
     setNotificationText("");
     setNotificationEmailNotify(false);
+    setNotificationDiscordNotify(false);
   };
 
   // Function definition for updating a notification
@@ -293,23 +298,28 @@ export default function NotificationsPage() {
             )
         ).map((info, index) => (
           <CollapsableInfoCard
-            console={console.log(result.length)}
             id={info[6]}
             key={`feedbackInbox-${info[0]}-${index}`}
             date={formatMilDate(info[0])}
             tag={info[7]}
             title={info[1]}
             titleAppendix={
-              <>
-                <div className="flex flex-row items-center gap-1.5 text-xs">
-                  <div className="font-bold line-clamp-1">For Personnel Under: </div>
-                  <div className="line-clamp-1">{info[2]}</div>
+              <div className="w-full">
+                <div
+                  className="flex flex-row items-center gap-1.5 truncate 
+                  text-xs"
+                >
+                  <div className="font-bold">For Personnel Under:</div>
+                  <div className="">{info[2]}</div>
                 </div>
-                <div className="flex flex-row items-center gap-1.5 text-xs">
-                  <div className="font-bold line-clamp-1">From: </div>
-                  <div className="line-clamp-1">{info[3]}</div>
+                <div
+                  className="flex flex-row items-center gap-1.5 truncate 
+                  text-xs"
+                >
+                  <div className="font-bold">From: </div>
+                  <div className="">{info[3]}</div>
                 </div>
-              </>
+              </div>
             }
             mainText={info[4]}
             updateFunc={info[5] ? updateNotification : null}
@@ -368,6 +378,13 @@ export default function NotificationsPage() {
             onChange={setNotificationText}
           />
         </div>
+      </div>
+      <div className="flex flex-row items-center gap-4">
+        <div className="text-2xl">Notify via Discord?</div>
+        <ToggleSwitch
+          onToggle={setNotificationDiscordNotify}
+          initialState={notificationDiscordNotify}
+        />
       </div>
       <div className="flex flex-row items-center gap-4">
         <div className="text-2xl">Notify via Email?</div>

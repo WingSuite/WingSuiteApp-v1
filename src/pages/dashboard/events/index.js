@@ -75,6 +75,7 @@ export default function EventsPage() {
   });
   const [eventDays, setEventDays] = useState([]);
   const [eventEmailNotify, setEventEmailNotify] = useState(false);
+  const [eventDiscordNotify, setEventDiscordNotify] = useState(false);
 
   // Define useStates for getting event data
   const [queryRange, setQueryRange] = useState({});
@@ -283,6 +284,7 @@ export default function EventsPage() {
             end_datetime: end_datetime,
             description: eventDescription,
             notify_email: eventEmailNotify,
+            notify_discord: eventDiscordNotify,
             tag: eventTag,
           },
           Cookies.get("access")
@@ -308,6 +310,7 @@ export default function EventsPage() {
     });
     setEventDays([]);
     setEventEmailNotify(false);
+    setEventDiscordNotify(false);
   };
 
   // Function to update the event
@@ -392,7 +395,7 @@ export default function EventsPage() {
   // Component for composer
   const composer = (
     <div
-      className="flex max-h-full w-1/4 flex-col gap-5
+      className="flex max-h-full w-1/3 flex-col gap-5
       overflow-y-auto pb-2 pl-3 pr-3"
     >
       <div className="flex flex-col gap-1">
@@ -486,6 +489,13 @@ export default function EventsPage() {
           mode="multiple"
           selected={eventDays}
           onSelect={setEventDays}
+        />
+      </div>
+      <div className="flex flex-row items-center gap-4">
+        <div className="text-2xl">Notify via Discord?</div>
+        <ToggleSwitch
+          onToggle={setEventDiscordNotify}
+          initialState={eventDiscordNotify}
         />
       </div>
       <div className="flex flex-row items-center gap-4">

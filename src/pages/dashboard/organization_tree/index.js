@@ -72,8 +72,6 @@ export default function UnitResourcesPage() {
     })();
   }, []);
 
-  console.log(unitList);
-
   // Define onClose function for closing modal
   const closeModal = () => {
     setModalIsOpen(false);

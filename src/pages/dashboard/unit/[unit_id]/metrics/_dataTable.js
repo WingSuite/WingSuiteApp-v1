@@ -39,8 +39,6 @@ export default function DataTableView() {
     // Delete component created datetime
     delete copy.datetime_created;
 
-    console.log(copy);
-
     // If composite score is the only value, then just update that
     if (c.format.scoring_ids.length == 1) {
       (async () => {

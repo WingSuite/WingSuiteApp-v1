@@ -112,7 +112,7 @@ export function TimeInput({
           !(event.key === "Backspace") &&
           !(event.key === "Delete") &&
           !(event.key === "Tab") &&
-          event.preventDefault(); console.log(minute)}
+          event.preventDefault();}
         }
         onBlur={() => {
           if (parseInt(minute) > 59) setMinute("00");

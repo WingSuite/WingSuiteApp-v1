@@ -456,21 +456,16 @@ const Sidebar = () => {
               <Image alt="Logo" src={logobw} width={37} height={37} />
             </button>
             <button
-              className="flex-1 truncate text-sm"
+              className="flex-1 truncate text-left text-sm"
               onClick={() => setModalMode(true)}
             >
               {userInfo.full_name}
             </button>
-            <button onClick={logoutButton}>
-              <IconContext.Provider
-                value={{
-                  color: "#fc3535",
-                  size: "1.5em",
-                  className: "mr-2",
-                }}
-              >
-                <MdLogout />
-              </IconContext.Provider>
+            <button
+              onClick={logoutButton}
+              className="mr-2 text-[1.5em] text-scarlet"
+            >
+              <MdLogout />
             </button>
           </div>
         </div>

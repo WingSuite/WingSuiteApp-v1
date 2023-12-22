@@ -4,7 +4,6 @@ import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import React from "react";
 
 // Toaster Components and CSS
@@ -30,9 +29,6 @@ import Sidebar from "@/components/sidebar";
 
 // Unit member page definition
 export default function UnitResourcesPage() {
-  // Define router and get unit ID from URL
-  const router = useRouter();
-
   // Define useStates
   const [filterUserList, setFilteredUserList] = useState([]);
   const [actionTrigger, setActionTrigger] = useState(false);

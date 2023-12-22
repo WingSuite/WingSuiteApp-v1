@@ -48,7 +48,6 @@ export function CalendarComponent({
 
   // Specify card background color
   const eventStyleGetter = (event, start, end, isSelected) => {
-    console.log(event);
     return {
       style:  {
         backgroundColor:  colorFormatting[event.tag] || '#3174ad',

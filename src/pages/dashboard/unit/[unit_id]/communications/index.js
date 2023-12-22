@@ -1,6 +1,5 @@
 // React Icons
 import { VscClose, VscCheck } from "react-icons/vsc";
-import { IconContext } from "react-icons";
 
 // React.js & Next.js libraries
 import { useState, useEffect } from "react";
@@ -18,16 +17,12 @@ import Cookies from "js-cookie";
 import { permissionsList } from "@/config/config";
 
 // Util imports
-import { permissionsCheck } from "@/utils/permissionCheck";
 import { authCheck } from "@/utils/authCheck";
-import { formatMilDate } from "@/utils/time";
 import { post } from "@/utils/call";
 
 // Custom components imports
 import { errorToaster, successToaster } from "@/components/toasters";
-import { CollapsableInfoCard } from "@/components/cards";
 import { ToggleSwitch } from "@/components/input";
-import { Nothing } from "@/components/nothing";
 import PageTitle from "@/components/pageTitle";
 import Sidebar from "@/components/sidebar";
 

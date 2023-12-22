@@ -50,6 +50,7 @@ export default function NotificationsPage() {
   const [notificationName, setNotificationName] = useState("");
   const [notificationText, setNotificationText] = useState("");
   const [notificationEmailNotify, setNotificationEmailNotify] = useState(false);
+  const [notificationDiscordNotify, setNotificationDiscordNotify] = useState(false);
   const [actionTrigger, setActionTrigger] = useState(true);
   const required = permissionsList.notifications;
 
@@ -173,6 +174,7 @@ export default function NotificationsPage() {
           name: notificationName,
           notification: notificationText,
           notify_email: notificationEmailNotify,
+          notify_discord: notificationDiscordNotify,
           tag: notificationTag,
         },
         Cookies.get("access")
@@ -190,6 +192,7 @@ export default function NotificationsPage() {
     setNotificationName("");
     setNotificationText("");
     setNotificationEmailNotify(false);
+    setNotificationDiscordNotify(false);
   };
 
   // Function definition for updating a notification
@@ -375,6 +378,13 @@ export default function NotificationsPage() {
             onChange={setNotificationText}
           />
         </div>
+      </div>
+      <div className="flex flex-row items-center gap-4">
+        <div className="text-2xl">Notify via Discord?</div>
+        <ToggleSwitch
+          onToggle={setNotificationDiscordNotify}
+          initialState={notificationDiscordNotify}
+        />
       </div>
       <div className="flex flex-row items-center gap-4">
         <div className="text-2xl">Notify via Email?</div>

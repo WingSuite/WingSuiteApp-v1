@@ -12,7 +12,7 @@ import {
   VscChecklist,
   VscNotebook,
   VscTypeHierarchySub,
-  VscMegaphone
+  VscMegaphone,
 } from "react-icons/vsc";
 import { BsPerson } from "react-icons/bs";
 import { BiNews } from "react-icons/bi";
@@ -197,7 +197,10 @@ export const permissionsList = {
       ],
     },
     communications: {
-      page: ["unit.get_discord_settings", "unit.update_discord_settings"]
+      page: [
+        "unit.update_communication_settings",
+        "communications.send_unit_discord_message",
+      ],
     },
     metrics: {
       page: ["unit.get_all_pfa_data", "unit.get_all_warrior_data"],

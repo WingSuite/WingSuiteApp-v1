@@ -13,6 +13,7 @@ import {
   VscNotebook,
   VscTypeHierarchySub,
   VscMegaphone,
+  VscInfo,
 } from "react-icons/vsc";
 import { BsPerson } from "react-icons/bs";
 import { BiNews } from "react-icons/bi";
@@ -303,6 +304,11 @@ export const regularSidebarContents = [
     title: "Organization Tree",
     link: "/dashboard/organization_tree",
     icon: <VscTypeHierarchySub />,
+  },
+  {
+    title: "App Info",
+    link: "/dashboard/info",
+    icon: <VscInfo />,
   },
 ];
 

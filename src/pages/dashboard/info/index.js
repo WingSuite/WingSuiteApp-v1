@@ -49,29 +49,32 @@ export default function UnitResourcesPage() {
       <Sidebar />
       <div className="m-10 flex max-h-full w-full flex-col">
         <PageTitle className="flex-none" />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 overflow-y-auto h-full">
           <div className="text-3xl font-bold">Beta Test Information</div>
           <div className="text-xl">
             Organization: <b>Detachment 025</b>
           </div>
           <div className="text-xl">
-            Approved For Distribution By <b> Benjamin Joseph L. Herrera</b>
+            Approval Authority: <b> Benjamin Joseph L. Herrera</b>
+          </div>
+          <div className="text-xl">
+            Approval Authority Email: <b> b10@asu.edu</b>
           </div>
           <div className="text-3xl font-bold">API Server</div>
           <div className="text-xl">
             Variant: <b>San Jose Del Monte City</b>
           </div>
           <div className="text-xl">
-            Version: <b>v1 (b598c1e)</b>
+            Version: <b>v1.0.0</b>
           </div>
           <div className="text-3xl font-bold">Web App Server</div>
           <div className="text-xl">
             Variant: <b>Quezon City</b>
           </div>
           <div className="text-xl">
-            Version: <b>v1 (26354f7)</b>
+            Version: <b>v1.0.0</b>
           </div>
-          <div className="mt-9 text-3xl font-bold">NOTE:</div>
+          <div className="mt-9 text-3xl font-bold">SERVICE NOTE:</div>
           <div className="w-1/2 text-xl">
             This application, API and Web App services, are part of a beta test
             cycle. The content provided through these services are not

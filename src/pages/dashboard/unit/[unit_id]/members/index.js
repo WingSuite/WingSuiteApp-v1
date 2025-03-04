@@ -237,7 +237,7 @@ export default function UnitMembersPage() {
   // Define the officer list section
   const officersDisplay = (
     <div className="flex flex-col gap-4">
-      <div className="text-3xl">Officers</div>
+      <div className="text-3xl">Team Leads</div>
       <div className="flex flex-wrap gap-4">
         {officersList.map((item) => (
           <UserCard
@@ -271,7 +271,7 @@ export default function UnitMembersPage() {
               <IconContext.Provider value={{ size: "2em" }}>
                 <VscAdd />
               </IconContext.Provider>
-              <div className="text-center text-xl">Add Officer</div>
+              <div className="text-center text-xl">Add Team Leads</div>
             </div>
           </button>
         )}

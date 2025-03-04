@@ -99,7 +99,7 @@ export default function UnitMetricsAppProvider({ children }) {
 
   // View mappings
   const viewList = [<ScatterPlotView />, <DataTableView />, <AddDataView />];
-  const toolbarItems = ["5 Point Evaluation", "PFA", "Warrior Knowledge"];
+  const toolbarItems = ["Care Efficiency", "Patient Metrics", "Clinical Performance"];
 
   // Special Process mapping
   const specialProcess = {

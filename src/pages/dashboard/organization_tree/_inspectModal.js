@@ -121,9 +121,9 @@ export default function InspectUnitModal({
       </div>
       <div className="flex w-full flex-row justify-between gap-4">
         <div className="flex h-fit w-1/2 flex-col gap-2">
-          <div className="w-full text-2xl">Officers</div>
+          <div className="w-full text-2xl">Team Leads</div>
           {officersList.length == 0 ? (
-            <Nothing mainText={"No Officers"} marginFlag={false} />
+            <Nothing mainText={"No Team Leads"} marginFlag={false} />
           ) : (
             <>
               {officersList.map((item) => (

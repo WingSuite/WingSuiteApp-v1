@@ -187,7 +187,7 @@ const Register = () => {
               />
             </div>
             <div className="flex flex-col">
-              <div className="">Rank</div>
+              <div className="">Title</div>
 
               <div className="rounded-lg !bg-white/[0.3] !shadow-lg">
                 <BottomDropDown

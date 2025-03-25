@@ -52,7 +52,7 @@ export default function UnitResourcesPage() {
         <div className="flex flex-col gap-2 overflow-y-auto h-full">
           <div className="text-3xl font-bold">Beta Test Information</div>
           <div className="text-xl">
-            Organization: <b>Detachment 025</b>
+            Organization: <b>Gems Hospice</b>
           </div>
           <div className="text-xl">
             Approval Authority: <b> Benjamin Joseph L. Herrera</b>

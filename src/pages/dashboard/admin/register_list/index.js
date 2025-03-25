@@ -108,7 +108,7 @@ export default function UnitResourcesPage() {
                 name={`${item.last_name}, ${item.first_name} ${
                   item.middle_initial == undefined ? `` : item.middle_initial
                 }`}
-                rank={item.rank ? item.rank : "No Rank"}
+                rank={item.rank ? item.rank : "No Title"}
                 email={item.email}
                 phone={item.phone_number}
                 addFunc={(id, _) => authorizeUser(id)}

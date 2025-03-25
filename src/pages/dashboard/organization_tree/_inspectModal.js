@@ -130,7 +130,7 @@ export default function InspectUnitModal({
                 <div
                   className="w-full truncate text-sm"
                   key={`officer-${item.full_name}`}
-                >{`${item.rank != undefined ? item.rank + ` ` : "N/R "}${
+                >{`${item.rank != undefined ? item.rank + ` ` : "N/T "}${
                   item.full_name
                 }`}</div>
               ))}
@@ -146,7 +146,7 @@ export default function InspectUnitModal({
               <div
                 className="w-full truncate text-sm"
                 key={`member-${item.full_name}`}
-              >{`${item.rank != undefined ? item.rank + ` ` : "N/R "}${
+              >{`${item.rank != undefined ? item.rank + ` ` : "N/T "}${
                 item.full_name
               }`}</div>
             ))

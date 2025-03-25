@@ -66,7 +66,7 @@ export default function UnitResourcesPage() {
       var processed = res.message.map((obj) => {
         return {
           ...obj,
-          multipurpose: `${obj.rank != undefined ? obj.rank + ` ` : "N/R "}${
+          multipurpose: `${obj.rank != undefined ? obj.rank + ` ` : "N/T "}${
             obj.full_name
           }`,
         };
@@ -119,7 +119,7 @@ export default function UnitResourcesPage() {
               className="text-gray-600 pr-6 text-left font-semibold uppercase
               tracking-wider w-1/5"
             >
-              Rank
+              Title
             </th>
             <th
               className="text-gray-600 pr-6 text-left font-semibold uppercase
@@ -160,7 +160,7 @@ export default function UnitResourcesPage() {
                 {idx + 1}
               </td>
               <td className="text-gray-500 whitespace-nowrap pr-6 text-sm">
-                {item.rank || "N/R"}
+                {item.rank || "N/T"}
               </td>
               <td className="text-gray-500 whitespace-nowrap pr-6 text-sm">
                 {item.full_name}

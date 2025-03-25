@@ -60,7 +60,7 @@ export default function UnitResourcesPage() {
       var processed = res.message.map((obj) => {
         return {
           ...obj,
-          multipurpose: `${obj.rank != undefined ? obj.rank + ` ` : "N/R "}${
+          multipurpose: `${obj.rank != undefined ? obj.rank + ` ` : "N/T "}${
             obj.full_name
           }`,
         };
@@ -126,7 +126,7 @@ export default function UnitResourcesPage() {
       if (res.status == "error") errorToaster(res.message);
 
       // Update the user's rank if it was changed
-      if (title != "N/R") {
+      if (title != "N/T") {
         // Call API to change rank
         res = await post(
           "/user/update_rank/",
@@ -135,7 +135,7 @@ export default function UnitResourcesPage() {
         );
 
         // If the call was successful, send a success toaster
-        if (res.status == "success") successToaster(`User's rank updated`);
+        if (res.status == "success") successToaster(`User's title updated`);
         if (res.status == "error") errorToaster(res.message);
       }
 
@@ -194,8 +194,8 @@ export default function UnitResourcesPage() {
                     }
                     updateFunc={updateUser}
                     simpleEditor={true}
-                    tag={item.rank || "N/R"}
-                    tagList={["N/R"]
+                    tag={item.rank || "N/T"}
+                    tagList={["N/T"]
                       .concat(config.rankList)
                       .reduce((obj, item) => {
                         obj[item] = "";
@@ -218,8 +218,8 @@ export default function UnitResourcesPage() {
                     updateFunc={updateUser}
                     startState={true}
                     simpleEditor={true}
-                    tag={item.rank || "N/R"}
-                    tagList={["N/R"]
+                    tag={item.rank || "N/T"}
+                    tagList={["N/T"]
                       .concat(config.rankList)
                       .reduce((obj, item) => {
                         obj[item] = "";

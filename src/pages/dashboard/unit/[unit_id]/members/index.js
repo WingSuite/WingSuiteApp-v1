@@ -244,7 +244,7 @@ export default function UnitMembersPage() {
             key={`Officer-${item._id}`}
             id={item._id}
             name={item.full_name}
-            rank={item.rank ? item.rank : "No Rank"}
+            rank={item.rank ? item.rank : "No Title"}
             email={item.email}
             phone={item.phone_number}
             deleteFunc={
@@ -289,7 +289,7 @@ export default function UnitMembersPage() {
             id={item._id}
             key={`Member-${item._id}`}
             name={item.full_name}
-            rank={item.rank ? item.rank : "No Rank"}
+            rank={item.rank ? item.rank : "No Title"}
             email={item.email}
             phone={item.phone_number}
             deleteFunc={

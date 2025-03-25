@@ -124,7 +124,7 @@ export default function ProfileModal({ closeModal }) {
   const infoView = (
     <>
       <div className="flex flex-col">
-        <div className="text-xl">Rank</div>
+        <div className="text-xl">Title</div>
         {editMode ? (
           <BottomDropDown
             listOfItems={config.rankList}
